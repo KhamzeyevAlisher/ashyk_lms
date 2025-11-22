@@ -1,0 +1,64 @@
+{% extends 'ashyk_lms_app/base.html' %}
+
+{% block content %}
+<!-- Верхняя панель -->
+<div class="navbar">
+    <div>Kyzylorda Open University</div>
+    <div>
+        <span>{{ user.get_full_name_str }}</span> | 
+        <a href="{% url 'logout' %}" style="opacity: 0.8;">Выход</a>
+    </div>
+</div>
+
+<div class="profile-container">
+    <!-- Левая колонка: Инфо -->
+    <div class="card" style="flex: 1; text-align: center;">
+        <div style="width: 120px; height: 120px; background: #ddd; border-radius: 50%; margin: 0 auto 15px; overflow: hidden;">
+            {% if user.avatar %}
+                <img src="{{ user.avatar.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+            {% else %}
+                <div style="line-height: 120px; font-size: 40px; color: #666;">👤</div>
+            {% endif %}
+        </div>
+        <h3 style="margin: 0;">{{ user.last_name }} {{ user.first_name }}</h3>
+        <p style="color: #666; margin: 5px 0;">{{ user.get_role_display }}</p>
+        
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+        
+        <div style="text-align: left; font-size: 14px;">
+            <p><strong>ID:</strong> {{ user.id }}</p>
+            {% if user.group_name %}
+                <p><strong>Группа:</strong> {{ user.group_name }}</p>
+            {% endif %}
+            {% if user.department %}
+                <p><strong>Кафедра:</strong> {{ user.department }}</p>
+            {% endif %}
+            <p><strong>Статус:</strong> <span style="color: green;">Активен</span></p>
+        </div>
+    </div>
+
+    <!-- Правая колонка: Редактирование -->
+    <div class="card" style="flex: 2;">
+        <h3 style="margin-top: 0; color: var(--primary-color);">Настройки профиля</h3>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <label style="display: block; margin-bottom: 5px;">Email для связи</label>
+            {{ form.email }}
+            
+            <label style="display: block; margin-bottom: 5px;">Мобильный телефон</label>
+            {{ form.phone }}
+            
+            <label style="display: block; margin-bottom: 5px;">Загрузить новое фото</label>
+            {{ form.avatar }}
+            
+            <button type="submit" class="btn" style="width: auto; margin-top: 10px;">Сохранить изменения</button>
+        </form>
+
+        <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee;">
+            <h4>Безопасность</h4>
+            <button class="btn" style="background-color: #6c757d; width: auto;">Сменить пароль</button>
+        </div>
+    </div>
+</div>
+{% endblock %}

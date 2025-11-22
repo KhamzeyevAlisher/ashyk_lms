@@ -1,0 +1,40 @@
+:root {
+    --primary-color: #003366; /* Синий университетский */
+    --accent-color: #0056b3;
+    --bg-color: #f4f6f9;
+    --text-color: #333;
+    --white: #ffffff;
+}
+body { 
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+    background-color: var(--bg-color); 
+    margin: 0; 
+    color: var(--text-color); 
+}
+
+/* Стили для контейнеров */
+.auth-container { 
+    display: flex; 
+    justify-content: center; 
+    align-items: center; 
+    height: 100vh; 
+}
+
+.profile-container { 
+    max-width: 900px; 
+    margin: 40px auto; 
+    display: flex; 
+    gap: 20px; 
+}
+
+/* Карточки */
+.card { background: var(--white); padding: 30px; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+/* Кнопки и инпуты */
+.form-control { width: 100%; padding: 10px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; }
+.btn { background-color: var(--primary-color); color: white; padding: 10px 20px; border: none; border-radius: 4px; cursor: pointer; width: 100%; font-size: 16px; }
+.btn:hover { background-color: var(--accent-color); }
+
+/* Хедер профиля */
+.navbar { background: var(--primary-color); color: white; padding: 15px 40px; display: flex; justify-content: space-between; align-items: center; }
+.navbar a { color: white; text-decoration: none; font-weight: bold; }
