@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>University Prototype</title>
+    <!-- Подключаем иконки (FontAwesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- CSS STYLES --- */
+        :root {
+            --primary-bg: #f4f6f9;
+            --header-bg: #ffffff; /* Как на фото 1 */
+            --accent-color: #4f46e5; /* Фиолетово-синий */
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --success-bg: #d1fae5;
+            --success-text: #065f46;
+            --info-bg: #dbeafe;
+            --info-text: #1e40af;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-dark);
+        }
+
+        /* HEADER (Верхняя шапка) */
+        .main-header {
+            background-color: var(--header-bg);
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .brand-icon {
+            width: 40px;
+            height: 40px;
+            background-color: var(--accent-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+
+        .brand-text h1 {
+            font-size: 18px;
+            font-weight: 700;
+        }
+
+        .brand-text p {
+            font-size: 12px;
+            color: var(--text-light);
+        }
+
+        .logout-link {
+            color: var(--text-light);
+            text-decoration: none;
+            font-size: 14px;
+        }
+
+        /* NAVIGATION TABS (Меню вкладок) */
+        .nav-tabs {
+            background-color: white;
+            padding: 0 30px;
+            margin-top: 2px;
+            display: flex;
+            gap: 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .tab-btn {
+            padding: 15px 0;
+            background: none;
+            border: none;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-light);
+            cursor: pointer;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn.active {
+            color: var(--accent-color);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background-color: var(--accent-color);
+            border-radius: 3px 3px 0 0;
+        }
+
+        /* MAIN CONTENT AREA */
+        .container {
+            padding: 30px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* --- TAB 1: USER MANAGEMENT (Фото 1) --- */
+        .page-title-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .page-title h2 {
+            font-size: 24px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Filters */
+        .filters-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .search-input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 250px;
+        }
+
+        .select-input {
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            width: 200px;
+            background: white;
+        }
+
+        /* Table */
+        .table-container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th {
+            text-align: left;
+            padding: 15px 20px;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: var(--text-light);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        td {
+            padding: 15px 20px;
+            font-size: 14px;
+            color: var(--text-dark);
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-teacher { background-color: var(--info-bg); color: var(--info-text); }
+        .badge-student { background-color: var(--success-bg); color: var(--success-text); }
+
+        .actions i {
+            color: var(--text-light);
+            margin-right: 10px;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+        .actions i:hover { color: var(--accent-color); }
+
+        /* --- TAB 4: PROFILE SETTINGS (Фото 2) --- */
+        .profile-grid {
+            display: grid;
+            grid-template-columns: 300px 1fr;
+            gap: 30px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+
+        .profile-card {
+            text-align: center;
+        }
+
+        .avatar-circle {
+            width: 100px;
+            height: 100px;
+            background-color: #e0e7ff;
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent-color);
+            font-size: 40px;
+        }
+
+        .profile-role {
+            color: var(--text-light);
+            margin-top: 5px;
+            margin-bottom: 20px;
+        }
+
+        .status-text {
+            font-weight: 600;
+            font-size: 14px;
+        }
+        .status-active { color: var(--success-text); }
+
+        /* Form in Profile */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 14px;
+            color: var(--text-dark);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        .form-actions {
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-dark {
+            background-color: #111827; /* Dark color from photo 2 */
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-grey {
+            background-color: #6b7280;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+
+        /* Hidden helper class */
+        .hidden {
+            display: none !important;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <div class="brand">
+            <div class="brand-icon">
+                <!-- <i class="fa-solid fa-graduation-cap"></i> -->
+            </div>
+            <div class="brand-text">
+                <h1>Ashyk University</h1>
+                <p>Оқу процесін басқару жүйесі</p>
+            </div>
+        </div>
+        <a href="#" class="logout-link">Шығу</a>
+    </header>
+
+    <!-- NAVIGATION -->
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="openTab('users')">
+            <i class="fa-solid fa-users"></i> Пайдаланушылар
+        </button>
+        <button class="tab-btn" onclick="openTab('structure')">
+            <i class="fa-solid fa-sitemap"></i> Университет құрылымы
+        </button>
+        <button class="tab-btn" onclick="openTab('assignments')">
+            <i class="fa-solid fa-user-check"></i> Тағайындаулар
+        </button>
+        <button class="tab-btn" onclick="openTab('settings')">
+            <i class="fa-solid fa-cog"></i> Параметрлер
+        </button>
+    </nav>
+
+    <!-- MAIN CONTENT -->
+    <main class="container">
+        
+        <!-- TAB 1: USERS (Фото 1) -->
+        <div id="tab-users" class="tab-content">
+            <div class="page-title-area">
+                <div class="page-title">
+                    <h2>Пайдаланушыларды басқару</h2>
+                    <p style="color: #6b7280; font-size: 14px; margin-top: 5px;">Тіркелгілерді құру, өңдеу және басқару</p>
+                </div>
+                <button class="btn-primary">
+                    <i class="fa-solid fa-plus"></i> Пайдаланушыны құру
+                </button>
+            </div>
+
+            <div class="filters-bar">
+                <input type="text" placeholder="Аты" class="search-input">
+                <select class="select-input">
+                    <option>Барлық рөлдер</option>
+                    <option>Учитель</option>
+                    <option>Ученик</option>
+                </select>
+                <select class="select-input">
+                    <option>Барлық статустар</option>
+                </select>
+                <button class="btn-primary" style="padding: 8px 15px;">Қолдану</button>
+                <a href="#" style="font-size: 14px; color: var(--text-dark); text-decoration: underline;">Қалпына келтіру</a>
+            </div>
+
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ТОЛЫҚ АТЫ-ЖӨНІ</th>
+                            <th>EMAIL</th>
+                            <th>ТЕЛЕФОН</th>
+                            <th>РӨЛІ</th>
+                            <th>КҮЙІ</th>
+                            <th>СОҢҒЫ КІРУ</th>
+                            <th>ӘРЕКЕТТЕР</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body">
+                        <!-- JS will insert rows here -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: STRUCTURE (Placeholder) -->
+        <div id="tab-structure" class="tab-content hidden">
+            <div class="page-title-area">
+                <h2>Университет құрылымы</h2>
+            </div>
+            <div class="card">
+                <p>Бұл жерде университет құрылымы көрсетіледі...</p>
+            </div>
+        </div>
+
+        <!-- TAB 3: ASSIGNMENTS (Placeholder) -->
+        <div id="tab-assignments" class="tab-content hidden">
+            <div class="page-title-area">
+                <h2>Тағайындаулар</h2>
+            </div>
+            <div class="card">
+                <p>Тағайындаулар тізімі...</p>
+            </div>
+        </div>
+
+        <!-- TAB 4: SETTINGS / PROFILE (Фото 2) -->
+        <div id="tab-settings" class="tab-content hidden">
+            <!-- Дизайн как на фото 2 -->
+            <div class="profile-grid">
+                <!-- Левая карта -->
+                <div class="card profile-card">
+                    <div class="avatar-circle">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <h3>Студент</h3>
+                    <p class="profile-role">ID: 1</p>
+                    <p class="status-text">Статус: <span class="status-active">Активен</span></p>
+                </div>
+
+                <!-- Правая форма -->
+                <div class="card">
+                    <h3 style="margin-bottom: 25px; color: #1e3a8a;">Настройки профиля</h3>
+                    
+                    <div class="form-group">
+                        <label>Email для связи</label>
+                        <input type="email" class="form-control" value="adminashyklms@gmail.com">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Мобильный телефон</label>
+                        <input type="text" class="form-control" placeholder="">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Загрузить новое фото</label>
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <button style="padding: 5px 10px; border: 1px solid #ccc; background: #f9f9f9;">Выбор файла</button>
+                            <span style="font-size: 13px; color: #666;">Не выбран ни один файл</span>
+                            <button class="btn-dark" style="margin-left: auto;">Сохранить изменения</button>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <h4 style="margin-bottom: 15px;">Безопасность</h4>
+                        <button class="btn-grey">Сменить пароль</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // 1. Fake Data (Объект, как вы просили)
+        const fake_users = {
+            "id_1": {
+                "name": "admin",
+                "email": "orinbekov05@gmail.com",
+                "tel": "+77768689372",
+                "role": "Администратор",
+                "status": "Активті",
+                "last_login": "2025-11-24 10:56"
+            },
+            "id_2": {
+                "name": "Alisher",
+                "email": "alisher@gmail.com",
+                "tel": "87753890205",
+                "role": "Учитель",
+                "status": "Активті",
+                "last_login": "2025-11-14 21:13"
+            },
+            "id_3": {
+                "name": "student01",
+                "email": "student01@gmail.com",
+                "tel": "87714657204",
+                "role": "Ученик",
+                "status": "Активті",
+                "last_login": "2025-11-21 18:38"
+            },
+            "id_4": {
+                "name": "teacher01",
+                "email": "teacher01@gmail.com",
+                "tel": "88747779204",
+                "role": "Учитель",
+                "status": "Активті",
+                "last_login": "2025-11-11 17:58"
+            },
+             "id_5": {
+                "name": "Гулнар",
+                "email": "gulnar@gmail.com",
+                "tel": "87759855684",
+                "role": "Учитель",
+                "status": "Активті",
+                "last_login": "2025-11-15 00:14"
+            }
+        };
+
+        // 2. Function to Render Users
+        function renderUsers() {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = ''; // Clear existing
+
+            // Превращаем объект в массив значений для перебора
+            // или используем for ... in
+            for (const key in fake_users) {
+                const user = fake_users[key];
+                
+                // Определение класса для бейджа роли
+                let badgeClass = 'badge-student'; // по умолчанию (зеленый)
+                if(user.role === 'Учитель') badgeClass = 'badge-teacher'; // синий
+                if(user.role === 'Администратор') badgeClass = ''; // без фона или добавить свой
+
+                const row = `
+                    <tr>
+                        <td>${user.name}</td>
+                        <td>${user.email} <i class="fa-regular fa-envelope" style="color:#9ca3af; font-size:12px;"></i></td>
+                        <td>${user.tel}</td>
+                        <td><span class="badge ${badgeClass}">${user.role}</span></td>
+                        <td>${user.status}</td>
+                        <td>${user.last_login}</td>
+                        <td class="actions">
+                            <i class="fa-solid fa-pen"></i>
+                            <i class="fa-solid fa-lock"></i>
+                            <i class="fa-solid fa-trash"></i>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            }
+        }
+
+        // 3. Function to Switch Tabs
+        function openTab(tabName) {
+            // Скрываем все табы
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.add('hidden'));
+
+            // Убираем активный класс у всех кнопок
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            // Показываем нужный таб
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            // Добавляем активный класс нажатой кнопке (находим по onclick или index)
+            // Простой способ - найти кнопку, у которой onclick содержит tabName
+            // Но лучше использовать event.currentTarget, если передавать event.
+            // Здесь сделаем перебором для простоты поиска кнопки по индексу массива, 
+            // но так как у нас жесткая структура, просто подсветим нужную.
+            
+            // Найдем кнопку, которая вызывает эту функцию с таким аргументом
+            const activeBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(tabName));
+            if(activeBtn) activeBtn.classList.add('active');
+        }
+
+        // Init
+        document.addEventListener('DOMContentLoaded', () => {
+            renderUsers();
+        });
+
+    </script>
+</body>
+</html>
