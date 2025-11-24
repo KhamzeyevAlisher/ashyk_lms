@@ -24,3 +24,8 @@ def profile_view(request):
         'form': form
     }
     return render(request, 'ashyk_lms_app/profile.html', context)
+
+@login_required
+def admin_panel(request):
+    return render(request, 'ashyk_lms_app/admin_panel.html')
+

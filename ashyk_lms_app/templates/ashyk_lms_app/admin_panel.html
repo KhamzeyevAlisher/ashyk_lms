@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashyk University Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* --- NEW CSS STYLES --- */
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --sidebar-bg: #1e293b; /* Темно-синий фон меню */
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #ffffff;
+            --body-bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --accent-color: #10b981; /* Изумрудный (Emerald) вместо фиолетового */
+            --accent-hover: #059669;
+            --text-dark: #111827;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --danger-color: #ef4444;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR (Левое меню) --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--accent-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .brand-text h1 {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            color: var(--sidebar-text);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            gap: 12px;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .nav-btn.active {
+            background-color: rgba(16, 185, 129, 0.1); /* Прозрачный зеленый */
+            color: var(--sidebar-active);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-btn i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logout-btn {
+            color: #ef4444;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .logout-btn:hover { opacity: 0.8; }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* TOP BAR */
+        .top-bar {
+            height: 70px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .current-page {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-avatar-small {
+            width: 35px;
+            height: 35px;
+            background: #e0f2fe;
+            color: #0369a1;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        /* SCROLLABLE CONTENT AREA */
+        .content-scroll {
+            padding: 30px;
+            overflow-y: auto;
+            height: 100%;
+        }
+
+        /* --- COMMON COMPONENTS --- */
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.2s;
+            box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
+        }
+        .btn-primary:hover { background-color: var(--accent-hover); }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        /* --- USERS TABLE STYLES --- */
+        .filters-area {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            position: relative;
+        }
+        
+        .input-field {
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            outline: none;
+            min-width: 200px;
+        }
+        .input-field:focus { border-color: var(--accent-color); }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--text-light);
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            padding: 16px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-color);
+        }
+
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+            color: var(--text-dark);
+            vertical-align: middle;
+        }
+
+        tr:last-child td { border-bottom: none; }
+        tr:hover td { background-color: #f9fafb; }
+
+        /* BADGES */
+        .status-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+        .badge-admin { background: #e0e7ff; color: #4338ca; }
+        .badge-teacher { background: #fef3c7; color: #b45309; }
+        .badge-student { background: #dcfce7; color: #15803d; }
+
+        .action-btn {
+            width: 30px;
+            height: 30px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color);
+            background: white;
+            color: var(--text-light);
+            cursor: pointer;
+            margin-right: 5px;
+            transition: 0.2s;
+        }
+        .action-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+        /* --- PROFILE SETTINGS --- */
+        .profile-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 25px;
+        }
+
+        .profile-header {
+            text-align: center;
+        }
+        .profile-img {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, var(--accent-color), #34d399);
+            border-radius: 50%;
+            margin: 0 auto 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            border: 4px solid white;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-light);
+        }
+        .form-row { margin-bottom: 20px; }
+
+        .hidden { display: none !important; }
+
+    </style>
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-university"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>ASHYK LMS</h1>
+                </div>
+            </a>
+        </div>
+
+        <nav class="sidebar-menu">
+            <button class="nav-btn active" onclick="openTab('users')">
+                <i class="fa-solid fa-users"></i>
+                <span>Пайдаланушылар</span>
+            </button>
+            <button class="nav-btn" onclick="openTab('structure')">
+                <i class="fa-solid fa-sitemap"></i>
+                <span>Құрылым</span>
+            </button>
+            <button class="nav-btn" onclick="openTab('assignments')">
+                <i class="fa-solid fa-clipboard-list"></i>
+                <span>Тағайындаулар</span>
+            </button>
+            <button class="nav-btn" onclick="openTab('settings')">
+                <i class="fa-solid fa-gear"></i>
+                <span>Параметрлер</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Шығу</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT WRAPPER -->
+    <main class="main-content">
+        
+        <!-- TOP HEADER -->
+        <header class="top-bar">
+            <div class="current-page" id="page-header-title">Пайдаланушылар</div>
+            <div class="user-info">
+                <div style="text-align: right;">
+                    <div style="font-size: 14px; font-weight: 600;">Нұрбек</div>
+                    <div style="font-size: 12px; color: var(--text-light);">Администратор</div>
+                </div>
+                <div class="user-avatar-small">NA</div>
+            </div>
+        </header>
+
+        <!-- SCROLLABLE AREA -->
+        <div class="content-scroll">
+
+            <!-- TAB: USERS -->
+            <div id="tab-users" class="tab-content">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <p style="color: var(--text-light);">Жүйедегі барлық тіркелгілерді басқару</p>
+                    <button class="btn-primary">
+                        <i class="fa-solid fa-plus"></i> Жаңа пайдаланушы
+                    </button>
+                </div>
+
+                <div class="filters-area">
+                    <input type="text" placeholder="Аты-жөні бойынша іздеу..." class="input-field" style="width: 300px;">
+                    <select class="input-field">
+                        <option>Барлық рөлдер</option>
+                        <option>Преподаватель</option>
+                        <option>Студент</option>
+                    </select>
+                    <select class="input-field">
+                        <option>Активті</option>
+                        <option>Бұғатталған</option>
+                    </select>
+                </div>
+
+                <div class="card" style="padding: 0; overflow: hidden;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Аты-жөні</th>
+                                <th>Байланыс деректері</th>
+                                <th>Рөлі</th>
+                                <th>Статус</th>
+                                <th>Соңғы кіру</th>
+                                <th>Әрекет</th>
+                            </tr>
+                        </thead>
+                        <tbody id="users-table-body">
+                            <!-- JS Render -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB: STRUCTURE -->
+            <div id="tab-structure" class="tab-content hidden">
+                <div class="card">
+                    <h2>Университет құрылымы</h2>
+                    <p style="color: var(--text-light); margin-top: 10px;">Факультеттер мен кафедралар тізімі...</p>
+                    <div style="height: 200px; display: flex; align-items: center; justify-content: center; border: 2px dashed #e5e7eb; margin-top: 20px; border-radius: 8px; color: #9ca3af;">
+                        <i class="fa-solid fa-sitemap" style="margin-right: 10px;"></i> Деректер жүктелуде...
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB: ASSIGNMENTS -->
+            <div id="tab-assignments" class="tab-content hidden">
+                 <div class="card">
+                    <h2>Тағайындаулар</h2>
+                    <p>Мұғалімдер мен пәндерді байланыстыру.</p>
+                </div>
+            </div>
+
+            <!-- TAB: SETTINGS -->
+            <div id="tab-settings" class="tab-content hidden">
+                <div class="profile-layout">
+                    <!-- Left Card -->
+                    <div class="card profile-header">
+                        <div class="profile-img">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <h3>Нұрислам Қанатов</h3>
+                        <p style="color: var(--text-light); font-size: 14px;">ID: ST-2025001</p>
+                        <div style="margin-top: 15px;">
+                            <span class="status-badge badge-student">Студент</span>
+                        </div>
+                    </div>
+
+                    <!-- Right Card -->
+                    <div class="card">
+                        <h3 style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color);">Жеке ақпарат</h3>
+                        
+                        <div class="form-row">
+                            <label class="form-label">Email мекенжайы</label>
+                            <input type="email" class="input-field" style="width: 100%;" value="nurislam_kanat@gmail.com">
+                        </div>
+
+                        <div class="form-row">
+                            <label class="form-label">Телефон нөмірі</label>
+                            <input type="text" class="input-field" style="width: 100%;" value="87714657204">
+                        </div>
+
+                        <div class="form-row">
+                            <label class="form-label">Фотосуретті өзгерту</label>
+                            <div style="display: flex; gap: 10px;">
+                                <button style="padding: 8px 15px; border: 1px solid var(--border-color); background: white; border-radius: 6px; cursor: pointer;">Файл таңдау</button>
+                                <button class="btn-primary" style="margin-left: auto;">Сақтау</button>
+                            </div>
+                        </div>
+                        
+                        <h4 style="margin-top: 30px; margin-bottom: 15px; font-size: 16px;">Қауіпсіздік</h4>
+                        <button style="background: #374151; color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer;">Құпиясөзді өзгерту</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        const fake_users = {
+            "1": { name: "Нұрбек Сапарұлы", email: "nurbek01@gmail.com", tel: "+77768689372", role: "Администратор", status: "Активті", last_login: "2025-11-24 10:56" },
+            "2": { name: "Айгүл Тасболатовна", email: "aigul@uni.kz", tel: "87753890205", role: "Преподаватель", status: "Активті", last_login: "2025-11-14 21:13" },
+            "3": { name: "Нұрислам Қанатов", email: "nurislam@uni.kz", tel: "87714657204", role: "Студент", status: "Активті", last_login: "2025-11-21 18:38" },
+            "4": { name: "Бағжан Дастанов", email: "bagzhan@uni.kz", tel: "8747779204", role: "Студент", status: "Активті", last_login: "2025-11-11 17:58" },
+            "5": { name: "Гүлназ Жарқынқызы", email: "gulnaz@uni.kz", tel: "87759855684", role: "Студент", status: "Активті", last_login: "2025-11-15 00:14" }
+        };
+
+        function renderUsers() {
+            const tbody = document.getElementById('users-table-body');
+            tbody.innerHTML = '';
+
+            for (const key in fake_users) {
+                const user = fake_users[key];
+                
+                let badgeClass = 'badge-student';
+                if(user.role === 'Преподаватель') badgeClass = 'badge-teacher';
+                if(user.role === 'Администратор') badgeClass = 'badge-admin';
+
+                const row = `
+                    <tr>
+                        <td>
+                            <div style="font-weight: 500;">${user.name}</div>
+                        </td>
+                        <td>
+                            <div style="font-size: 13px;">${user.email}</div>
+                            <div style="font-size: 12px; color: #9ca3af;">${user.tel}</div>
+                        </td>
+                        <td><span class="status-badge ${badgeClass}">${user.role}</span></td>
+                        <td><span style="color: var(--accent-color); font-weight:600; font-size: 13px;">● ${user.status}</span></td>
+                        <td style="color: #6b7280; font-size: 13px;">${user.last_login}</td>
+                        <td>
+                            <button class="action-btn"><i class="fa-solid fa-pen"></i></button>
+                            <button class="action-btn" style="color:#ef4444;"><i class="fa-solid fa-trash"></i></button>
+                        </td>
+                    </tr>
+                `;
+                tbody.innerHTML += row;
+            }
+        }
+
+        function openTab(tabName) {
+            // Скрыть контент
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            // Показать нужный
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
+
+            // Обновить кнопки
+            document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+            const activeBtn = Array.from(document.querySelectorAll('.nav-btn')).find(btn => btn.getAttribute('onclick').includes(tabName));
+            if(activeBtn) activeBtn.classList.add('active');
+
+            // Обновить заголовок
+            const titles = {
+                'users': 'Пайдаланушылар',
+                'structure': 'Университет құрылымы',
+                'assignments': 'Тағайындаулар',
+                'settings': 'Параметрлер'
+            };
+            document.getElementById('page-header-title').innerText = titles[tabName];
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderUsers();
+        });
+    </script>
+</body>
+</html>
