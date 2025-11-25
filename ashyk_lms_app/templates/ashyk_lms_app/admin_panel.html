@@ -330,6 +330,133 @@
         .hidden { display: none !important; }
 
     </style>
+    <style>
+        /* Стили для древовидной структуры */
+        .university-tree {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .tree-ul {
+            list-style-type: none;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        /* Линии соединения (опционально, для красоты) */
+        .tree-ul::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            width: 1px;
+            background: #e5e7eb;
+        }
+
+        .tree-item {
+            margin: 5px 0;
+            position: relative;
+        }
+
+        /* Горизонтальная линия к элементу */
+        .tree-item::before {
+            content: '';
+            position: absolute;
+            top: 18px; /* Половина высоты хедера */
+            left: -20px;
+            width: 20px;
+            height: 1px;
+            background: #e5e7eb;
+        }
+
+        /* Убираем линии для первого уровня */
+        #university-tree > .tree-ul {
+            padding-left: 0;
+        }
+        #university-tree > .tree-ul::before {
+            display: none;
+        }
+        #university-tree > .tree-ul > .tree-item::before {
+            display: none;
+        }
+
+        .tree-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            border: 1px solid transparent;
+        }
+
+        .tree-header:hover {
+            background-color: #f8fafc;
+            border-color: #e5e7eb;
+        }
+
+        /* Иконка сворачивания/разворачивания */
+        .toggle-icon {
+            margin-right: 10px;
+            color: var(--text-light);
+            font-size: 12px;
+            transition: transform 0.2s ease;
+            width: 12px;
+            text-align: center;
+        }
+
+        .tree-item.open > .tree-header .toggle-icon {
+            transform: rotate(90deg);
+            color: var(--accent-color);
+        }
+
+        /* Основная иконка элемента (папка, группа и т.д.) */
+        .node-icon {
+            margin-right: 12px;
+            width: 20px;
+            text-align: center;
+        }
+
+        .tree-label {
+            font-weight: 500;
+            font-size: 14px;
+            color: var(--text-dark);
+            flex: 1;
+        }
+
+        .tree-count {
+            font-size: 12px;
+            color: #94a3b8;
+            background: #f1f5f9;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* Стили для конечного элемента (Студент) */
+        .student-node {
+            cursor: default;
+        }
+        .student-node:hover {
+            background-color: #f0fdf4; /* Светло-зеленый */
+            border-color: #bbf7d0;
+        }
+
+        .student-username {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-left: 10px;
+        }
+
+        /* Скрытие вложенных элементов */
+        .tree-children {
+            display: none;
+            overflow: hidden;
+        }
+
+        .tree-item.open > .tree-children {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
@@ -381,8 +508,8 @@
             <div class="current-page" id="page-header-title">Пайдаланушылар</div>
             <div class="user-info">
                 <div style="text-align: right;">
-                    <div style="font-size: 14px; font-weight: 600;">Нұрбек Админ</div>
-                    <div style="font-size: 12px; color: var(--text-light);">Super Admin</div>
+                    <div style="font-size: 14px; font-weight: 600;">Нұрбек</div>
+                    <div style="font-size: 12px; color: var(--text-light);">Администратор</div>
                 </div>
                 <div class="user-avatar-small">NA</div>
             </div>
@@ -435,10 +562,19 @@
             <!-- TAB: STRUCTURE -->
             <div id="tab-structure" class="tab-content hidden">
                 <div class="card">
-                    <h2>Университет құрылымы</h2>
-                    <p style="color: var(--text-light); margin-top: 10px;">Факультеттер мен кафедралар тізімі...</p>
-                    <div style="height: 200px; display: flex; align-items: center; justify-content: center; border: 2px dashed #e5e7eb; margin-top: 20px; border-radius: 8px; color: #9ca3af;">
-                        <i class="fa-solid fa-sitemap" style="margin-right: 10px;"></i> Деректер жүктелуде...
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <div>
+                            <h2>Университет құрылымы</h2>
+                            <p style="color: var(--text-light); margin-top: 5px;">Факультеттер, мамандықтар және топтар иерархиясы</p>
+                        </div>
+                        <button class="btn-primary" onclick="expandAll()">
+                            <i class="fa-solid fa-expand"></i> Барлығын ашу
+                        </button>
+                    </div>
+
+                    <!-- Контейнер для дерева -->
+                    <div id="university-tree" class="university-tree">
+                        <!-- Сюда JavaScript сгенерирует структуру -->
                     </div>
                 </div>
             </div>
@@ -564,6 +700,129 @@
         document.addEventListener('DOMContentLoaded', () => {
             renderUsers();
         });
+    </script>
+    <script>
+        // Исходные данные
+        let structure = {
+            "Педагогика кафедрасы": { 
+                "Информатика": {  
+                    "ИНФ-22": { 
+                        "Гүлім Бейсенова": "gulim_beisen", 
+                        "Жарас Бекболат": "zharas_bekbolat"
+                    },
+                    "ИНФ-23": {
+                        "Арман Думанов": "arman_duman",
+                    }
+                },
+                "Педагогика және психология": {
+                    "ПИП-21": {} // Пустая группа для примера
+                }
+            },
+            "Құқық және қызмет көрсету кафедрасы": {},
+            "Инженерлік технологиялар кафедрасы": {},
+            "Экономика және басқару кафедрасы": {}
+        };
+
+        // Конфигурация иконок для разных уровней
+        const levelConfig = {
+            0: { icon: 'fa-building-columns', color: '#4f46e5' }, // Кафедра (Синий)
+            1: { icon: 'fa-book', color: '#d97706' },            // Специальность (Оранжевый)
+            2: { icon: 'fa-users', color: '#059669' },           // Группа (Зеленый)
+            3: { icon: 'fa-user-graduate', color: '#6b7280' }    // Студент (Серый)
+        };
+
+        // Функция инициализации
+        function initTree() {
+            const container = document.getElementById('university-tree');
+            if (!container) return;
+            
+            container.innerHTML = ''; // Очистка
+            const rootUl = document.createElement('ul');
+            rootUl.className = 'tree-ul';
+            
+            // Запускаем рекурсию
+            renderNodes(structure, rootUl, 0);
+            container.appendChild(rootUl);
+        }
+
+        // Рекурсивная функция отрисовки
+        function renderNodes(data, parentElement, level) {
+            // Если data пустой объект
+            if (Object.keys(data).length === 0) {
+                const emptyLi = document.createElement('li');
+                emptyLi.className = 'tree-item';
+                emptyLi.innerHTML = `<div style="padding: 10px 40px; color: #9ca3af; font-size: 13px; font-style: italic;">Деректер жоқ</div>`;
+                parentElement.appendChild(emptyLi);
+                return;
+            }
+
+            for (const key in data) {
+                const value = data[key];
+                const isLeaf = typeof value === 'string'; // Если значение строка, это студент (конечный узел)
+                
+                const li = document.createElement('li');
+                li.className = 'tree-item';
+
+                // Создаем хедер элемента
+                const header = document.createElement('div');
+                header.className = isLeaf ? 'tree-header student-node' : 'tree-header';
+                
+                // 1. Иконка стрелочки (только если не лист)
+                let toggleHtml = '';
+                if (!isLeaf) {
+                    toggleHtml = `<i class="fa-solid fa-chevron-right toggle-icon"></i>`;
+                } else {
+                    toggleHtml = `<span style="width: 22px;"></span>`; // Отступ для выравнивания
+                }
+
+                // 2. Иконка сущности (кафедра, группа и т.д.)
+                const config = levelConfig[level] || levelConfig[3];
+                const iconHtml = `<i class="fa-solid ${config.icon} node-icon" style="color: ${isLeaf ? config.color : config.color}"></i>`;
+
+                // 3. Текст
+                let labelHtml = `<span class="tree-label">${key}</span>`;
+                if (isLeaf) {
+                    // Если студент, показываем username
+                    labelHtml += `<span class="student-username">(@${value})</span>`;
+                }
+
+                // 4. Счетчик (если папка)
+                let countHtml = '';
+                if (!isLeaf) {
+                    const count = Object.keys(value).length;
+                    countHtml = `<span class="tree-count">${count}</span>`;
+                }
+
+                header.innerHTML = `${toggleHtml}${iconHtml}${labelHtml}${countHtml}`;
+                li.appendChild(header);
+
+                // Обработка клика
+                if (!isLeaf) {
+                    const childrenUl = document.createElement('ul');
+                    childrenUl.className = 'tree-ul tree-children';
+                    
+                    // Рекурсивный вызов для вложенных элементов
+                    renderNodes(value, childrenUl, level + 1);
+                    li.appendChild(childrenUl);
+
+                    header.addEventListener('click', (e) => {
+                        e.stopPropagation(); // Чтобы клик не всплывал
+                        li.classList.toggle('open');
+                    });
+                }
+
+                parentElement.appendChild(li);
+            }
+        }
+
+        // Функция "Открыть все"
+        function expandAll() {
+            const items = document.querySelectorAll('.tree-item');
+            items.forEach(item => item.classList.add('open'));
+        }
+
+        // Запуск при загрузке страницы
+        document.addEventListener('DOMContentLoaded', initTree);
     </script>
 </body>
 </html>
