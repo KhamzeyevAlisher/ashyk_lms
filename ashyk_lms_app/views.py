@@ -30,3 +30,7 @@ def profile_view(request):
 def admin_panel(request):
     return render(request, 'ashyk_lms_app/admin_panel.html')
 
+@login_required
+def student_dashboard(request):
+    return render(request, 'ashyk_lms_app/student_dashboard.html')
+
