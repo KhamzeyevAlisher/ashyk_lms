@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashyk LMS Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        :root {
+            --sidebar-bg: #1e293b;
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #ffffff;
+            --body-bg: #f3f4f6;
+            --card-bg: #ffffff;
+            --accent-color: #10b981; /* Изумрудный */
+            --text-dark: #111827;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--body-bg);
+            color: var(--text-dark);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 260px;
+            background-color: var(--sidebar-bg);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            height: 70px;
+            display: flex;
+            align-items: center;
+            padding: 0 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+        }
+
+        .brand-icon {
+            width: 35px;
+            height: 35px;
+            background: var(--accent-color);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .brand-text h1 {
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .sidebar-menu {
+            padding: 20px 0;
+            flex: 1;
+            overflow-y: auto;
+        }
+
+        .nav-btn {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            padding: 12px 25px;
+            background: none;
+            border: none;
+            color: var(--sidebar-text);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            gap: 12px;
+            border-left: 3px solid transparent;
+        }
+
+        .nav-btn:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .nav-btn.active {
+            background-color: rgba(16, 185, 129, 0.1);
+            color: var(--sidebar-active);
+            border-left-color: var(--accent-color);
+        }
+
+        .nav-btn i { width: 20px; text-align: center; }
+
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .logout-btn {
+            color: #ef4444;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+        .logout-btn:hover { opacity: 0.8; }
+
+        /* --- MAIN CONTENT AREA --- */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .top-header {
+            height: 70px;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+        }
+
+        .page-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .content-body {
+            flex: 1;
+            padding: 30px;
+            overflow-y: auto;
+        }
+
+        /* --- STYLES FOR CONTAINERS (CARDS) --- */
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            padding: 25px;
+            /* Рамка и тень по запросу */
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow);
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+
+        .card:hover {
+            transform: translateY(-2px);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            font-size: 18px;
+            color: var(--text-dark);
+            border-bottom: 1px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+
+        .card p {
+            color: var(--text-light);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        /* Утилиты */
+        .hidden {
+            display: none !important;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+        
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .avatar-circle {
+            width: 80px;
+            height: 80px;
+            background-color: #e2e8f0;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            color: var(--text-light);
+        }
+    </style>
+    <!-- Главные стат элементы -->
+    <style>
+/* Контейнер стилі */
+.dashboard-header {
+    margin-bottom: 30px;
+}
+.dashboard-header h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+}
+.dashboard-header p {
+    color: #666;
+    font-size: 14px;
+}
+
+/* Карточкалар торы (Grid) */
+/* Карточкалар торы */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 20px;
+}
+
+.stat-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    border: 1px solid #dcdcdc; /* Жиегі */
+    
+    /* ҚАРА КӨЛЕҢКЕ (Black Shadow) */
+    /* rgba(0, 0, 0, 0.3) - бұл 30% қара түс, өте айқын көрінеді */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
+    
+    transition: all 0.3s ease;
+}
+
+/* Hover (Тінтуірді апарғанда) */
+.stat-card:hover {
+    transform: translateY(-5px);
+    /* Тінтуір барғанда көлеңке одан да қара болады (45%) */
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3); 
+}
+/* ИКОНКАЛАР СТИЛІ (Өзгертілді) */
+.icon-box {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px; /* Суреттегідей сәл дөңгеленген */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    margin-bottom: 16px;
+    color: #ffffff; /* Иконка түсі - АҚ */
+}
+
+/* ФОН ТҮСТЕРІ (Суреттегідей қанық) */
+.icon-box.blue {
+    background-color: #2563eb; /* Қанық көк */
+}
+.icon-box.green {
+    background-color: #00c851; /* Қанық жасыл */
+}
+.icon-box.orange {
+    background-color: #f59e0b; /* Сары-қызғылт */
+}
+.icon-box.purple {
+    background-color: #9333ea; /* Күлгін */
+}
+
+/* Мәтін стильдері */
+.stat-title {
+    font-size: 14px;
+    color: #64748b;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+.stat-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 4px;
+}
+.stat-desc {
+    font-size: 13px;
+    color: #94a3b8;
+}
+    </style>
+
+    <!-- Расписание и домашка tab-home -->
+    <style>
+/* Екі бағанды тор (Grid) */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Екі тең баған */
+    gap: 30px;
+    margin-top: 40px;
+    padding: 20px;
+}
+
+/* Мобильді құрылғылар үшін (бір бағанға түсу) */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Тақырыптар стилі */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.section-header h3 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #333;
+}
+.section-header a {
+    color: #6366f1; /* Көк-күлгін түс */
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Ортақ карточка стилі (тізім элементтері үшін) */
+.list-card {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 15px;
+    transition: all 0.2s;
+    /* Сәл ғана көлеңке (суреттегідей таза болу үшін) */
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+}
+.list-card:hover {
+    border-color: #6366f1;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* 1. КЕСТЕ (Расписание) стильдері */
+.schedule-item {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+.time-box {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6366f1; /* Сағат түсі */
+    font-weight: 600;
+    font-size: 15px;
+    min-width: 80px;
+}
+.schedule-info h4 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+    color: #333;
+}
+.schedule-info p {
+    margin: 0;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+/* 2. ҮЙ ТАПСЫРМАСЫ (Домашние задания) стильдері */
+.hw-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+.subject-name {
+    font-size: 13px;
+    color: #6366f1;
+    font-weight: 600;
+}
+/* Статус белгішелері (Badge) */
+.badge {
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 600;
+}
+.badge.gray {
+    background-color: #f3f4f6;
+    color: #6b7280;
+}
+.badge.yellow {
+    background-color: #fef3c7;
+    color: #d97706;
+}
+
+.hw-title {
+    font-size: 15px;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+.hw-footer {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: #6b7280;
+}
+    </style>
+
+</head>
+<body>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <a href="#" class="brand">
+                <div class="brand-icon">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div class="brand-text">
+                    <h1>ASHYK LMS</h1>
+                </div>
+            </a>
+        </div>
+
+        <nav class="sidebar-menu">
+            <!-- 1. ГЛАВНАЯ -->
+            <button class="nav-btn active" onclick="openTab('home')">
+                <i class="fa-solid fa-house"></i>
+                <span>Басты бет</span>
+            </button>
+            <!-- 2. ЛЕКЦИИ -->
+            <button class="nav-btn" onclick="openTab('lectures')">
+                <i class="fa-solid fa-book"></i>
+                <span>Дәрістер</span>
+            </button>
+            <!-- 3. ТЕСТЫ -->
+            <button class="nav-btn" onclick="openTab('tests')">
+                <i class="fa-solid fa-file-circle-check"></i>
+                <span>Тесттер</span>
+            </button>
+            <!-- 4. РАСПИСАНИЕ -->
+            <button class="nav-btn" onclick="openTab('schedule')">
+                <i class="fa-solid fa-calendar-days"></i>
+                <span>Кесте</span>
+            </button>
+            <!-- 5. ДНЕВНИК -->
+            <button class="nav-btn" onclick="openTab('diary')">
+                <i class="fa-solid fa-book-open"></i>
+                <span>Күнделік</span>
+            </button>
+            <!-- 6. ДОМАШНИЕ ЗАДАНИЯ -->
+            <button class="nav-btn" onclick="openTab('homework')">
+                <i class="fa-solid fa-pen-to-square"></i>
+                <span>Үй тапсырмалары</span>
+            </button>
+            <!-- 7. ПРОФИЛЬ -->
+            <button class="nav-btn" onclick="openTab('profile')">
+                <i class="fa-solid fa-user"></i>
+                <span>Профиль</span>
+            </button>
+        </nav>
+
+        <div class="sidebar-footer">
+            <a href="#" class="logout-btn">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Шығу</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- MAIN AREA -->
+    <main class="main-content">
+        <!-- TOP HEADER -->
+        <header class="top-header">
+            <h2 id="page-header-title" class="page-title">Главная</h2>
+            <div class="user-info">
+                <i class="fa-regular fa-bell" style="margin-right: 15px; cursor: pointer; color: var(--text-light);"></i>
+                <span style="font-weight: 500;">Бауыржан Айдынов</span>
+            </div>
+        </header>
+
+        <!-- CONTENT BODY -->
+        <div class="content-body">
+
+            <!-- TAB 1: ГЛАВНАЯ -->
+            <div id="tab-home" class="tab-content">
+                <!-- Сәлемдесу -->
+                <div class="dashboard-header">
+                    <h2>Қош келдіңіз, Бауыржан!</h2>
+                    <p>Міне, оқу белсенділігіңізге шолу</p>
+                </div>
+
+                <!-- Статистикалық карточкалар -->
+                <div class="stats-grid">
+                    <!-- 1. Белсенді курстар -->
+                    <div class="stat-card">
+                        <div class="icon-box blue">
+                            <i class="fa-solid fa-book-open"></i>
+                        </div>
+                        <span class="stat-title">Белсенді курстар</span>
+                        <div class="stat-value">6</div>
+                        <span class="stat-desc">Осы семестрде +2</span>
+                    </div>
+
+                    <!-- 2. Орындалған тапсырмалар -->
+                    <div class="stat-card">
+                        <div class="icon-box green">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                        <span class="stat-title">Орындалған тапсырмалар</span>
+                        <div class="stat-value">24/30</div>
+                        <span class="stat-desc">80% аяқталды</span>
+                    </div>
+
+                    <!-- 3. Орташа балл -->
+                    <div class="stat-card">
+                        <div class="icon-box orange">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <span class="stat-title">Орташа балл</span>
+                        <div class="stat-value">4.5</div>
+                        <span class="stat-desc">Айына +0.3</span>
+                    </div>
+
+                    <!-- 4. Өткен тесттер -->
+                    <div class="stat-card">
+                        <div class="icon-box purple">
+                            <i class="fa-solid fa-clipboard-list"></i>
+                        </div>
+                        <span class="stat-title">Өткен тесттер</span>
+                        <div class="stat-value">12/15</div>
+                        <span class="stat-desc">3 күтуде</span>
+                    </div>
+                </div>
+                <!-- Новая двухколоночная секция -->
+                <div class="dashboard-grid">
+                    
+                    <!-- 1-Я КОЛОНКА: Расписание (Кесте) -->
+                    <div class="column-schedule">
+                        <div class="section-header">
+                            <h3>Бүгінгі сабақ кестесі</h3>
+                            <a href="#">Барлығы &rarr;</a>
+                        </div>
+
+                        <!-- Урок 1 -->
+                        <div class="list-card schedule-item">
+                            <div class="time-box">
+                                <i class="fa-regular fa-clock"></i> 09:00
+                            </div>
+                            <div class="schedule-info">
+                                <h4>Киберқауіпсіздік</h4>
+                                <p>Ахметов Е.К. • А-305</p>
+                            </div>
+                        </div>
+
+                        <!-- Урок 2 -->
+                        <div class="list-card schedule-item">
+                            <div class="time-box">
+                                <i class="fa-regular fa-clock"></i> 10:45
+                            </div>
+                            <div class="schedule-info">
+                                <h4>Бағдарламалау</h4>
+                                <p>Омарова А.С. • Б-201</p>
+                            </div>
+                        </div>
+
+                        <!-- Урок 3 -->
+                        <div class="list-card schedule-item">
+                            <div class="time-box">
+                                <i class="fa-regular fa-clock"></i> 12:30
+                            </div>
+                            <div class="schedule-info">
+                                <h4>Ағылшын тілі</h4>
+                                <p>Сүлейменов Б.Т. • В-102</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 2-Я КОЛОНКА: Домашние задания (Үй тапсырмалары) -->
+                    <div class="column-homework">
+                        <div class="section-header">
+                            <h3>Үй тапсырмалары</h3>
+                            <a href="#">Барлығы &rarr;</a>
+                        </div>
+
+                        <div class="list-card">
+                            <div class="hw-header">
+                                <span class="subject-name">Алгоритмдер</span>
+                                <span class="badge gray">Басталмаған</span>
+                            </div>
+                            <div class="hw-title">Екілік іздеу ағашын (BST) жүзеге асыру</div>
+                            <div class="hw-footer">
+                                <i class="fa-regular fa-calendar"></i> Мерзімі: 28.11.2025
+                            </div>
+                        </div>
+
+                        <div class="list-card">
+                            <div class="hw-header">
+                                <span class="subject-name">Web-әзірлеу</span>
+                                <span class="badge yellow">Орындалуда</span>
+                            </div>
+                            <div class="hw-title">React компоненттерін жасау және API қосу</div>
+                            <div class="hw-footer">
+                                <i class="fa-regular fa-calendar"></i> Мерзімі: 29.11.2025
+                            </div>
+                        </div>
+
+                        <div class="list-card">
+                            <div class="hw-header">
+                                <span class="subject-name">Дерекқорлар</span>
+                                <span class="badge gray">Басталмаған</span>
+                            </div>
+                            <div class="hw-title">Күрделі SQL сұраныстар және JOIN</div>
+                            <div class="hw-footer">
+                                <i class="fa-regular fa-calendar"></i> Мерзімі: 30.11.2025
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: ЛЕКЦИИ -->
+            <div id="tab-lectures" class="tab-content hidden">
+                <div class="card">
+                    <h3>Доступные курсы</h3>
+                    <p>Список ваших активных лекций на этот семестр.</p>
+                </div>
+                
+                <div class="card">
+                    <h3>Введение в программирование</h3>
+                    <p>Лекция 1: Основы Python</p>
+                    <p>Лекция 2: Переменные и типы данных</p>
+                    <button class="btn-primary" style="margin-top: 10px;">Перейти к материалам</button>
+                </div>
+
+                <div class="card">
+                    <h3>Философия</h3>
+                    <p>Лекция 4: Античная философия</p>
+                    <button class="btn-primary" style="margin-top: 10px;">Перейти к материалам</button>
+                </div>
+            </div>
+
+            <!-- TAB 3: ТЕСТЫ -->
+            <div id="tab-tests" class="tab-content hidden">
+                <div class="card">
+                    <h3>Активные тесты</h3>
+                    <p>Выберите тест для начала прохождения.</p>
+                </div>
+                <div class="card" style="border-left: 5px solid #ef4444;">
+                    <h3>Рубежный контроль №1</h3>
+                    <p>Предмет: История Казахстана</p>
+                    <p>Статус: <b>Не начато</b></p>
+                    <p>Время: 45 минут</p>
+                </div>
+                <div class="card" style="border-left: 5px solid var(--accent-color);">
+                    <h3>Промежуточный тест</h3>
+                    <p>Предмет: Web-разработка</p>
+                    <p>Статус: <b>Завершено</b> (95/100)</p>
+                </div>
+            </div>
+
+            <!-- TAB 4: РАСПИСАНИЕ -->
+            <div id="tab-schedule" class="tab-content hidden">
+                <div class="card">
+                    <h3>Расписание на сегодня</h3>
+                    <p>Среда, 26 Ноября</p>
+                </div>
+                <div class="card">
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0;">
+                        <span>09:00 - 10:50</span>
+                        <strong>Высшая математика (Лекция)</strong>
+                        <span>Ауд. 305</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; border-bottom: 1px solid #eee; padding: 10px 0;">
+                        <span>11:00 - 12:50</span>
+                        <strong>Физика (Лабораторная)</strong>
+                        <span>Ауд. 102</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; padding: 10px 0;">
+                        <span>14:00 - 14:50</span>
+                        <strong>Физкультура</strong>
+                        <span>Спортзал</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 5: ДНЕВНИК -->
+            <div id="tab-diary" class="tab-content hidden">
+                <div class="card">
+                    <h3>Журнал оценок</h3>
+                    <p>Сводная ведомость текущей успеваемости.</p>
+                </div>
+                <div class="card">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <tr style="text-align: left; border-bottom: 2px solid #eee;">
+                            <th style="padding: 10px;">Предмет</th>
+                            <th style="padding: 10px;">РК 1</th>
+                            <th style="padding: 10px;">РК 2</th>
+                            <th style="padding: 10px;">Экзамен</th>
+                            <th style="padding: 10px;">Итого</th>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #eee;">
+                            <td style="padding: 10px;">Алгоритмизация</td>
+                            <td style="padding: 10px;">90</td>
+                            <td style="padding: 10px;">-</td>
+                            <td style="padding: 10px;">-</td>
+                            <td style="padding: 10px; font-weight: bold; color: var(--accent-color);">90</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px;">Английский язык</td>
+                            <td style="padding: 10px;">85</td>
+                            <td style="padding: 10px;">88</td>
+                            <td style="padding: 10px;">-</td>
+                            <td style="padding: 10px; font-weight: bold; color: var(--accent-color);">86.5</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 6: ДОМАШНИЕ ЗАДАНИЯ -->
+            <div id="tab-homework" class="tab-content hidden">
+                <div class="card">
+                    <h3>Задания для выполнения</h3>
+                </div>
+                <div class="card">
+                    <h3><i class="fa-solid fa-code"></i> Лабораторная работа №3</h3>
+                    <p>Написать программу сортировки массива.</p>
+                    <p>Дедлайн: <b>30.11.2023</b></p>
+                    <div style="margin-top: 15px; border: 2px dashed #ccc; padding: 20px; text-align: center; color: #999; border-radius: 8px;">
+                        Перетащите файл сюда или нажмите для загрузки
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 7: ПРОФИЛЬ -->
+            <div id="tab-profile" class="tab-content hidden">
+                <div class="card profile-header">
+                    <div class="avatar-circle">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 24px;">Студент Студентов</h2>
+                        <p>Факультет Информационных Технологий</p>
+                        <p style="color: var(--accent-color);">3 Курс, Группа IT-302</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Личная информация</h3>
+                    <p><strong>Email:</strong> student@ashyk.edu.kz</p>
+                    <p><strong>Телефон:</strong> +7 (777) 123 45 67</p>
+                    <p><strong>Дата рождения:</strong> 15.05.2002</p>
+                    <br>
+                    <button class="btn-primary">Редактировать профиль</button>
+                    <button class="btn-primary" style="background-color: var(--sidebar-bg); margin-left: 10px;">Сменить пароль</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script>
+        function openTab(tabName) {
+            // 1. Скрываем все вкладки
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(el => el.classList.add('hidden'));
+
+            // 2. Показываем нужную вкладку
+            const activeContent = document.getElementById(`tab-${tabName}`);
+            if (activeContent) {
+                activeContent.classList.remove('hidden');
+            }
+
+            // 3. Обновляем активный класс в меню
+            const buttons = document.querySelectorAll('.nav-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Ищем кнопку, которая вызывает этот таб
+            const activeBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(tabName));
+            if(activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // 4. Обновляем заголовок страницы
+            const titles = {
+                'home': 'Главная страница',
+                'lectures': 'Мои лекции',
+                'tests': 'Тестирование',
+                'schedule': 'Расписание занятий',
+                'diary': 'Электронный дневник',
+                'homework': 'Домашние задания',
+                'profile': 'Мой профиль'
+            };
+            document.getElementById('page-header-title').innerText = titles[tabName] || 'Ashyk LMS';
+        }
+
+        // Запуск первой вкладки при загрузке (если нужно)
+        document.addEventListener('DOMContentLoaded', () => {
+            // По умолчанию открыта Home, ничего делать не нужно, так как класс active уже стоит в HTML
+        });
+    </script>
+</body>
+</html>
