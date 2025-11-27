@@ -23,9 +23,14 @@ def profile_view(request):
         'user': request.user,
         'form': form
     }
-    return render(request, 'ashyk_lms_app/profile.html', context)
+    # return render(request, 'ashyk_lms_app/profile.html', context)
+    return redirect('admin_panel')
 
 @login_required
 def admin_panel(request):
     return render(request, 'ashyk_lms_app/admin_panel.html')
+
+@login_required
+def student_dashboard(request):
+    return render(request, 'ashyk_lms_app/student_dashboard.html')
 
