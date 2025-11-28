@@ -1540,7 +1540,7 @@
 
             <!-- TAB 3: ТЕСТЫ -->
             <div id="tab-tests" class="tab-content hidden">
-                <!-- <div class="dashboard-header">
+                <div class="dashboard-header">
                     <h2>Тесттер</h2>
                     <p>Өз біліміңізді тексеріңіз!</p>
                 </div>
@@ -1701,7 +1701,7 @@
                     <div class="test-action">
                         <button class="btn-test btn-retry">Қайта тапсыру</button>
                     </div>
-                </div> -->
+                </div>
             </div> 
 
             <!-- TAB 4: РАСПИСАНИЕ -->
@@ -1710,12 +1710,12 @@
                     <!-- Верхний блок -->
                     <div class="header-row">
                         <div class="title-group">
-                        <h2>Сабақ кестесі</h2>
-                        <p>ИТ-301 тобы • 3 курс</p>
+                            <h2>Сабақ кестесі</h2>
+                            <p>ИТ-301 тобы • 3 курс</p>
                         </div>
                         <div class="toggle-btns">
-                        <button class="btn active">Күн</button>
-                        <button class="btn">Апта</button>
+                            <button class="btn active" onclick="toggleSchedule('day')">Күн</button>
+                            <button class="btn" onclick="toggleSchedule('week')">Апта</button>
                         </div>
                     </div>
 
@@ -1724,12 +1724,12 @@
                         <button class="arrow">❮</button>
                         <div class="current-date">
                         <!-- Иконка календаря SVG -->
-                        <svg class="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                        <span>Ағымдағы апта • 25 қараша - 1 желтоқсан 2025</span>
+                            <svg class="icon-calendar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                            <span>Ағымдағы апта • 25 қараша - 1 желтоқсан 2025</span>
                         </div>
                         <button class="arrow">❯</button>
                     </div>
-                    </div>
+                </div>
                 <div class="schedule-list" style="display: flex; flex-direction: column; gap: 10px;">
                     <div class="date-header">Дүйсенбі, 25 қараша 2025</div>
 
@@ -2110,5 +2110,39 @@
             // По умолчанию открыта Home, ничего делать не нужно, так как класс active уже стоит в HTML
         });
     </script>
+    <!-- Скрипт который открывает и закрывает дневные и недельные расписание -->
+    <script>
+function toggleSchedule(type) {
+    // Получаем элементы
+    const dayBtn = document.querySelector('.toggle-btns .btn:first-child');
+    const weekBtn = document.querySelector('.toggle-btns .btn:last-child');
+    
+    const dayContainer = document.querySelector('.schedule-list')
+    const weekContainer = document.querySelector('.week-schedule-container');
+
+    if (type === 'day') {
+        // 1. Меняем активность кнопок
+        dayBtn.classList.add('active');
+        weekBtn.classList.remove('active');
+
+        // 2. Показываем день, скрываем неделю
+        dayContainer.style.display = 'flex';
+        weekContainer.style.display = 'none';
+        
+    } else if (type === 'week') {
+        // 1. Меняем активность кнопок
+        weekBtn.classList.add('active');
+        dayBtn.classList.remove('active');
+
+        // 2. Скрываем день, показываем неделю
+        dayContainer.style.display = 'none';
+        
+        // Важно: ставим grid, так как в комментарии указано, что это grid контейнер
+        weekContainer.style.display = 'grid'; 
+    }
+}
+</script>
+
+
 </body>
 </html>
