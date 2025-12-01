@@ -19,6 +19,7 @@
             --text-light: #6b7280;
             --border-color: #e5e7eb;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --card-border: 1px solid #cdd2d4;
         }
 
         * {
@@ -1605,6 +1606,207 @@
 }
     </style>
 
+    <!-- Статы журнала -->
+    <style>
+    /* Настройки контейнера для выравнивания карточек в ряд */
+    .stats-container-journal {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px; /* Отступ между карточками */
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Общие стили для самой карточки */
+    .stat-card-journal {
+        flex: 1; /* Карточки растягиваются равномерно */
+        min-width: 200px; /* Минимальная ширина, чтобы не сжимались слишком сильно */
+        border-radius: 12px; /* Закругление углов */
+        padding: 24px;
+        color: #ffffff; /* Белый цвет текста */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
+    }
+
+    /* Цветовые модификаторы для карточек */
+    .blue-card-journal {
+        background-color: #2b7bf5; /* Ярко-синий как на фото */
+    }
+
+    .green-card-journal {
+        background-color: #00c853; /* Зеленый */
+    }
+
+    .purple-card-journal {
+        background-color: #9d33ff; /* Фиолетовый */
+    }
+
+    /* Стили для заголовка (название показателя) */
+    .card-header-journal {
+        font-size: 16px;
+        font-weight: 400;
+        margin-bottom: 10px;
+        opacity: 0.9;
+    }
+
+    /* Стили для крупного значения (цифры) */
+    .card-value-journal {
+        font-size: 48px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        line-height: 1;
+    }
+
+    /* Стили для подписи снизу */
+    .card-footer-journal {
+        font-size: 14px;
+        font-weight: 400;
+        opacity: 0.9;
+    }
+    </style>
+
+    <!-- Оценки -->
+    <style>
+    /* Основной контейнер */
+    .card-journal {
+        background: #fff;
+        border: var(--card-border);
+        border-radius: 8px; /* Скругление углов всего блока */
+        padding: 20px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Шапка с заголовком и селектом */
+    .header-section-journal {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 25px;
+    }
+
+    .title-journal {
+        margin: 0;
+        font-size: 18px;
+        font-weight: 500;
+        color: #333;
+    }
+
+    /* Стили для выпадающего списка */
+    .select-box-journal {
+        padding: 8px 12px;
+        border: var(--card-border);
+        border-radius: 6px;
+        background: #fff;
+        color: #333;
+        font-size: 14px;
+        cursor: pointer;
+    }
+
+    /* Карточка отдельного предмета */
+    .subject-card-journal {
+        border: 1px solid #cdd2d4;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Легкая тень */
+    }
+
+    /* Верхняя часть предмета (Название + Статистика) */
+    .subject-header-journal {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 15px;
+        flex-wrap: wrap; /* Чтобы на мобильных не ломалось */
+        gap: 15px;
+    }
+
+    /* Блок с иконкой и названием */
+    .subject-name-wrapper-journal {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .subject-name-journal {
+        font-size: 16px;
+        color: #333;
+        font-weight: 500;
+    }
+
+    /* SVG иконки трендов */
+    .trend-icon-journal {
+        width: 20px;
+        height: 20px;
+    }
+    .trend-icon-journal.up-journal {
+        stroke: #00c853; /* Зеленая стрелка */
+    }
+    .trend-icon-journal.flat-journal {
+        stroke: #999; /* Серый минус */
+    }
+
+    /* Правая часть со статистикой */
+    .subject-stats-journal {
+        display: flex;
+        gap: 20px;
+        text-align: right;
+    }
+
+    .stat-box-journal {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+    }
+
+    .stat-label-journal {
+        font-size: 12px;
+        color: #888;
+        margin-bottom: 4px;
+    }
+
+    .stat-value-journal {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    /* Список оценок (квадратики) */
+    .grades-list-journal {
+        display: flex;
+        gap: 8px;
+    }
+
+    .grade-badge-journal {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 32px;
+        height: 32px;
+        border-radius: 8px; /* Мягкий квадрат */
+        font-weight: 500;
+        font-size: 14px;
+    }
+
+    /* Цвета для разных оценок */
+    .grade-5-journal {
+        background-color: #dbfadd; /* Светло-зеленый фон */
+        color: #1b8e38; /* Темно-зеленый текст */
+    }
+
+    .grade-4-journal {
+        background-color: #dbeafe; /* Светло-синий фон */
+        color: #1e40af; /* Темно-синий текст */
+    }
+
+    .grade-3-journal {
+        background-color: #fff9c4; /* Светло-желтый фон */
+        color: #f57f17; /* Оранжевый текст */
+    }
+    </style>
+
 </head>
 <body>
 
@@ -1645,7 +1847,7 @@
             <!-- 5. ДНЕВНИК -->
             <button class="nav-btn" onclick="openTab('diary')">
                 <i class="fa-solid fa-book-open"></i>
-                <span>Күнделік</span>
+                <span>Журнал</span>
             </button>
             <!-- 6. ДОМАШНИЕ ЗАДАНИЯ -->
             <button class="nav-btn" onclick="openTab('homework')">
@@ -2610,34 +2812,135 @@
 
             <!-- TAB 5: ДНЕВНИК -->
             <div id="tab-diary" class="tab-content hidden">
-                <div class="card">
-                    <h3>Журнал оценок</h3>
-                    <p>Сводная ведомость текущей успеваемости.</p>
+                <div class="stats-container-journal">
+
+                    <!-- 1. Карточка: Средний балл (Синяя) -->
+                    <div class="stat-card-journal blue-card-journal">
+                        <div class="card-header-journal">Орташа балл</div>
+                        <div class="card-value-journal">90</div>
+                        <div class="card-footer-journal">Ағымдағы семестр үшін</div>
+                    </div>
+
+                    <!-- 2. Карточка: Посещаемость (Зеленая) -->
+                    <div class="stat-card-journal green-card-journal">
+                        <div class="card-header-journal">Сабаққа қатысу</div>
+                        <div class="card-value-journal">94%</div>
+                        <div class="card-footer-journal">Ағымдағы семестр үшін</div>
+                    </div>
+
+                    <!-- 3. Карточка: Всего оценок (Фиолетовая) -->
+                    <div class="stat-card-journal purple-card-journal">
+                        <div class="card-header-journal">Барлық бағалар</div>
+                        <div class="card-value-journal">30</div>
+                        <div class="card-footer-journal">Ағымдағы семестр үшін</div>
+                    </div>
+
                 </div>
-                <div class="card">
-                    <table style="width: 100%; border-collapse: collapse;">
-                        <tr style="text-align: left; border-bottom: 2px solid #eee;">
-                            <th style="padding: 10px;">Предмет</th>
-                            <th style="padding: 10px;">РК 1</th>
-                            <th style="padding: 10px;">РК 2</th>
-                            <th style="padding: 10px;">Экзамен</th>
-                            <th style="padding: 10px;">Итого</th>
-                        </tr>
-                        <tr style="border-bottom: 1px solid #eee;">
-                            <td style="padding: 10px;">Алгоритмизация</td>
-                            <td style="padding: 10px;">90</td>
-                            <td style="padding: 10px;">-</td>
-                            <td style="padding: 10px;">-</td>
-                            <td style="padding: 10px; font-weight: bold; color: var(--accent-color);">90</td>
-                        </tr>
-                        <tr>
-                            <td style="padding: 10px;">Английский язык</td>
-                            <td style="padding: 10px;">85</td>
-                            <td style="padding: 10px;">88</td>
-                            <td style="padding: 10px;">-</td>
-                            <td style="padding: 10px; font-weight: bold; color: var(--accent-color);">86.5</td>
-                        </tr>
-                    </table>
+                <!-- Основной контейнер карточки успеваемости -->
+                <div class="card-journal">
+                    
+                    <!-- Заголовок секции и выпадающий список -->
+                    <div class="header-section-journal">
+                        <h3 class="title-journal">Пәндер бойынша үлгерім</h3>
+                        <select class="select-box-journal">
+                            <option>Ай бойынша</option>
+                            <option>Семестр бойынша</option>
+                        </select>
+                    </div>
+
+                    <!-- 1. Предмет: Алгоритмы (Высокий балл) -->
+                    <div class="subject-card-journal">
+                        <div class="subject-header-journal">
+                            <div class="subject-name-wrapper-journal">
+                                <!-- Иконка тренда (зеленая стрелка вверх) -->
+                                <svg class="trend-icon-journal up-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                    <polyline points="17 6 23 6 23 12"></polyline>
+                                </svg>
+                                <span class="subject-name-journal">Алгоритмдер және деректер құрылымы</span>
+                            </div>
+                            <!-- Статистика справа -->
+                            <div class="subject-stats-journal">
+                                <div class="stat-box-journal">
+                                    <span class="stat-label-journal">Орташа балл</span>
+                                    <span class="stat-value-journal">4.6</span>
+                                </div>
+                                <div class="stat-box-journal">
+                                    <span class="stat-label-journal">Қатысу</span>
+                                    <span class="stat-value-journal">95%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Список оценок -->
+                        <div class="grades-list-journal">
+                            <span class="grade-badge-journal grade-5-journal">5</span>
+                            <span class="grade-badge-journal grade-4-journal">4</span>
+                            <span class="grade-badge-journal grade-5-journal">5</span>
+                            <span class="grade-badge-journal grade-5-journal">5</span>
+                            <span class="grade-badge-journal grade-4-journal">4</span>
+                        </div>
+                    </div>
+
+                    <!-- 2. Предмет: ООП (Отличный балл) -->
+                    <div class="subject-card-journal">
+                        <div class="subject-header-journal">
+                            <div class="subject-name-wrapper-journal">
+                                <svg class="trend-icon-journal up-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                                    <polyline points="17 6 23 6 23 12"></polyline>
+                                </svg>
+                                <span class="subject-name-journal">Объектіге бағытталған бағдарламалау</span>
+                            </div>
+                            <div class="subject-stats-journal">
+                                <div class="stat-box-journal">
+                                    <span class="stat-label-journal">Орташа балл</span>
+                                    <span class="stat-value-journal">4.8</span>
+                                </div>
+                                <div class="stat-box-journal">
+                                    <span class="stat-label-journal">Қатысу</span>
+                                    <span class="stat-value-journal">100%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grades-list-journal">
+                            <span class="grade-badge-journal grade-5-journal">5</span>
+                            <span class="grade-badge-journal grade-5-journal">5</span>
+                            <span class="grade-badge-journal grade-4-journal">4</span>
+                            <span class="grade-badge-journal grade-5-journal">5</span>
+                            <span class="grade-badge-journal grade-5-journal">5</span>
+                        </div>
+                    </div>
+
+                    <!-- 3. Предмет: Базы данных (Средний балл) -->
+                    <div class="subject-card-journal">
+                        <div class="subject-header-journal">
+                            <div class="subject-name-wrapper-journal">
+                                <!-- Иконка "минус" для стабильного/низкого тренда -->
+                                <svg class="trend-icon-journal flat-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                                </svg>
+                                <span class="subject-name-journal">Дерекқор жүйелері</span>
+                            </div>
+                            <div class="subject-stats-journal">
+                                <div class="stat-box-journal">
+                                    <span class="stat-label-journal">Орташа балл</span>
+                                    <span class="stat-value-journal">3.8</span>
+                                </div>
+                                <div class="stat-box-journal">
+                                    <span class="stat-label-journal">Қатысу</span>
+                                    <span class="stat-value-journal">90%</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="grades-list-journal">
+                            <span class="grade-badge-journal grade-4-journal">4</span>
+                            <span class="grade-badge-journal grade-4-journal">4</span>
+                            <span class="grade-badge-journal grade-3-journal">3</span>
+                            <span class="grade-badge-journal grade-4-journal">4</span>
+                            <span class="grade-badge-journal grade-4-journal">4</span>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
