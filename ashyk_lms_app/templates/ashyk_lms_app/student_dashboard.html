@@ -1193,6 +1193,111 @@
     }
     </style>
 
+    <!-- Список курсов кнопка -->
+    <style>
+/* Контейнер для строки с заголовком и кнопкой */
+.list-header-row {
+    display: flex;
+    justify-content: space-between; /* Заголовок слева, кнопка справа */
+    align-items: center; /* Выравнивание по вертикали */
+    margin-bottom: 20px; /* Отступ снизу до будущего списка */
+    padding: 0 5px; /* Небольшой отступ по бокам */
+}
+
+/* Стиль для заголовка слева */
+.list-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1f2937; /* Темно-серый цвет текста */
+    margin: 0;
+}
+
+/* Стиль кнопки справа */
+.btn-view-all {
+    background-color: transparent; /* Прозрачный фон для стиля "ссылки" или цветной для кнопки */
+    color: #6366f1; /* Фиолетовый текст */
+    border: 1px solid #6366f1; /* Фиолетовая рамка */
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+}
+
+/* Эффект при наведении на кнопку */
+.btn-view-all:hover {
+    background-color: #6366f1;
+    color: #ffffff;
+}
+    </style>
+
+    <!-- Список курсов контейнер -->
+    <style>
+/* По умолчанию скрываем контейнер */
+.courses-grid-hidden {
+    display: none; /* Скрыто */
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Адаптивная сетка */
+    gap: 20px;
+    padding-top: 10px;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Класс, который мы добавим через JS, чтобы показать блок */
+.courses-grid-visible {
+    display: grid;
+}
+
+/* Анимация плавного появления */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Карточка мини-курса */
+.mini-course-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    transition: transform 0.2s;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+}
+
+.mini-course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+}
+
+/* Картинка курса */
+.course-img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+/* Текст внутри карточки */
+.course-info {
+    padding: 12px;
+}
+
+.course-info h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.course-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+    </style>
+
 </head>
 <body>
 
@@ -1259,7 +1364,7 @@
     <main class="main-content">
         <!-- TOP HEADER -->
         <header class="top-header">
-            <h2 id="page-header-title" class="page-title">Главная</h2>
+            <h2 id="page-header-title" class="page-title">Басты бет</h2>
             <div class="user-info">
                 <i class="fa-regular fa-bell" style="margin-right: 15px; cursor: pointer; color: var(--text-light);"></i>
                 <span style="font-weight: 500;">Бауыржан Айдынов</span>
@@ -1467,6 +1572,25 @@
                     </div>
                 </div>
 
+                <div class="lecture-list">
+                    <!-- Шапка списка: Заголовок слева, Кнопка справа -->
+                    <div class="list-header-row">
+                        <!-- "Что-то еще": Заголовок секции -->
+                        <h3 class="list-title">Дәрістер тізімі</h3>
+                        
+                        <!-- Кнопка справа -->
+                        <button class="btn-view-all" onclick="openTab('courses')">
+                            Барлық курстар
+                            <!-- Добавим маленькую стрелочку для красоты -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 5px; vertical-align: middle;">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+
+                </div>
+
                 <!-- Карточка 1 -->
                 <div class="card lecture-card">
                     <!-- Левая часть: Иконка Play -->
@@ -1535,6 +1659,50 @@
 
                         <button class="btn-primary btn-watch">Көруді бастау</button>
                     </div>
+                </div>
+            </div>
+
+            <!-- Главный контейнер для курсов -->
+            <div id="tab-courses" class="card courses-section tab-content hidden">
+                <!-- Заголовок секции -->
+                <h3>Барлық курстар</h3>
+
+                <!-- Сетка с курсами (теперь всегда видимая) -->
+                <div class="courses-grid">
+                    
+                    <!-- Курс 1: Кәсіпкерлік -->
+                    <div class="mini-course-card">
+                        <div class="course-img-wrapper">
+                            <img src="https://placehold.co/400x250/6366f1/ffffff?text=Кәсіпкерлік" alt="Кәсіпкерлік" class="course-img">
+                        </div>
+                        <div class="course-info">
+                            <h4>Кәсіпкерлік</h4>
+                            <p>Бизнес негіздері</p>
+                        </div>
+                    </div>
+
+                    <!-- Курс 2: Маркетинг -->
+                    <div class="mini-course-card">
+                        <div class="course-img-wrapper">
+                            <img src="https://placehold.co/400x250/ec4899/ffffff?text=Маркетинг" alt="Маркетинг" class="course-img">
+                        </div>
+                        <div class="course-info">
+                            <h4>Маркетинг</h4>
+                            <p>Нарықты талдау</p>
+                        </div>
+                    </div>
+
+                    <!-- Курс 3: Экономикалық теория -->
+                    <div class="mini-course-card">
+                        <div class="course-img-wrapper">
+                            <img src="https://placehold.co/400x250/10b981/ffffff?text=Экономика" alt="Экономикалық теория" class="course-img">
+                        </div>
+                        <div class="course-info">
+                            <h4>Экономикалық теория</h4>
+                            <p>Микро және макро</p>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -2094,13 +2262,14 @@
 
             // 4. Обновляем заголовок страницы
             const titles = {
-                'home': 'Главная страница',
-                'lectures': 'Мои лекции',
-                'tests': 'Тестирование',
-                'schedule': 'Расписание занятий',
-                'diary': 'Электронный дневник',
-                'homework': 'Домашние задания',
-                'profile': 'Мой профиль'
+                'home': 'Басты бет',
+                'lectures': 'Дәрістер',
+                'tests': 'Тесттер',
+                'schedule': 'Кесте',
+                'diary': 'Журнал',
+                'homework': 'Үй тапсырмалары',
+                'profile': 'Профиль',
+                'courses':'Курстар'
             };
             document.getElementById('page-header-title').innerText = titles[tabName] || 'Ashyk LMS';
         }
@@ -2143,6 +2312,33 @@ function toggleSchedule(type) {
 }
 </script>
 
+<!-- Скрипт для контейнера для списка всех курсов -->
+<script>
+    // Находим кнопку и контейнер
+    // const toggleBtn = document.querySelector('btn-view-all');
+    // const coursesContainer = document.getElementById('all-courses-container');
+    // const arrowIcon = document.getElementById('arrow-icon');
+
+    // Добавляем слушатель клика
+    // toggleBtn.addEventListener('click', function() {
+        
+    //     if (coursesContainer.classList.contains('courses-grid-hidden')) {
+        
+    //         coursesContainer.classList.remove('courses-grid-hidden');
+    //         coursesContainer.classList.add('courses-grid-visible');
+            
+            
+    //         arrowIcon.style.transform = 'rotate(180deg)';
+    //     } else {
+        
+    //         coursesContainer.classList.remove('courses-grid-visible');
+    //         coursesContainer.classList.add('courses-grid-hidden');
+            
+            
+    //         arrowIcon.style.transform = 'rotate(0deg)';
+    //     }
+    // });
+</script>
 
 </body>
 </html>
