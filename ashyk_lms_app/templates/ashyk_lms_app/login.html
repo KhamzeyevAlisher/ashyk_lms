@@ -4,25 +4,25 @@
 <div class="auth-container">
     <div class="card" style="width: 350px; text-align: center;">
         <h2 style="color: var(--primary-color); margin-bottom: 5px;">OUK LMS</h2>
-        <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Единая образовательная платформа</p>
+        <p style="color: #666; font-size: 14px; margin-bottom: 25px;">Бірыңғай білім беру платформасы</p>
         
         <form method="post">
             {% csrf_token %}
             {% if form.errors %}
-                <div style="color: red; font-size: 12px; margin-bottom: 10px;">Неверный логин или пароль</div>
+                <div style="color: red; font-size: 12px; margin-bottom: 10px;">Логин немесе құпия сөз қате</div>
             {% endif %}
             
             <label style="text-align: left; display: block; margin-bottom: 5px; font-weight: 500;">Логин / Email</label>
             {{ form.username }}
             
-            <label style="text-align: left; display: block; margin-bottom: 5px; font-weight: 500;">Пароль</label>
+            <label style="text-align: left; display: block; margin-bottom: 5px; font-weight: 500;">Құпия сөз</label>
             {{ form.password }}
             
-            <button type="submit" class="btn">Войти в систему</button>
+            <button type="submit" class="btn">Жүйеге кіру</button>
         </form>
         
         <div style="margin-top: 20px; font-size: 12px;">
-            <a href="#" style="color: #666;">Забыли пароль?</a>
+            <a href="#" style="color: #666;">Құпия сөзді ұмыттыңыз ба?</a>
         </div>
     </div>
 </div>
