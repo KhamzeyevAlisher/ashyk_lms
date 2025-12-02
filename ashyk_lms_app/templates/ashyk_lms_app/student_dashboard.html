@@ -17,7 +17,7 @@
             --accent-color: #10b981; /* Изумрудный */
             --text-dark: #111827;
             --text-light: #6b7280;
-            --border-color: #e5e7eb;
+            --border-color: #b5b6b9;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --card-border: 1px solid #cdd2d4;
             --box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
@@ -256,7 +256,7 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    border: 1px solid #dcdcdc; /* Жиегі */
+    border: 1px solid #939191a5; /* Жиегі */
     
     /* ҚАРА КӨЛЕҢКЕ (Black Shadow) */
     /* rgba(0, 0, 0, 0.3) - бұл 30% қара түс, өте айқын көрінеді */
@@ -264,6 +264,7 @@
     
     transition: all 0.3s ease;
 }
+
 
 /* Hover (Тінтуірді апарғанда) */
 .stat-card:hover {
@@ -359,6 +360,7 @@
     background: #fff;
     border: 1px solid #e5e7eb;
     border-radius: 12px;
+    border-color: #6365f174;
     padding: 20px;
     margin-bottom: 15px;
     transition: all 0.2s;
@@ -686,7 +688,7 @@
     padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    border: 1px solid #eee;
+    border: 1px solid var(--border-color);
     display: flex;
     justify-content: space-between; /* Разделяет контент и кнопку по краям */
     align-items: center;
@@ -885,7 +887,7 @@
     /* Нижняя часть: Плашка с датой */
     .date-card {
         background: #fff;
-        border: 1px solid #e0e0e0;
+        border: 1px solid var(--border-color);
         border-radius: 16px;
         padding: 16px 24px;
         display: flex;
@@ -1673,7 +1675,7 @@
     /* Основной контейнер */
     .card-journal {
         background: #fff;
-        border: var(--card-border);
+        border: 1px solid var(--border-color);
         border-radius: 8px; /* Скругление углов всего блока */
         padding: 20px;
         font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -1707,7 +1709,7 @@
 
     /* Карточка отдельного предмета */
     .subject-card-journal {
-        border: 1px solid #cdd2d4;
+        border: 1px solid var(--border-color);
         border-radius: 12px;
         padding: 20px;
         margin-bottom: 20px;
@@ -1816,9 +1818,10 @@
         width: 100%;
         background-color: #fff;
         padding: 20px;
-        border-radius: 20px;
+        border-radius: 15px;
         margin-bottom: 30px;
         box-shadow: var(--box-shadow);
+        border: 1px solid var(--border-color);
     }
 
     /* Заголовок раздела */
@@ -1957,6 +1960,7 @@
         margin: 0 auto;
         background-color: #f5f5f5; /* Легкий серый фон страницы */
         /* padding: 20px; */
+        
     }
 
     /* Стили для отдельной карточки задания */
@@ -1969,7 +1973,7 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        border: 1px solid #eaeaea;
+        border: 1px solid var(--border-color);
     }
 
     /* Левая часть карточки (информация) */
