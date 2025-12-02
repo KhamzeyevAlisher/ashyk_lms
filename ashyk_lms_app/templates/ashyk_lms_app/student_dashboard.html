@@ -20,6 +20,7 @@
             --border-color: #e5e7eb;
             --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
             --card-border: 1px solid #cdd2d4;
+            --box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
         }
 
         * {
@@ -259,7 +260,7 @@
     
     /* ҚАРА КӨЛЕҢКЕ (Black Shadow) */
     /* rgba(0, 0, 0, 0.3) - бұл 30% қара түс, өте айқын көрінеді */
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2); 
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1); 
     
     transition: all 0.3s ease;
 }
@@ -1807,6 +1808,285 @@
     }
     </style>
 
+    <!-- Домашка статы и заголовки -->
+    <style>
+    /* Основной контейнер для блока домашних заданий */
+    .container_homework {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        width: 100%;
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 20px;
+        margin-bottom: 30px;
+        box-shadow: var(--box-shadow);
+    }
+
+    /* Заголовок раздела */
+    .title_homework {
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        color: #000;
+    }
+
+    /* Подзаголовок */
+    .subtitle_homework {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 24px;
+        margin-top: 0;
+    }
+
+    /* Контейнер для вкладок (табов) */
+    .tabs_container_homework {
+        display: flex;
+        gap: 12px;
+        margin-bottom: 24px;
+        flex-wrap: wrap;
+    }
+
+    /* Стили для кнопок-вкладок */
+    .tab_btn_homework {
+        padding: 10px 16px;
+        border-radius: 8px;
+        font-size: 14px;
+        cursor: pointer;
+        border: 1px solid #e0e0e0;
+        background-color: #fff;
+        color: #333;
+        transition: all 0.2s;
+    }
+
+    /* Активная вкладка (фиолетовая) */
+    .tab_btn_homework.active_homework {
+        background-color: #563eea; /* Цвет как на скрине */
+        color: white;
+        border-color: #563eea;
+    }
+
+    /* Сетка для карточек статуса */
+    .cards_grid_homework {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+
+    /* Общий стиль для карточки */
+    .status_card_homework {
+        border-radius: 8px;
+        padding: 16px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border: 1px solid transparent;
+    }
+
+    /* Левая часть карточки (текст и цифра) */
+    .card_info_homework {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    /* Текст внутри карточки */
+    .card_label_homework {
+        font-size: 13px;
+        color: #555; /* Темно-серый для текста */
+    }
+
+    /* Значение (цифра или проценты) */
+    .card_value_homework {
+        font-size: 24px;
+        font-weight: 500;
+        color: #000;
+    }
+
+    /* Иконка справа */
+    .card_icon_homework {
+        width: 32px;
+        height: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-weight: bold;
+        font-size: 18px;
+    }
+
+    /* --- Стили для желтой карточки (Внимание) --- */
+    .card_warning_homework {
+        background-color: #fffbe6; /* Светло-желтый фон */
+        border-color: #ffe58f;
+    }
+    .card_warning_homework .card_label_homework { color: #d48806; }
+    .card_warning_homework .card_icon_homework {
+        color: #d48806;
+        border: 2px solid #d48806;
+    }
+
+    /* --- Стили для синей карточки (На проверке) --- */
+    .card_review_homework {
+        background-color: #e6f7ff; /* Светло-синий фон */
+        border-color: #91d5ff;
+    }
+    .card_review_homework .card_label_homework { color: #096dd9; }
+    .card_review_homework .card_icon_homework {
+        color: #096dd9;
+        border: 2px solid #096dd9;
+    }
+
+    /* --- Стили для зеленой карточки (Средний балл) --- */
+    .card_success_homework {
+        background-color: #f6ffed; /* Светло-зеленый фон */
+        border-color: #b7eb8f;
+    }
+    .card_success_homework .card_label_homework { color: #389e0d; }
+    .card_success_homework .card_icon_homework {
+        color: #389e0d;
+        border: 2px solid #389e0d;
+    }
+
+    </style>
+
+    <!-- Список домашних заданий -->
+    <style>
+    /* Основной контейнер списка */
+    .list_container_homework {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        width: 100%;
+        margin: 0 auto;
+        background-color: #f5f5f5; /* Легкий серый фон страницы */
+        /* padding: 20px; */
+    }
+
+    /* Стили для отдельной карточки задания */
+    .task_card_homework {
+        background-color: #fff;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 16px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border: 1px solid #eaeaea;
+    }
+
+    /* Левая часть карточки (информация) */
+    .card_left_homework {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+
+    /* Правая часть карточки (кнопка и статус) */
+    .card_right_homework {
+        display: flex;
+        align-items: center; /* Центрирование по вертикали */
+        gap: 15px;
+    }
+
+    /* Название предмета */
+    .subject_name_homework {
+        font-size: 13px;
+        color: #563eea; /* Фиолетовый цвет как на скрине */
+        margin-bottom: 4px;
+        font-weight: 500;
+    }
+
+    /* Заголовок задания (на русском) */
+    .task_title_homework {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+        margin: 0;
+    }
+
+    /* Имя преподавателя (на русском) */
+    .teacher_name_homework {
+        font-size: 13px;
+        color: #777;
+        margin-bottom: 8px;
+    }
+
+    /* Строка с датой и доп. информацией */
+    .meta_row_homework {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        font-size: 13px;
+        color: #666;
+    }
+
+    /* Блок с иконкой и текстом */
+    .meta_item_homework {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+    }
+
+    /* Зеленый текст для оценки */
+    .grade_text_homework {
+        color: #389e0d;
+        font-weight: 500;
+    }
+
+    /* --- Статусы (Бейджи) --- */
+    .status_badge_homework {
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 13px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        white-space: nowrap;
+    }
+
+    /* Статус: На проверке (Синий) */
+    .status_review_homework {
+        background-color: #e6f7ff;
+        color: #096dd9;
+    }
+
+    /* Статус: Не сдано (Желтый) */
+    .status_missed_homework {
+        background-color: #fffbe6;
+        color: #d48806;
+    }
+
+    /* Статус: Проверено (Зеленый) */
+    .status_done_homework {
+        background-color: #f6ffed;
+        color: #389e0d;
+    }
+
+    /* --- Кнопка "Подробнее" --- */
+    .btn_details_homework {
+        background-color: #563eea;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        text-decoration: none;
+        transition: background-color 0.2s;
+    }
+
+    .btn_details_homework:hover {
+        background-color: #452bd0;
+    }
+
+    /* SVG иконки инлайн */
+    .icon_svg_homework {
+        width: 16px;
+        height: 16px;
+        stroke-width: 2;
+    }
+    </style>
+
 </head>
 <body>
 
@@ -2946,16 +3226,179 @@
 
             <!-- TAB 6: ДОМАШНИЕ ЗАДАНИЯ -->
             <div id="tab-homework" class="tab-content hidden">
-                <div class="card">
-                    <h3>Задания для выполнения</h3>
-                </div>
-                <div class="card">
-                    <h3><i class="fa-solid fa-code"></i> Лабораторная работа №3</h3>
-                    <p>Написать программу сортировки массива.</p>
-                    <p>Дедлайн: <b>30.11.2023</b></p>
-                    <div style="margin-top: 15px; border: 2px dashed #ccc; padding: 20px; text-align: center; color: #999; border-radius: 8px;">
-                        Перетащите файл сюда или нажмите для загрузки
+                <!-- Основной блок -->
+                <div class="container_homework">
+                    
+                    <!-- Заголовок и подзаголовок -->
+                    <h1 class="title_homework">Үй тапсырмалары</h1>
+                    <p class="subtitle_homework">Тапсырмаларды қадағалаңыз және уақытында тапсырыңыз</p>
+
+                    <!-- Вкладки фильтрации -->
+                    <div class="tabs_container_homework">
+                        <button class="tab_btn_homework active_homework">Барлығы (6)</button>
+                        <button class="tab_btn_homework">Тапсырылмаған (3)</button>
+                        <button class="tab_btn_homework">Тексерілуде (1)</button>
+                        <button class="tab_btn_homework">Тексерілді (2)</button>
                     </div>
+
+                    <!-- Карточки со статистикой -->
+                    <div class="cards_grid_homework">
+                        
+                        <!-- Желтая карточка: Требуют внимания -->
+                        <div class="status_card_homework card_warning_homework">
+                            <div class="card_info_homework">
+                                <span class="card_label_homework">Назар аударуды қажет етеді</span>
+                                <span class="card_value_homework">1</span>
+                            </div>
+                            <!-- Иконка восклицательного знака -->
+                            <div class="card_icon_homework">!</div>
+                        </div>
+
+                        <!-- Синяя карточка: На проверке -->
+                        <div class="status_card_homework card_review_homework">
+                            <div class="card_info_homework">
+                                <span class="card_label_homework">Тексерілуде</span>
+                                <span class="card_value_homework">1</span>
+                            </div>
+                            <!-- Иконка часов (символически через HTML код) -->
+                            <div class="card_icon_homework" style="border:none;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12 6 12 12 16 14"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+
+                        <!-- Зеленая карточка: Средний балл -->
+                        <div class="status_card_homework card_success_homework">
+                            <div class="card_info_homework">
+                                <span class="card_label_homework">Орташа балл</span>
+                                <span class="card_value_homework">87%</span>
+                            </div>
+                            <!-- Иконка галочки -->
+                            <div class="card_icon_homework" style="border:none;">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                                </svg>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="list_container_homework">
+                    <!-- Карточка 1: Java / ООП -->
+                    <div class="task_card_homework">
+                        <div class="card_left_homework">
+                            <div class="subject_name_homework">Объектіге бағытталған бағдарламалау (Java)</div>
+                            <h4 class="task_title_homework">Зертханалық жұмыс №3: Полиморфизм және интерфейстер</h4>
+                            <div class="teacher_name_homework">Оспанов А.С.</div>
+                            
+                            <div class="meta_row_homework">
+                                <div class="meta_item_homework">
+                                    <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    <span>Мерзімі: 29.11.2025</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card_right_homework">
+                            <!-- Статус: Тексерілуде -->
+                            <div class="status_badge_homework status_review_homework">
+                                <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                                Тексерілуде
+                            </div>
+                            <button class="btn_details_homework">Толығырақ</button>
+                        </div>
+                    </div>
+
+                    <!-- Карточка 2: Алгоритмы -->
+                    <div class="task_card_homework">
+                        <div class="card_left_homework">
+                            <div class="subject_name_homework">Алгоритмдер және деректер құрылымы</div>
+                            <h4 class="task_title_homework">Аралық бақылау: Графтар және тереңдік бойынша іздеу (DFS)</h4>
+                            <div class="teacher_name_homework">Сапаров Е.Қ.</div>
+                            
+                            <div class="meta_row_homework">
+                                <div class="meta_item_homework">
+                                    <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    <span>Мерзімі: 30.11.2025</span>
+                                </div>
+                                <div class="meta_item_homework">
+                                    <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <span>4 күн қалды</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card_right_homework">
+                            <!-- Статус: Тапсырылмаған -->
+                            <div class="status_badge_homework status_missed_homework">
+                                <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                Тапсырылмаған
+                            </div>
+                            <button class="btn_details_homework">Толығырақ</button>
+                        </div>
+                    </div>
+
+                    <!-- Карточка 3: Frontend / Web -->
+                    <div class="task_card_homework">
+                        <div class="card_left_homework">
+                            <div class="subject_name_homework">Web-технологиялар</div>
+                            <h4 class="task_title_homework">Жоба: React.js негізінде SPA әзірлеу</h4>
+                            <div class="teacher_name_homework">Әлиева Г.М.</div>
+                            
+                            <div class="meta_row_homework">
+                                <div class="meta_item_homework">
+                                    <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    <span>Мерзімі: 02.12.2025</span>
+                                </div>
+                                <div class="meta_item_homework">
+                                    <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <span>6 күн қалды</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card_right_homework">
+                            <!-- Статус: Тапсырылмаған -->
+                            <div class="status_badge_homework status_missed_homework">
+                                <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                                Тапсырылмаған
+                            </div>
+                            <button class="btn_details_homework">Толығырақ</button>
+                        </div>
+                    </div>
+
+                    <!-- Карточка 4: SQL / Базы данных -->
+                    <div class="task_card_homework">
+                        <div class="card_left_homework">
+                            <div class="subject_name_homework">Дерекқорлар жүйесі (PostgreSQL)</div>
+                            <h4 class="task_title_homework">Практикалық жұмыс: Күрделі SQL-сұраныстар (JOIN, Group By)</h4>
+                            <div class="teacher_name_homework">Нұрланова А.К.</div>
+                            
+                            <div class="meta_row_homework">
+                                <div class="meta_item_homework">
+                                    <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                    <span>Мерзімі: 05.12.2025</span>
+                                </div>
+                                <div class="meta_item_homework grade_text_homework">
+                                    <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                                    <span>Баға: 95/100</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card_right_homework">
+                            <!-- Статус: Тексерілді -->
+                            <div class="status_badge_homework status_done_homework">
+                                <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M20 6L9 17l-5-5"></path></svg>
+                                Тексерілді
+                            </div>
+                            <button class="btn_details_homework">Толығырақ</button>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 
@@ -2967,18 +3410,18 @@
                     </div>
                     <div>
                         <h2 style="font-size: 24px;">Бауыржан Айдынов</h2>
-                        <p>Факультет Информационных Технологий</p>
-                        <p style="color: var(--accent-color);">3 Курс, Группа IT-301</p>
+                        <p>Ақпараттық технологиялар факультеті</p>
+                        <p style="color: var(--accent-color);">3-курс, IT-301 тобы</p>
                     </div>
                 </div>
                 <div class="card">
-                    <h3>Личная информация</h3>
+                    <h3>Жеке ақпарат</h3>
                     <p><strong>Email:</strong> student@gmail.com</p>
                     <p><strong>Телефон:</strong> +7 (777) 123 45 67</p>
-                    <p><strong>Дата рождения:</strong> 15.05.2006</p>
+                    <p><strong>Туған күні:</strong> 15.05.2006</p>
                     <br>
-                    <button class="btn-primary">Редактировать профиль</button>
-                    <button class="btn-primary" style="background-color: var(--sidebar-bg); margin-left: 10px;">Сменить пароль</button>
+                    <button class="btn-primary">Профильді өңдеу</button>
+                    <button class="btn-primary" style="background-color: var(--sidebar-bg); margin-left: 10px;">Құпия сөзді өзгерту</button>
                 </div>
             </div>
 
