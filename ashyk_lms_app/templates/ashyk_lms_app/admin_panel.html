@@ -490,6 +490,10 @@
                 <i class="fa-solid fa-gear"></i>
                 <span>Параметрлер</span>
             </button>
+            <a href="{% url 'student_dashboard' %}" style="text-decoration: none;"><button class="nav-btn">
+                <i class="fa-solid fa-gear"></i>
+                <span>Студент</span>
+            </button></a>
         </nav>
 
         <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
