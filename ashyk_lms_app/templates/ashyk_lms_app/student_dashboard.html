@@ -948,18 +948,19 @@
     }
 
     /* Декоративная полоска слева */
-    .lesson-card::before {
+    /* .lesson-card::before {
         content: '';
         position: absolute;
         left: 0;
         top: 0;
         bottom: 0;
         width: 6px;
-    }
+    } */
 
     /* Цветовые модификаторы */
     .type-lecture {
         background-color: #e3f2fd; /* Голубой фон */
+        border: 1px solid #42a5f5;
     }
     .type-lecture::before { background-color: #42a5f5; }
     .type-lecture .time-text, .type-lecture .card-btn { color: #1976d2; }
@@ -967,6 +968,7 @@
 
     .type-practice {
         background-color: #e8f5e9; /* Зеленый фон */
+        border: 1px solid #66bb6a;
     }
     .type-practice::before { background-color: #66bb6a; }
     .type-practice .time-text, .type-practice .card-btn { color: #2e7d32; }
@@ -974,6 +976,7 @@
 
     .type-lab {
         background-color: #fff3e0; /* Оранжевый фон */
+        bottom: 1px solid #ffa726;
     }
     .type-lab::before { background-color: #ffa726; }
     .type-lab .time-text, .type-lab .card-btn { color: #ef6c00; }
@@ -1043,7 +1046,7 @@
     /* Кнопка справа */
     .card-btn {
         background-color: white;
-        border: none;
+        border: 1px solid currentColor;
         padding: 10px 20px;
         border-radius: 8px;
         font-weight: 600;
@@ -1125,21 +1128,21 @@
     /* Цветовые стили (как на фото) */
     .style-blue {
         background-color: #e3f2fd;
-        border-left-color: #42a5f5;
+        border: 1px solid #42a5f5; 
     }
     .style-blue .text-accent { color: #1976d2; }
     .style-blue .badge { background: #fff; color: #1976d2; }
 
     .style-green {
         background-color: #e8f5e9;
-        border-left-color: #66bb6a;
+        border: 1px solid #66bb6a;
     }
     .style-green .text-accent { color: #2e7d32; }
     .style-green .badge { background: #fff; color: #2e7d32; }
 
     .style-purple {
         background-color: #f3e5f5;
-        border-left-color: #ab47bc;
+        border: 1px solid #ab47bc;
     }
     .style-purple .text-accent { color: #7b1fa2; }
     .style-purple .badge { background: #fff; color: #7b1fa2; }
@@ -1412,7 +1415,7 @@
 
 /* СТИЛЬ ДЛЯ ПРОЙДЕННЫХ УРОКОВ (Зеленый бордер) */
 .lecture-row.completed {
-    border-left: 5px solid #10b981; /* Толстая зеленая полоса слева */
+    border: 1px solid #10b981; /* Толстая зеленая полоса слева */
     background-color: #f0fdf4; /* Очень светло-зеленый фон */
 }
 
