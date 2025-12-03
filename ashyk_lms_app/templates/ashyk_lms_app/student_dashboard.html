@@ -2094,6 +2094,226 @@
     }
     </style>
 
+    <!-- Стили для теста -->
+    <style>
+    /* Фон страницы (для контраста с белыми карточками) */
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .test-container {
+        font-family: 'Inter', system-ui, -apple-system, sans-serif; /* Современный шрифт */
+        max-width: 850px;
+        margin: 40px auto;
+        color: #333;
+    }
+
+    /* Заголовок теста */
+    #tab-item-test .test-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #212529;
+        margin-bottom: 40px;
+        margin-left: 10px;
+    }
+
+    /* Карточка вопроса (как на скриншоте) */
+    .question-card {
+        background: #ffffff;
+        border-radius: 16px; /* Сильное скругление */
+        /* Тень: Смещение Y, Размытие, Цвет */
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 
+                    0 4px 6px rgba(0, 0, 0, 0.02); 
+        padding: 30px;
+        margin-bottom: 25px;
+        border: 1px solid var(--border-color); /* Едва заметная граница */
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    /* Эффект при наведении на карточку */
+    .question-card:hover {
+        transform: translateY(-3px);
+        /* Тень становится глубже при наведении */
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12), 
+                    0 5px 15px rgba(0, 0, 0, 0.05);
+    }
+
+    /* Шапка карточки (Вопрос) */
+    .question-header {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+    /* Иконка номера (имитация зеленой иконки со скриншота) */
+    .question-number-icon {
+        flex-shrink: 0;
+        width: 32px;
+        height: 32px;
+        background-color: #e6f4ea; /* Светло-зеленый фон */
+        color: #1e7e34; /* Темно-зеленый текст */
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        margin-right: 15px;
+        margin-top: -2px;
+    }
+
+    .question-text {
+        font-size: 18px;
+        font-weight: 600;
+        color: #343a40;
+        line-height: 1.5;
+        margin: 0;
+    }
+
+    .question-hint {
+        display: block;
+        margin-top: 10px;
+        margin-bottom: 10px;
+        font-size: 13px;
+        color: #868e96;
+        font-weight: 500;
+    }
+
+    /* Варианты ответов (Стилизация под плашки) */
+    .variants-list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px; /* Отступ между вариантами */
+    }
+
+    .variant-label {
+        display: flex;
+        align-items: center;
+        padding: 15px 20px;
+        border-radius: 12px;
+        border: 1px solid var(--border-color); 
+        margin-bottom: 10px;
+        background-color: #f8f9fa; /* Серый фон по умолчанию */
+        cursor: pointer;
+        transition: all 0.2s ease;
+        /* border: 2px solid transparent; */
+        font-size: 15px;
+    }
+
+    /* При наведении на вариант */
+    .variant-label:hover {
+        background-color: #e9ecef;
+    }
+
+
+    /* Скрываем стандартный кружок/галочку, будем красить саму плашку */
+    /* Базовый стиль для обоих типов инпутов */
+    .variant-input {
+        /* Убираем стандартный вид браузера */
+        -webkit-appearance: none;
+        appearance: none;
+        
+        /* Размеры (сделал покрупнее) */
+        width: 22px;
+        height: 22px;
+        
+        /* Отступы и позиционирование */
+        margin-right: 15px;
+        flex-shrink: 0; /* Чтобы не сжимался */
+        
+        /* Границы и фон */
+        border: 2px solid #adb5bd;
+        background-color: #fff;
+        cursor: pointer;
+        
+        /* Плавная анимация */
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Эффект при наведении (hover) */
+    .variant-input:hover {
+        border-color: #868e96;
+        background-color: #f1f3f5;
+    }
+
+    /* Эффект нажатия (пружинка) */
+    .variant-input:active {
+        transform: scale(0.9);
+    }
+
+    /* ===========================
+    СТИЛИ ДЛЯ RADIO (КРУГ)
+    =========================== */
+    .variant-input[type="radio"] {
+        border-radius: 50%;
+    }
+
+    .variant-input[type="radio"]:checked {
+        border-color: #0d6efd; /* Синяя обводка */
+        background-color: #0d6efd; /* Синий фон */
+        /* Рисуем белую точку внутри через внутреннюю тень */
+        box-shadow: inset 0 0 0 5px white; 
+    }
+
+    /* ===========================
+    СТИЛИ ДЛЯ CHECKBOX (КВАДРАТ)
+    =========================== */
+    .variant-input[type="checkbox"] {
+        border-radius: 6px; /* Скругленные углы */
+    }
+
+    .variant-input[type="checkbox"]:checked {
+        border-color: #20c997; /* Teal обводка */
+        background-color: #20c997; /* Teal фон */
+        /* Рисуем галочку через SVG */
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+        background-position: center;
+        background-size: 70%;
+        background-repeat: no-repeat;
+        box-shadow: none;
+    }
+
+    /* СТИЛЬ ВЫБРАННОГО ОТВЕТА (Интерактивность) */
+    /* Используем :has селектор (современные браузеры) или JS классы */
+    .variant-label:has(input:checked) {
+        background-color: #e7f5ff; /* Светло-голубой фон (как оценка 4 на скрине) */
+        border-color: #4dabf7;     /* Голубая граница */
+        color: #1864ab;
+        font-weight: 500;
+    }
+    
+    /* Альтернатива для чекбоксов (несколько ответов) - зеленый стиль */
+    .variant-label:has(input[type="checkbox"]:checked) {
+        background-color: #e7f5ff; /* Светло-зеленый фон (как оценка 5 на скрине) */
+        border-color: #4dabf7;
+        color: #1864ab;
+    }
+
+    /* Кнопка завершения */
+    .submit-btn {
+        display: block;
+        width: 100%;
+        max-width: 300px;
+        margin: 40px auto 0;
+        padding: 16px;
+        background-color: #20c997; /* Teal цвет, похож на акценты скрина */
+        color: white;
+        border: none;
+        border-radius: 12px;
+        font-size: 18px;
+        font-weight: 600;
+        cursor: pointer;
+        box-shadow: 0 4px 12px rgba(32, 201, 151, 0.3);
+        transition: background-color 0.2s, transform 0.2s;
+    }
+
+    .submit-btn:hover {
+        background-color: #12b886;
+        transform: translateY(-2px);
+    }
+
+    .hidden { display: none; }
+    </style>
+
 </head>
 <body>
 
@@ -2740,7 +2960,7 @@
                     </div>
                     <div class="test-action">
                         
-                        <button class="btn-test btn-start">
+                        <button class="btn-test btn-start" onclick="openTest('JavaScript-тегі ООП')">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
                             Тестті бастау
                         </button>
@@ -2804,6 +3024,10 @@
                     </div>
                 </div>
             </div> 
+
+            <div id="tab-item-test" class="tab-content hidden">
+
+            </div>
 
             <!-- TAB 4: РАСПИСАНИЕ -->
             <div id="tab-schedule" class="tab-content hidden">
@@ -3507,10 +3731,10 @@ function toggleSchedule(type) {
         weekContainer.style.display = 'grid'; 
     }
 }
-</script>
+    </script>
 
 <!-- Скрипт для контейнера для списка всех курсов -->
-<script>
+    <script>
     // Находим кнопку и контейнер
     // const toggleBtn = document.querySelector('btn-view-all');
     // const coursesContainer = document.getElementById('all-courses-container');
@@ -3535,10 +3759,10 @@ function toggleSchedule(type) {
     //         arrowIcon.style.transform = 'rotate(0deg)';
     //     }
     // });
-</script>
+    </script>
 
 <!-- Скрипт для открытие видеоурока -->
-<script>
+    <script>
 // 1. Данные (Твой обновленный объект)
 // Обрати внимание: я убрал лишнюю кавычку в конце строки iframe в первом уроке, это была синтаксическая ошибка
 let item_lessons = {
@@ -3678,7 +3902,322 @@ function openLesson(lessonName) {
       container.classList.remove('hidden'); 
   }
 }
-</script>
+    </script>
+
+<!-- скрипты для теста -->
+    <script>
+// Вспомогательная функция для перемешивания массива (Алгоритм Фишера — Йейтса)
+function shuffleArray(array) {
+    let arr = [...array]; // Создаем копию, чтобы не ломать исходный объект
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+let tests = {
+    'JavaScript-тегі ООП': {
+        1: {
+            'question': "JavaScript-те ES6 стандарты бойынша класс құру үшін қандай кілт сөз қолданылады?",
+            'variants': ['struct', 'class', 'object', 'function', 'define'],
+            'correct_variants': ['class']
+        },
+        2: {
+            'question': "Класс ішіндегі объектіні инициализациялау (бастапқы мәндерін беру) үшін қолданылатын арнайы әдіс қалай аталады?",
+            'variants': ['init', 'start', 'constructor', 'main', 'create'],
+            'correct_variants': ['constructor']
+        },
+        3: {
+            'question': "Бір кластың екінші кластан мұрагерлік алуы (inheritance) үшін қандай кілт сөз қолданылады?",
+            'variants': ['inherits', 'implements', 'extends', 'super', 'using'],
+            'correct_variants': ['extends']
+        },
+        4: {
+            'question': "Объектінің ағымдағы контекстіне немесе инстансына сілтеме жасайтын кілт сөз?",
+            'variants': ['self', 'me', 'it', 'context', 'this'],
+            'correct_variants': ['this']
+        },
+        5: {
+            'question': "Объектінің белгілі бір классқа тиесілі екенін тексеретін оператор қандай?",
+            'variants': ['typeof', 'instanceof', 'is', 'check', 'belongsTo'],
+            'correct_variants': ['instanceof']
+        },
+
+        6: {
+            'question': "JavaScript-те жаңа объект құрудың дұрыс жолдарын көрсетіңіз:",
+            'variants': [
+                'const obj = {};',
+                'const obj = new Object();',
+                'const obj = Object.construct();',
+                'const obj = class {};',
+                'const obj = create.object();',
+                'const obj = [];'
+            ],
+            'correct_variants': [
+                'const obj = {};',
+                'const obj = new Object();'
+            ]
+        },
+        7: {
+            'question': "JavaScript кластарындағы `static` әдістері туралы дұрыс тұжырымдарды таңдаңыз:",
+            'variants': [
+                'Олар кластың экземпляры (instance) арқылы шақырылады',
+                'Олар тікелей класс аты арқылы шақырылады',
+                'Олар `this` сөзі арқылы объект қасиеттеріне қол жеткізе алады',
+                'Олар жаңа объект құрылғанда ғана іске қосылады',
+                'Олар көбінесе көмекші (utility) функциялар үшін қолданылады',
+                'Олар міндетті түрде `constructor` ішінде жазылуы керек'
+            ],
+            'correct_variants': [
+                'Олар тікелей класс аты арқылы шақырылады',
+                'Олар көбінесе көмекші (utility) функциялар үшін қолданылады'
+            ]
+        },
+        8: {
+            'question': "ES2022 стандарты бойынша жеке (private) өрістер мен әдістер туралы не белгілі?",
+            'variants': [
+                'Олар `private` кілт сөзімен жазылады',
+                'Атауы `#` белгісімен басталады (мысалы, #name)',
+                'Оларға кластан тыс жерден қол жеткізу мүмкін емес',
+                'Олар `_` (астын сызу) белгісімен басталуы міндетті',
+                'Олар мұрагер кластарда (child classes) көрінеді',
+                'Бұл мүмкіндік JavaScript-те мүлдем жоқ'
+            ],
+            'correct_variants': [
+                'Атауы `#` белгісімен басталады (мысалы, #name)',
+                'Оларға кластан тыс жерден қол жеткізу мүмкін емес'
+            ]
+        },
+        9: {
+            'question': "Объектінің қасиеттерін оқу және өзгерту үшін қолданылатын арнайы әдістер (accessors):",
+            'variants': [
+                'read',
+                'get',
+                'put',
+                'set',
+                'write',
+                'fetch'
+            ],
+            'correct_variants': [
+                'get',
+                'set'
+            ]
+        },
+        10: {
+            'question': "`super` кілт сөзі қандай жағдайларда қолданылады?",
+            'variants': [
+                'Ата-аналық кластың конструкторын шақыру үшін',
+                'Глобалды айнымалыларды жариялау үшін',
+                'Ата-аналық кластың әдістерін шақыру үшін',
+                'Циклды тоқтату үшін',
+                'Жаңа класс құру үшін',
+                'Объектіні жою үшін'
+            ],
+            'correct_variants': [
+                'Ата-аналық кластың конструкторын шақыру үшін',
+                'Ата-аналық кластың әдістерін шақыру үшін'
+            ]
+        },
+
+        11: {
+            'question': "Объектіге бағытталған бағдарламалаудың (ООП) негізгі үш қағидасын көрсетіңіз:",
+            'variants': [
+                'Компиляция',
+                'Инкапсуляция',
+                'Итерация',
+                'Мұрагерлік (Inheritance)',
+                'Рекурсия',
+                'Полиморфизм',
+                'Хостинг'
+            ],
+            'correct_variants': [
+                'Инкапсуляция',
+                'Мұрагерлік (Inheritance)',
+                'Полиморфизм'
+            ]
+        },
+        12: {
+            'question': "Функцияның контекстін (`this`) басқаруға немесе өзгертуге арналған әдістерді таңдаңыз:",
+            'variants': [
+                'bind',
+                'map',
+                'call',
+                'filter',
+                'apply',
+                'reduce',
+                'push'
+            ],
+            'correct_variants': [
+                'bind',
+                'call',
+                'apply'
+            ]
+        },
+        13: {
+            'question': "Жебелік функциялардың (Arrow functions) кәдімгі функциялардан айырмашылығы (ООП тұрғысынан):",
+            'variants': [
+                'Өзінің `this` контексті жоқ',
+                'Оларды `new` операторымен шақыруға болмайды',
+                'Оларда `constructor` әдісі бар',
+                'Оларда `arguments` объектісі жоқ',
+                'Оларды айнымалыға теңестіруге болмайды',
+                'Олар әрқашан асинхронды',
+                'Олар кластың ішінде жазылмайды'
+            ],
+            'correct_variants': [
+                'Өзінің `this` контексті жоқ',
+                'Оларды `new` операторымен шақыруға болмайды',
+                'Оларда `arguments` объектісі жоқ'
+            ]
+        },
+        14: {
+            'question': "Объектіде белгілі бір қасиеттің (property) бар-жоғын тексерудің жолдары:",
+            'variants': [
+                '"propertyName" in object',
+                'object.hasOwnProperty("propertyName")',
+                'object.checkProp("propertyName")',
+                'object["propertyName"] !== undefined',
+                'object.exists("propertyName")',
+                'object.contains("propertyName")',
+                'object.isSet("propertyName")'
+            ],
+            'correct_variants': [
+                '"propertyName" in object',
+                'object.hasOwnProperty("propertyName")',
+                'object["propertyName"] !== undefined'
+            ]
+        },
+        15: {
+            'question': "Прототиптік мұрагерлікке қатысты кілт сөздер мен әдістер:",
+            'variants': [
+                'prototype',
+                '__proto__',
+                'Object.create()',
+                'Object.keys()',
+                'Object.freeze()',
+                'JSON.parse()',
+                'Array.from()'
+            ],
+            'correct_variants': [
+                'prototype',
+                '__proto__',
+                'Object.create()'
+            ]
+        }
+    }
+}
+
+function openTest(testName) {
+    const container = document.getElementById('tab-item-test');
+    
+    // Проверяем наличие теста
+    if (!tests[testName]) {
+        console.error("Test not found:", testName);
+        return;
+    }
+
+    const currentTest = tests[testName];
+
+    // 1. Очистка и подготовка контейнера
+    container.innerHTML = '';
+    // container.classList.remove('hidden');
+    container.classList.add('test-container'); // Добавляем CSS класс контейнера
+
+    // 2. Заголовок теста
+    const title = document.createElement('h2');
+    title.textContent = testName;
+    title.classList.add('test-title'); // CSS класс
+    container.appendChild(title);
+
+    // 3. Создаем форму
+    const form = document.createElement('form');
+    form.id = 'quiz-form-' + Date.now(); // Уникальный ID формы
+
+    // 4. Генерация вопросов
+    Object.keys(currentTest).forEach((key) => {
+        const qData = currentTest[key];
+
+        // Блок вопроса (Карточка)
+        const questionBlock = document.createElement('div');
+        questionBlock.classList.add('question-card'); // CSS класс
+
+        // Текст вопроса
+        const qText = document.createElement('h4');
+        qText.textContent = `${key}. ${qData.question}`;
+        qText.classList.add('question-text'); // CSS класс
+        questionBlock.appendChild(qText);
+
+        // Определение типа ввода (radio или checkbox)
+        const isMultiple = qData.correct_variants.length > 1;
+        const inputType = isMultiple ? 'checkbox' : 'radio';
+        
+        // Подсказка для пользователя
+        const hint = document.createElement('small');
+        hint.classList.add('question-hint'); // CSS класс
+        hint.textContent = isMultiple 
+            ? `(Дұрыс жауаптар саны: ${qData.correct_variants.length})` 
+            : `(Бір дұрыс жауап)`;
+        questionBlock.appendChild(hint);
+
+        // Перемешивание вариантов
+        const shuffledVariants = shuffleArray(qData.variants);
+
+        let count = 1;
+
+        let len = shuffledVariants.length;
+
+        let parent_question = document.createElement('div');
+        parent_question.style.padding = '20px';
+        parent_question.style.paddingBottom = '10px';
+        parent_question.style.borderRadius = '12px';
+        parent_question.style.border = '1px solid var(--border-color)';
+        questionBlock.appendChild(parent_question);
+
+
+        // Генерация вариантов ответов
+        shuffledVariants.forEach(variant => {
+            const label = document.createElement('label');
+            label.classList.add('variant-label'); // CSS класс
+
+
+            const input = document.createElement('input');
+            input.type = inputType;
+            input.name = `question_${key}`; // Группировка по номеру вопроса
+            input.value = variant;
+            input.classList.add('variant-input'); // CSS класс
+
+            const span = document.createElement('span');
+            span.textContent = variant;
+
+            label.appendChild(input);
+            label.appendChild(span);
+            parent_question.appendChild(label);
+
+            count++;
+        });
+
+        form.appendChild(questionBlock);
+    });
+
+    // 5. Кнопка отправки
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.textContent = 'Аяқтау';
+    btn.classList.add('submit-btn'); // CSS класс
+    
+    // Обработчик нажатия (логику проверки можно добавить сюда)
+    btn.onclick = function() {
+        alert("Тест завершен! (Логику проверки можно добавить далее)");
+        console.log("Форма отправлена");
+    };
+
+    form.appendChild(btn);
+    container.appendChild(form);
+
+    openTab('item-test');
+}
+    </script>
 
 </body>
 </html>
