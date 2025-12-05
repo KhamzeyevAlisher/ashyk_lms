@@ -2191,7 +2191,7 @@
         padding: 15px 20px;
         border-radius: 12px;
         border: 1px solid var(--border-color); 
-        margin-bottom: 10px;
+        margin-bottom: 5px;
         background-color: #f8f9fa; /* Серый фон по умолчанию */
         cursor: pointer;
         transition: all 0.2s ease;
@@ -2313,6 +2313,218 @@
 
     .hidden { display: none; }
     </style>
+
+    <!-- Стили для результатов теста -->
+    <style>
+        /* Блок с результатом */
+        .result-box {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            background-color: #ffffff;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border: 1px solid #e9ecef;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .result-score {
+            font-size: 36px;
+            font-weight: 800;
+            color: #2c3e50;
+            margin: 10px 0;
+        }
+
+        .result-text {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 5px;
+        }
+
+        /* Цвета для процентов */
+        .score-good { color: #20c997; } /* Зеленый - отлично */
+        .score-avg { color: #fd7e14; }  /* Оранжевый - средне */
+        .score-bad { color: #dc3545; }  /* Красный - плохо */
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* =========================================
+        СТИЛИ МОДАЛЬНОГО ОКНА
+        ========================================= */
+
+        /* Затемненный фон (Overlay) */
+        .test-modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5); /* Полупрозрачный черный */
+            backdrop-filter: blur(4px); /* Эффект размытия фона */
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        /* Активное состояние (когда окно открыто) */
+        .test-modal-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Сама карточка модального окна */
+        .test-modal-box {
+            background: white;
+            width: 90%;
+            max-width: 450px;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transform: scale(0.8);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Эффект пружины */
+            position: relative;
+        }
+
+        .test-modal-overlay.active .test-modal-box {
+            transform: scale(1);
+        }
+
+        /* Заголовок в модальном окне */
+        .test-modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #343a40;
+            margin-bottom: 20px;
+        }
+
+        /* Круг/Текст с процентами */
+        .test-modal-score {
+            font-size: 64px;
+            font-weight: 800;
+            margin: 10px 0;
+            line-height: 1;
+        }
+
+        /* Цвета оценок */
+        .color-good { color: #20c997; } /* Зеленый */
+        .color-avg  { color: #fd7e14; } /* Оранжевый */
+        .color-bad  { color: #dc3545; } /* Красный */
+
+        /* Подробный текст */
+        .test-modal-detail {
+            font-size: 16px;
+            color: #6c757d;
+            margin-bottom: 30px;
+        }
+
+        /* Кнопка закрытия */
+        .test-modal-close-btn {
+            background-color: #343a40;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .test-modal-close-btn:hover {
+            background-color: #212529;
+        }
+    </style>
+    
+    <!-- Стили для посещаемости -->
+    <style>
+        /* Основной контейнер секции */
+    .attendance-section-wrapper {
+        background-color: #ffffff;
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        padding: 20px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        margin-bottom: 20px;
+        margin-top: 40px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Заголовок секции */
+    .att-main-title {
+        font-size: 18px;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    /* Карточка для каждого месяца */
+    .att-month-card {
+        border: 1px solid var(--border-color);
+        border-radius: 10px;
+        padding: 16px;
+        margin-bottom: 16px;
+        background-color: #fff;
+        transition: transform 0.2s ease;
+    }
+
+    .att-month-card:hover {
+        border-color: #dce1e6;
+    }
+
+    /* Верхняя часть карточки: Месяц и Дробь */
+    .att-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .att-month-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #2c3e50;
+    }
+
+    .att-fraction-text {
+        font-size: 16px;
+        font-weight: 500;
+        color: #2c3e50;
+    }
+
+    /* Контейнер прогресс-бара */
+    .att-progress-track {
+        width: 100%;
+        height: 10px;
+        background-color: #e9ecef;
+        border-radius: 5px;
+        overflow: hidden;
+        margin-bottom: 8px;
+    }
+
+    /* Заполнение прогресс-бара */
+    .att-progress-fill {
+        height: 100%;
+        background-color: #00c853; /* Зеленый цвет как на скрине */
+        border-radius: 5px;
+        transition: width 0.6s ease-in-out;
+    }
+
+    /* Текст с процентами снизу */
+    .att-percent-subtitle {
+        font-size: 13px;
+        color: #7f8c8d;
+        margin: 0;
+    }
+    </style>
+
 
 </head>
 <body>
@@ -3453,6 +3665,10 @@
                     </div>
 
                 </div>
+                <!-- Новый контейнер специально для отчета о посещаемости -->
+                <div id="attendance-section-unique" class="attendance-section-wrapper">
+                    <!-- Сюда JavaScript добавит заголовок и карточки -->
+                </div>
             </div>
 
             <!-- TAB 6: ДОМАШНИЕ ЗАДАНИЯ -->
@@ -3733,7 +3949,7 @@ function toggleSchedule(type) {
 }
     </script>
 
-<!-- Скрипт для контейнера для списка всех курсов -->
+    <!-- Скрипт для контейнера для списка всех курсов -->
     <script>
     // Находим кнопку и контейнер
     // const toggleBtn = document.querySelector('btn-view-all');
@@ -3761,7 +3977,7 @@ function toggleSchedule(type) {
     // });
     </script>
 
-<!-- Скрипт для открытие видеоурока -->
+    <!-- Скрипт для открытие видеоурока -->
     <script>
 // 1. Данные (Твой обновленный объект)
 // Обрати внимание: я убрал лишнюю кавычку в конце строки iframe в первом уроке, это была синтаксическая ошибка
@@ -3904,7 +4120,7 @@ function openLesson(lessonName) {
 }
     </script>
 
-<!-- скрипты для теста -->
+    <!-- скрипты для теста -->
     <script>
 // Вспомогательная функция для перемешивания массива (Алгоритм Фишера — Йейтса)
 function shuffleArray(array) {
@@ -4110,114 +4326,249 @@ let tests = {
 
 function openTest(testName) {
     const container = document.getElementById('tab-item-test');
-    
-    // Проверяем наличие теста
-    if (!tests[testName]) {
-        console.error("Test not found:", testName);
-        return;
-    }
-
+    if (!tests[testName]) return;
     const currentTest = tests[testName];
 
-    // 1. Очистка и подготовка контейнера
+    // Очистка
     container.innerHTML = '';
     // container.classList.remove('hidden');
-    container.classList.add('test-container'); // Добавляем CSS класс контейнера
+    container.classList.add('test-container');
 
-    // 2. Заголовок теста
+    // Заголовок
     const title = document.createElement('h2');
     title.textContent = testName;
-    title.classList.add('test-title'); // CSS класс
+    title.classList.add('test-title');
     container.appendChild(title);
 
-    // 3. Создаем форму
     const form = document.createElement('form');
-    form.id = 'quiz-form-' + Date.now(); // Уникальный ID формы
+    form.id = 'current-quiz-form';
 
-    // 4. Генерация вопросов
+    // Генерация вопросов
     Object.keys(currentTest).forEach((key) => {
         const qData = currentTest[key];
-
-        // Блок вопроса (Карточка)
-        const questionBlock = document.createElement('div');
-        questionBlock.classList.add('question-card'); // CSS класс
-
-        // Текст вопроса
-        const qText = document.createElement('h4');
-        qText.textContent = `${key}. ${qData.question}`;
-        qText.classList.add('question-text'); // CSS класс
-        questionBlock.appendChild(qText);
-
-        // Определение типа ввода (radio или checkbox)
-        const isMultiple = qData.correct_variants.length > 1;
-        const inputType = isMultiple ? 'checkbox' : 'radio';
         
-        // Подсказка для пользователя
-        const hint = document.createElement('small');
-        hint.classList.add('question-hint'); // CSS класс
+        // Карточка
+        const card = document.createElement('div');
+        card.classList.add('question-card');
+        
+        // Шапка
+        const header = document.createElement('div');
+        header.classList.add('question-header');
+        
+        const numberIcon = document.createElement('div');
+        numberIcon.classList.add('question-number-icon');
+        numberIcon.textContent = key;
+        
+        const textBlock = document.createElement('div');
+        const qText = document.createElement('p');
+        qText.classList.add('question-text');
+        qText.textContent = qData.question;
+        
+        const isMultiple = qData.correct_variants.length > 1;
+        const hint = document.createElement('span');
+        hint.classList.add('question-hint');
         hint.textContent = isMultiple 
-            ? `(Дұрыс жауаптар саны: ${qData.correct_variants.length})` 
-            : `(Бір дұрыс жауап)`;
-        questionBlock.appendChild(hint);
+            ? `Бірнеше дұрыс жауап (${qData.correct_variants.length})` 
+            : `Бір дұрыс жауап`;
 
-        // Перемешивание вариантов
+        textBlock.appendChild(qText);
+        textBlock.appendChild(hint);
+        header.appendChild(numberIcon);
+        header.appendChild(textBlock);
+        card.appendChild(header);
+
+        // Варианты
+        const variantsContainer = document.createElement('div');
+        variantsContainer.classList.add('variants-list');
+        const inputType = isMultiple ? 'checkbox' : 'radio';
         const shuffledVariants = shuffleArray(qData.variants);
 
-        let count = 1;
-
-        let len = shuffledVariants.length;
-
-        let parent_question = document.createElement('div');
-        parent_question.style.padding = '20px';
-        parent_question.style.paddingBottom = '10px';
-        parent_question.style.borderRadius = '12px';
-        parent_question.style.border = '1px solid var(--border-color)';
-        questionBlock.appendChild(parent_question);
-
-
-        // Генерация вариантов ответов
         shuffledVariants.forEach(variant => {
             const label = document.createElement('label');
-            label.classList.add('variant-label'); // CSS класс
-
+            label.classList.add('variant-label');
 
             const input = document.createElement('input');
             input.type = inputType;
-            input.name = `question_${key}`; // Группировка по номеру вопроса
+            input.name = `question_${key}`; 
             input.value = variant;
-            input.classList.add('variant-input'); // CSS класс
+            input.classList.add('variant-input');
 
             const span = document.createElement('span');
             span.textContent = variant;
 
             label.appendChild(input);
             label.appendChild(span);
-            parent_question.appendChild(label);
-
-            count++;
+            variantsContainer.appendChild(label);
         });
 
-        form.appendChild(questionBlock);
+        card.appendChild(variantsContainer);
+        form.appendChild(card);
     });
 
-    // 5. Кнопка отправки
+    // Кнопка завершения
     const btn = document.createElement('button');
     btn.type = 'button';
     btn.textContent = 'Аяқтау';
-    btn.classList.add('submit-btn'); // CSS класс
+    btn.classList.add('submit-btn');
     
-    // Обработчик нажатия (логику проверки можно добавить сюда)
     btn.onclick = function() {
-        alert("Тест завершен! (Логику проверки можно добавить далее)");
-        console.log("Форма отправлена");
+        checkTest(testName);
     };
 
     form.appendChild(btn);
     container.appendChild(form);
 
+    // Инициализируем модальное окно (создаем его в DOM, если нет)
+    initModal();
     openTab('item-test');
 }
     </script>
 
+    <!-- Скрипт для проверки теста -->
+    <script>
+function initModal() {
+    // Проверяем, есть ли уже модалка на странице
+    if (document.getElementById('test-result-modal')) return;
+
+    // Создаем HTML структуру модалки
+    const modalHTML = `
+        <div id="test-result-modal" class="test-modal-overlay">
+            <div class="test-modal-box">
+                <div class="test-modal-title">Тест нәтижесі</div>
+                <div id="modal-score-display" class="test-modal-score">0%</div>
+                <div id="modal-text-detail" class="test-modal-detail">...</div>
+                <button class="test-modal-close-btn" onclick="closeTestModal()">Жабу (Закрыть)</button>
+            </div>
+        </div>
+    `;
+    
+    // Добавляем в конец body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Закрытие по клику на фон
+    document.getElementById('test-result-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeTestModal();
+        }
+    });
+}
+
+function closeTestModal() {
+    const modal = document.getElementById('test-result-modal');
+    if (modal) modal.classList.remove('active');
+    openTab('tests');
+}
+
+function checkTest(testName) {
+    const testData = tests[testName];
+    let totalPossibleCorrect = 0; 
+    let userScore = 0;            
+
+    Object.keys(testData).forEach(key => {
+        const question = testData[key];
+        const correctAnswers = question.correct_variants; 
+        totalPossibleCorrect += correctAnswers.length;
+
+        const userInputs = document.querySelectorAll(`input[name="question_${key}"]:checked`);
+        
+        userInputs.forEach(input => {
+            if (correctAnswers.includes(input.value)) {
+                userScore++;
+            } else {
+                userScore--; 
+            }
+        });
+    });
+
+    if (userScore < 0) userScore = 0;
+
+    let percentage = Math.round((userScore / totalPossibleCorrect) * 100);
+    if (isNaN(percentage)) percentage = 0;
+    if (percentage < 0) percentage = 0;
+
+    // === ПОКАЗЫВАЕМ РЕЗУЛЬТАТ В МОДАЛКЕ ===
+    
+    const scoreDisplay = document.getElementById('modal-score-display');
+    const textDetail = document.getElementById('modal-text-detail');
+    const modal = document.getElementById('test-result-modal');
+
+    // Установка цвета и комментария
+    let colorClass = 'color-bad';
+    let comment = 'Тақырыпты қайталап оқу керек.';
+    
+    if (percentage >= 50) { colorClass = 'color-avg'; comment = 'Жақсы нәтиже!'; }
+    if (percentage >= 85) { colorClass = 'color-good'; comment = 'Өте жақсы! Тамаша!'; }
+
+    // Сброс классов цвета
+    scoreDisplay.className = 'test-modal-score ' + colorClass;
+    
+    // Заполнение текста
+    scoreDisplay.textContent = `${percentage}%`;
+    textDetail.innerHTML = `
+        Дұрыс жауаптар: <b>${userScore}</b> / ${totalPossibleCorrect}<br>
+        <span style="font-size: 0.9em; margin-top: 5px; display:block">${comment}</span>
+    `;
+
+    // Открытие модалки
+    modal.classList.add('active');
+}
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Структура данных, как требовалось (ключи - месяцы на казахском)
+            let attendanceStats = {
+                "Қыркүйек": { // Сентябрь
+                    "all": 45,
+                    "attendedDays": 42,
+                    "percent": 93
+                },
+                "Қазан": { // Октябрь
+                    "all": 50,
+                    "attendedDays": 48,
+                    "percent": 96
+                },
+                "Қараша": { // Ноябрь
+                    "all": 40,
+                    "attendedDays": 38,
+                    "percent": 95
+                }
+            };
+
+            // Получаем контейнер
+            const container = document.getElementById('attendance-section-unique');
+
+            if (container) {
+                // Создаем и добавляем общий заголовок
+                const titleElement = document.createElement('div');
+                titleElement.className = 'att-main-title';
+                titleElement.innerText = 'Қатысу есебі'; // Отчет о посещаемости
+                container.appendChild(titleElement);
+
+                // Перебираем объект с данными
+                for (const [month, data] of Object.entries(attendanceStats)) {
+                    
+                    // Создаем карточку месяца
+                    const card = document.createElement('div');
+                    card.className = 'att-month-card';
+
+                    // HTML содержимое карточки
+                    card.innerHTML = `
+                        <div class="att-card-header">
+                            <span class="att-month-name">${month}</span>
+                            <span class="att-fraction-text">${data.attendedDays}/${data.all}</span>
+                        </div>
+                        <div class="att-progress-track">
+                            <div class="att-progress-fill" style="width: ${data.percent}%;"></div>
+                        </div>
+                        <p class="att-percent-subtitle">${data.percent}% қатысу</p>
+                    `;
+
+                    // Добавляем карточку в контейнер
+                    container.appendChild(card);
+                }
+            }
+        });
+    </script>
 </body>
 </html>
