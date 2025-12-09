@@ -1,0 +1,247 @@
+{
+  "title": "Видео отслеживание - Быстрый справочник",
+  "version": "1.0",
+  "lastUpdated": "2025-12-09",
+  
+  "dom_ids": {
+    "main_containers": {
+      "tab-item-lesson": "Основной контейнер для отображения урока",
+      "my-youtube-player": "iframe элемент YouTube видео"
+    },
+    "tracking_elements": {
+      "video-watch-time": "Текущее время просмотра (MM:SS)",
+      "video-progress-percent": "Процент просмотра видео (%)",
+      "video-duration-display": "Общая длительность видео (MM:SS)",
+      "video-progress-bar": "Визуальная полоска прогресса",
+      "tracking-status-indicator": "Цветная точка статуса (с классом .active)",
+      "tracking-status-text": "Текст статуса воспроизведения"
+    }
+  },
+  
+  "css_classes": {
+    "containers": {
+      "video-wrapper": "Контейнер для iframe (16:9, скругленные углы)",
+      "video-tracking-container": "Основной контейнер отслеживания",
+      "tracking-stats": "Grid контейнер для 2 показателей",
+      "progress-section": "Секция прогресс-бара с подписью",
+      "tracking-hint": "Секция со статусом и подсказками"
+    },
+    "elements": {
+      "tracking-title": "Заголовок блока отслеживания",
+      "stat-item": "Отдельный показатель (время или %)",
+      "stat-icon": "Иконка показателя",
+      "stat-label": "Подпись показателя",
+      "stat-value": "Значение показателя (жирное)",
+      "progress-label": "Подпись прогресс-бара",
+      "progress-bar-container": "Фоновый контейнер прогресса",
+      "progress-bar-fill": "Активная полоса прогресса",
+      "tracking-status": "Блок со статусом",
+      "status-indicator": "Точка индикатора (6x6px)"
+    },
+    "status_classes": {
+      "active": "Добавляется на .status-indicator когда видео проигрывается (пульсирует)"
+    }
+  },
+  
+  "functions": {
+    "main": {
+      "openLesson(lessonName)": {
+        "description": "Открывает урок и выводит видео",
+        "params": ["lessonName: string - название из item_lessons"],
+        "uses": ["#tab-item-lesson", "#my-youtube-player"],
+        "calls": ["initializeVideoTracking()"]
+      },
+      "initializeVideoTracking(lessonName)": {
+        "description": "Инициализирует отслеживание для видео",
+        "params": ["lessonName: string"],
+        "loads_from": ["localStorage", "item_lessons"],
+        "uses": ["#my-youtube-player"],
+        "creates": ["YouTube плеер", "обработчики событий"]
+      }
+    },
+    "youtube_api": {
+      "onYouTubeIframeAPIReady()": {
+        "description": "Коллбэк YouTube API (вызывается автоматически)",
+        "auto_called": true
+      },
+      "onPlayerReady(event)": {
+        "description": "Событие: плеер готов",
+        "auto_called": true,
+        "updates": ["videoDuration", "UI"]
+      },
+      "onPlayerStateChange(event)": {
+        "description": "Событие: изменение состояния плеера",
+        "auto_called": true,
+        "states": {
+          "-1": "UNSTARTED",
+          "0": "ENDED",
+          "1": "PLAYING → startTracking()",
+          "2": "PAUSED → stopTracking()",
+          "3": "BUFFERING → stopTracking()",
+          "5": "CUED"
+        }
+      },
+      "onPlayerError(event)": {
+        "description": "Событие: ошибка плеера",
+        "auto_called": true
+      }
+    },
+    "tracking": {
+      "startTracking()": {
+        "description": "Начинает счет времени (интервал 1сек)",
+        "calls": ["stopTracking()", "updateTrackingUI()", "saveWatchStats()"],
+        "interval": "1000ms"
+      },
+      "stopTracking()": {
+        "description": "Останавливает счет времени",
+        "calls": ["saveWatchStats()"]
+      },
+      "updateTrackingUI(lessonName)": {
+        "description": "Обновляет все элементы UI отслеживания",
+        "updates": [
+          "#video-watch-time",
+          "#video-progress-percent",
+          "#video-duration-display",
+          "#video-progress-bar"
+        ]
+      },
+      "updateStatusIndicator(isPlaying)": {
+        "description": "Обновляет индикатор статуса (точка)",
+        "params": ["isPlaying: boolean"],
+        "updates": ["#tracking-status-indicator (класс .active)"]
+      }
+    },
+    "storage": {
+      "saveWatchStats(lessonName)": {
+        "description": "Сохраняет статистику в localStorage",
+        "saves_to": "localStorage.setItem(`video_${lessonName}`, JSON)",
+        "format": {
+          "totalSeconds": "number",
+          "watchedAt": "ISO date string",
+          "lessonName": "string"
+        }
+      },
+      "getAllWatchStats()": {
+        "description": "Получить статистику всех видео",
+        "returns": "object с ключами video_*"
+      },
+      "clearWatchStats(lessonName?)": {
+        "description": "Удалить статистику видео",
+        "params": ["lessonName: string (опционально) - если пусто, удаляет все"]
+      },
+      "exportWatchStats()": {
+        "description": "Экспортировать статистику в JSON",
+        "returns": "string (JSON)",
+        "output": "console.log"
+      }
+    },
+    "utils": {
+      "formatTime(seconds)": {
+        "description": "Преобразует секунды в MM:SS",
+        "params": ["seconds: number"],
+        "returns": "string (например: '1:23')"
+      }
+    }
+  },
+  
+  "localStorage": {
+    "key_format": "video_<название урока>",
+    "examples": [
+      "video_Менеджменттің мәні мен қағидалары",
+      "video_JavaScript-тегі ООП: Кластар және мұрагерлік"
+    ],
+    "value_structure": {
+      "totalSeconds": "number - общее время в секундах",
+      "watchedAt": "string (ISO) - когда просматривалось",
+      "lessonName": "string - название урока"
+    },
+    "where_to_view": "F12 → Application → Local Storage → ваш домен → ищите video_*"
+  },
+  
+  "data_sources": {
+    "item_lessons": {
+      "type": "object",
+      "location": "course_content.js",
+      "structure": {
+        "lesson_name": {
+          "category": "string",
+          "description": "string",
+          "duration": "string",
+          "date": "string",
+          "iframe": "string (HTML)",
+          "files": ["array of {name, url}"]
+        }
+      }
+    },
+    "videoWatchStats": {
+      "type": "object (глобальная переменная)",
+      "location": "course_content.js",
+      "description": "Кеш статистики в памяти"
+    }
+  },
+  
+  "global_variables": {
+    "currentPlayer": "YT.Player - объект YouTube плеера",
+    "timerInterval": "number - ID setInterval",
+    "totalSecondsWatched": "number - текущее время (сек)",
+    "videoStartTime": "Date - когда началось воспроизведение",
+    "videoDuration": "number - длительность видео (сек)",
+    "currentLesson": "string - название текущего урока",
+    "videoWatchStats": "object - статистика в памяти"
+  },
+  
+  "quick_tips": [
+    "Все времена хранятся в СЕКУНДАХ",
+    "localStorage сохраняет только строки (используется JSON)",
+    "Обновление UI происходит каждую секунду",
+    "Сохранение в localStorage каждые 5 секунд",
+    "При закрытии страницы запускается beforeunload событие",
+    "YouTube API загружается асинхронно из iframe_api",
+    "Каждый плеер имеет уникальный ID 'my-youtube-player'",
+    "Статус индикатор пульсирует при воспроизведении (CSS анимация)"
+  ],
+  
+  "common_tasks": {
+    "check_watch_stats": {
+      "description": "Проверить время просмотра в консоли",
+      "code": "getAllWatchStats()"
+    },
+    "clear_video_stats": {
+      "description": "Очистить статистику конкретного видео",
+      "code": "clearWatchStats('Менеджменттің мәні мен қағидалары')"
+    },
+    "export_stats": {
+      "description": "Экспортировать статистику",
+      "code": "exportWatchStats()"
+    },
+    "get_time_for_video": {
+      "description": "Получить время для конкретного видео",
+      "code": "getAllWatchStats()['название видео']?.totalSeconds"
+    },
+    "format_seconds": {
+      "description": "Форматировать число секунд",
+      "code": "formatTime(245) // '4:05'"
+    }
+  },
+  
+  "troubleshooting": {
+    "video_not_tracking": [
+      "Проверить что iframe имеет ID 'my-youtube-player'",
+      "Посмотреть консоль на ошибки YouTube API",
+      "Проверить что lessonName передан правильно",
+      "Убедиться что YouTube API загружен"
+    ],
+    "ui_not_updating": [
+      "Проверить наличие всех ID элементов в HTML",
+      "Убедиться что videoDuration > 0",
+      "Посмотреть консоль на ошибки",
+      "Проверить что updateTrackingUI() вызывается"
+    ],
+    "localStorage_not_saving": [
+      "Проверить что localStorage включен в браузере",
+      "Посмотреть в DevTools → Application → Local Storage",
+      "Убедиться что lessonName не пустой",
+      "Проверить консоль на ошибки JSON.stringify"
+    ]
+  }
+}

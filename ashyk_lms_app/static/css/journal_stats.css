@@ -1,0 +1,57 @@
+/* Настройки контейнера для выравнивания карточек в ряд */
+.stats-container-journal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Отступ между карточками */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Общие стили для самой карточки */
+.stat-card-journal {
+    flex: 1; /* Карточки растягиваются равномерно */
+    min-width: 200px; /* Минимальная ширина, чтобы не сжимались слишком сильно */
+    border-radius: 12px; /* Закругление углов */
+    padding: 24px;
+    color: #ffffff; /* Белый цвет текста */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+/* Цветовые модификаторы для карточек */
+.blue-card-journal {
+    background-color: #2b7bf5; /* Ярко-синий как на фото */
+}
+
+.green-card-journal {
+    background-color: #00c853; /* Зеленый */
+}
+
+.purple-card-journal {
+    background-color: #9d33ff; /* Фиолетовый */
+}
+
+/* Стили для заголовка (название показателя) */
+.card-header-journal {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+/* Стили для крупного значения (цифры) */
+.card-value-journal {
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1;
+}
+
+/* Стили для подписи снизу */
+.card-footer-journal {
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.9;
+}

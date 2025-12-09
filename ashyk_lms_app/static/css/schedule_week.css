@@ -1,0 +1,133 @@
+/* Контейнер сетки для недели */
+.week-schedule-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 24px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    margin-top: 20px;
+}
+
+/* Карточка дня (Колонка) */
+.day-column {
+    background: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+    overflow: hidden;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Заголовок дня (Фиолетовый) */
+.day-header {
+    background-color: #5533ff;
+    color: white;
+    padding: 16px 20px;
+}
+
+.day-name {
+    font-size: 20px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.class-count {
+    font-size: 13px;
+    opacity: 0.9;
+    margin-top: 4px;
+    display: block;
+}
+
+/* Тело карточки дня */
+.day-body {
+    padding: 16px;
+    background-color: #fff;
+    flex-grow: 1;
+}
+
+/* Мини-карточка занятия */
+.mini-lesson {
+    padding: 14px;
+    border-radius: 8px;
+    margin-bottom: 12px;
+    position: relative;
+    border-left: 4px solid transparent;
+}
+
+.mini-lesson:last-child {
+    margin-bottom: 0;
+}
+
+/* Цветовые стили (как на фото) */
+.style-blue {
+    background-color: #e3f2fd;
+    border: 1px solid #42a5f5; 
+}
+.style-blue .text-accent { color: #1976d2; }
+.style-blue .badge { background: #fff; color: #1976d2; }
+
+.style-green {
+    background-color: #e8f5e9;
+    border: 1px solid #66bb6a;
+}
+.style-green .text-accent { color: #2e7d32; }
+.style-green .badge { background: #fff; color: #2e7d32; }
+
+.style-purple {
+    background-color: #f3e5f5;
+    border: 1px solid #ab47bc;
+}
+.style-purple .text-accent { color: #7b1fa2; }
+.style-purple .badge { background: #fff; color: #7b1fa2; }
+
+/* Элементы внутри мини-карточки */
+.mini-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 8px;
+}
+
+.time-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.badge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.mini-subject {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+    margin: 0 0 8px 0;
+    line-height: 1.3;
+}
+
+.mini-details {
+    font-size: 13px;
+    color: #555;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.detail-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.icon-sm {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+}
