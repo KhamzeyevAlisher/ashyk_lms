@@ -26,8 +26,8 @@ body {
     /* Тень: Смещение Y, Размытие, Цвет */
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 
                 0 4px 6px rgba(0, 0, 0, 0.02); 
-    padding: 30px;
     margin-bottom: 25px;
+    padding-bottom: 20px;
     border: 1px solid var(--border-color); /* Едва заметная граница */
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -44,6 +44,10 @@ body {
 .question-header {
     display: flex;
     align-items: flex-start;
+    padding: 20px;
+    padding-bottom: 10px;
+    background-color: #6366f1;
+    border-radius: 16px 16px 0px 0px;
     margin-bottom: 20px;
 }
 
@@ -69,6 +73,7 @@ body {
     color: #343a40;
     line-height: 1.5;
     margin: 0;
+    color: rgb(235, 234, 234);
 }
 
 .question-hint {
@@ -92,8 +97,8 @@ body {
     align-items: center;
     padding: 15px 20px;
     border-radius: 12px;
-    border: 1px solid var(--border-color); 
-    margin-bottom: 5px;
+    border: 1px solid var(--border-color);
+    margin: 0px 20px 5px 20px; 
     background-color: #f8f9fa; /* Серый фон по умолчанию */
     cursor: pointer;
     transition: all 0.2s ease;
