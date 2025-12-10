@@ -56,7 +56,7 @@ body {
     flex-shrink: 0;
     width: 32px;
     height: 32px;
-    background-color: #e6f4ea; /* Светло-зеленый фон */
+    background-color: #ffffff; /* Светло-зеленый фон */
     color: #1e7e34; /* Темно-зеленый текст */
     border-radius: 8px;
     display: flex;
