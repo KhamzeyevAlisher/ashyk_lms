@@ -19,203 +19,180 @@ body {
     margin-left: 10px;
 }
 
-/* Карточка вопроса (как на скриншоте) */
+
+
+
+/* ҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺҺ */
+/* The main container for the quiz question */
+/* The main container for the quiz question */
 .question-card {
     background: #ffffff;
-    border-radius: 16px; /* Сильное скругление */
-    /* Тень: Смещение Y, Размытие, Цвет */
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08), 
-                0 4px 6px rgba(0, 0, 0, 0.02); 
-    margin-bottom: 25px;
-    padding-bottom: 20px;
-    border: 1px solid var(--border-color); /* Едва заметная граница */
-    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border-radius: 20px; /* Softer, larger radius */
+    /* A more subtle, layered shadow for a "lifting" effect */
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+    border: 1px solid #D1D5DB;
+    overflow: hidden; /* Ensures the header corners are clipped */
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    margin-bottom: 40px;
 }
 
-/* Эффект при наведении на карточку */
+/* Enhanced hover effect */
 .question-card:hover {
-    transform: translateY(-3px);
-    /* Тень становится глубже при наведении */
-    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.12), 
-                0 5px 15px rgba(0, 0, 0, 0.05);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08);
 }
 
-/* Шапка карточки (Вопрос) */
+/* Header section with the question text */
 .question-header {
     display: flex;
     align-items: flex-start;
-    padding: 20px;
-    padding-bottom: 10px;
-    background-color: #6366f1;
-    border-radius: 16px 16px 0px 0px;
-    margin-bottom: 20px;
+    padding: 24px;
+    background-color: #6D28D9; /* Rich purple */
+    color: #FFFFFF;
 }
 
-/* Иконка номера (имитация зеленой иконки со скриншота) */
+/* The number icon on the left */
 .question-number-icon {
     flex-shrink: 0;
     width: 32px;
     height: 32px;
-    background-color: #ffffff; /* Светло-зеленый фон */
-    color: #1e7e34; /* Темно-зеленый текст */
+    background-color: #FFFFFF;
+    color: #6D28D9;
     border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-weight: bold;
-    margin-right: 15px;
-    margin-top: -2px;
+    font-weight: 700; /* Bolder font weight */
+    margin-right: 16px;
+    font-size: 16px;
 }
 
 .question-text {
-    font-size: 18px;
+    font-size: 1.125rem; /* 18px */
     font-weight: 600;
-    color: #343a40;
     line-height: 1.5;
     margin: 0;
-    color: rgb(235, 234, 234);
 }
 
 .question-hint {
     display: block;
-    margin-top: 10px;
-    margin-bottom: 10px;
-    font-size: 13px;
-    color: #868e96;
-    font-weight: 500;
+    margin-top: 4px;
+    font-size: 0.875rem; /* 14px */
+    color: rgba(255, 255, 255, 0.7); /* Lighter hint text */
+    font-weight: 400;
 }
 
-/* Варианты ответов (Стилизация под плашки) */
+/* Container for the list of answer options */
 .variants-list {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Отступ между вариантами */
+    gap: 12px; /* A bit more space between options */
+    padding: 24px;
 }
 
+/* Individual answer option label */
 .variant-label {
     display: flex;
     align-items: center;
-    padding: 15px 20px;
+    padding: 16px;
+    margin: 0 10px 0 10px;
     border-radius: 12px;
-    border: 1px solid var(--border-color);
-    margin: 0px 20px 5px 20px; 
-    background-color: #f8f9fa; /* Серый фон по умолчанию */
-    cursor: pointer;
-    transition: all 0.2s ease;
-    /* border: 2px solid transparent; */
-    font-size: 15px;
-}
-
-/* При наведении на вариант */
-.variant-label:hover {
-    background-color: #e9ecef;
-}
-
-
-/* Скрываем стандартный кружок/галочку, будем красить саму плашку */
-/* Базовый стиль для обоих типов инпутов */
-.variant-input {
-    /* Убираем стандартный вид браузера */
-    -webkit-appearance: none;
-    appearance: none;
-    
-    /* Размеры (сделал покрупнее) */
-    width: 22px;
-    height: 22px;
-    
-    /* Отступы и позиционирование */
-    margin-right: 15px;
-    flex-shrink: 0; /* Чтобы не сжимался */
-    
-    /* Границы и фон */
-    border: 2px solid #adb5bd;
+    border: 1px solid #D1D5DB;
     background-color: #fff;
     cursor: pointer;
-    
-    /* Плавная анимация */
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-size: 1rem; /* 16px */
+    color: #1F2937;
+}
+
+/* Hover effect for options */
+.variant-label:hover {
+    transform: translateY(-2px);
+    border-color: #6D28D9;
+    box-shadow: 0 0 0 1px #6D28D9;
+}
+
+/* Hide the default radio/checkbox input */
+.variant-input {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    margin-right: 16px;
+    flex-shrink: 0;
+    border: 2px solid #D1D5DB;
+    background-color: #fff;
+    cursor: pointer;
     transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Эффект при наведении (hover) */
-.variant-input:hover {
-    border-color: #868e96;
-    background-color: #f1f3f5;
+/* Focus style for accessibility */
+.variant-input:focus-visible {
+    outline: 2px solid #6D28D9;
+    outline-offset: 2px;
 }
 
-/* Эффект нажатия (пружинка) */
-.variant-input:active {
-    transform: scale(0.9);
-}
-
-/* ===========================
-СТИЛИ ДЛЯ RADIO (КРУГ)
-=========================== */
+/* --- RADIO BUTTON STYLES --- */
 .variant-input[type="radio"] {
     border-radius: 50%;
 }
 
 .variant-input[type="radio"]:checked {
-    border-color: #0d6efd; /* Синяя обводка */
-    background-color: #0d6efd; /* Синий фон */
-    /* Рисуем белую точку внутри через внутреннюю тень */
-    box-shadow: inset 0 0 0 5px white; 
+    border-color: #6D28D9;
+    background-color: #6D28D9;
+    /* A cleaner inner dot using a radial gradient */
+    background-image: radial-gradient(circle, white 40%, transparent 45%);
 }
 
-/* ===========================
-СТИЛИ ДЛЯ CHECKBOX (КВАДРАТ)
-=========================== */
+/* --- CHECKBOX STYLES --- */
 .variant-input[type="checkbox"] {
-    border-radius: 6px; /* Скругленные углы */
+    border-radius: 6px;
 }
 
 .variant-input[type="checkbox"]:checked {
-    border-color: #20c997; /* Teal обводка */
-    background-color: #20c997; /* Teal фон */
-    /* Рисуем галочку через SVG */
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+    border-color: #6D28D9;
+    background-color: #6D28D9;
+    /* A cleaner SVG checkmark icon */
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='white'%3e%3cpath d='M12.207 4.793a1 1 0 010 1.414l-5 5a1 1 0 01-1.414 0l-2-2a1 1 0 011.414-1.414L6.5 9.086l4.293-4.293a1 1 0 011.414 0z'/%3e%3c/svg%3e");
     background-position: center;
-    background-size: 70%;
-    background-repeat: no-repeat;
-    box-shadow: none;
+    background-size: 100%;
 }
 
-/* СТИЛЬ ВЫБРАННОГО ОТВЕТА (Интерактивность) */
-/* Используем :has селектор (современные браузеры) или JS классы */
+/* Style for the selected answer's label */
 .variant-label:has(input:checked) {
-    background-color: #e7f5ff; /* Светло-голубой фон (как оценка 4 на скрине) */
-    border-color: #4dabf7;     /* Голубая граница */
-    color: #1864ab;
-    font-weight: 500;
+    /* background-color: #EDE9FE; Light purple */
+    border-color: #6D28D9;
+    color: #6D28D9;
+    font-weight: 600;
 }
 
-/* Альтернатива для чекбоксов (несколько ответов) - зеленый стиль */
-.variant-label:has(input[type="checkbox"]:checked) {
-    background-color: #e7f5ff; /* Светло-зеленый фон (как оценка 5 на скрине) */
-    border-color: #4dabf7;
-    color: #1864ab;
-}
-
-/* Кнопка завершения */
+/* The final submit button */
 .submit-btn {
     display: block;
     width: 100%;
-    max-width: 300px;
-    margin: 40px auto 0;
+    margin-top: 24px;
     padding: 16px;
-    background-color: #20c997; /* Teal цвет, похож на акценты скрина */
+    background-color: #10B981; /* Vibrant green */
     color: white;
     border: none;
     border-radius: 12px;
-    font-size: 18px;
+    font-size: 1.125rem; /* 18px */
     font-weight: 600;
     cursor: pointer;
-    box-shadow: 0 4px 12px rgba(32, 201, 151, 0.3);
+    box-shadow: 0 4px 10px rgba(16, 185, 129, 0.2);
     transition: background-color 0.2s, transform 0.2s;
 }
 
 .submit-btn:hover {
-    background-color: #12b886;
+    background-color: #059669; /* Slightly darker green on hover */
     transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
 }
 
-.hidden { display: none; }
+.submit-btn:active {
+    transform: translateY(-1px);
+}
+
+.hidden {
+    display: none;
+}
