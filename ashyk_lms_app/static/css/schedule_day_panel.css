@@ -52,7 +52,7 @@
 
 .type-lab {
     background-color: #fff3e0; /* Оранжевый фон */
-    bottom: 1px solid #ffa726;
+    border: 1px solid #ffa726;
 }
 .type-lab::before { background-color: #ffa726; }
 .type-lab .time-text, .type-lab .card-btn { color: #ef6c00; }

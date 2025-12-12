@@ -205,39 +205,6 @@
                             <h3>Бүгінгі сабақ кестесі</h3>
                             <a href="#">Барлығы &rarr;</a>
                         </div>
-
-                        <!-- Урок 1 -->
-                        <div class="list-card schedule-item">
-                            <div class="time-box">
-                                <i class="fa-regular fa-clock"></i> 09:00
-                            </div>
-                            <div class="schedule-info">
-                                <h4>Киберқауіпсіздік</h4>
-                                <p>Ахметов Е.К. • А-305</p>
-                            </div>
-                        </div>
-
-                        <!-- Урок 2 -->
-                        <div class="list-card schedule-item">
-                            <div class="time-box">
-                                <i class="fa-regular fa-clock"></i> 10:45
-                            </div>
-                            <div class="schedule-info">
-                                <h4>Бағдарламалау</h4>
-                                <p>Омарова А.С. • Б-201</p>
-                            </div>
-                        </div>
-
-                        <!-- Урок 3 -->
-                        <div class="list-card schedule-item">
-                            <div class="time-box">
-                                <i class="fa-regular fa-clock"></i> 12:30
-                            </div>
-                            <div class="schedule-info">
-                                <h4>Ағылшын тілі</h4>
-                                <p>Сүлейменов Б.Т. • В-102</p>
-                            </div>
-                        </div>
                     </div>
 
                     <!-- 2-Я КОЛОНКА: Домашние задания (Үй тапсырмалары) -->
@@ -245,39 +212,6 @@
                         <div class="section-header">
                             <h3>Үй тапсырмалары</h3>
                             <a href="#">Барлығы &rarr;</a>
-                        </div>
-
-                        <div class="list-card">
-                            <div class="hw-header">
-                                <span class="subject-name">Алгоритмдер</span>
-                                <span class="badge gray">Басталмаған</span>
-                            </div>
-                            <div class="hw-title">Екілік іздеу ағашын (BST) жүзеге асыру</div>
-                            <div class="hw-footer">
-                                <i class="fa-regular fa-calendar"></i> Мерзімі: 28.11.2025
-                            </div>
-                        </div>
-
-                        <div class="list-card">
-                            <div class="hw-header">
-                                <span class="subject-name">Web-әзірлеу</span>
-                                <span class="badge yellow">Орындалуда</span>
-                            </div>
-                            <div class="hw-title">React компоненттерін жасау және API қосу</div>
-                            <div class="hw-footer">
-                                <i class="fa-regular fa-calendar"></i> Мерзімі: 29.11.2025
-                            </div>
-                        </div>
-
-                        <div class="list-card">
-                            <div class="hw-header">
-                                <span class="subject-name">Дерекқорлар</span>
-                                <span class="badge gray">Басталмаған</span>
-                            </div>
-                            <div class="hw-title">Күрделі SQL сұраныстар және JOIN</div>
-                            <div class="hw-footer">
-                                <i class="fa-regular fa-calendar"></i> Мерзімі: 30.11.2025
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -812,14 +746,12 @@
                     </div>
                 </div>
                 <div class="schedule-list" style="display: flex; flex-direction: column; gap: 10px;">
-                    <div class="date-header">Дүйсенбі, 25 қараша 2025</div>
+                    <!-- <div class="date-header">Дүйсенбі, 25 қараша 2025</div> -->
 
-                    <!-- Карточка 1: Лекция (Синяя) -->
-                    <div class="lesson-card type-lecture">
+                    <!-- <div class="lesson-card type-lecture">
                         <div class="card-content">
                             <div class="card-top">
-                                <div class="time-wrapper">
-                                    <!-- Иконка часов -->
+                                <div class="time-wrapper"> 
                                     <svg class="time-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                                     <span class="time-text">09:00-10:30</span>
                                 </div>
@@ -838,10 +770,9 @@
                             </div>
                         </div>
                         <button class="card-btn">Толығырақ</button>
-                    </div>
+                    </div> -->
 
-                    <!-- Карточка 2: Практика (Зеленая) -->
-                    <div class="lesson-card type-practice">
+                    <!-- <div class="lesson-card type-practice">
                         <div class="card-content">
                             <div class="card-top">
                                 <div class="time-wrapper">
@@ -863,10 +794,9 @@
                             </div>
                         </div>
                         <button class="card-btn">Толығырақ</button>
-                    </div>
+                    </div> -->
 
-                    <!-- Карточка 3: Лабораторная/Семинар (Оранжевая) -->
-                    <div class="lesson-card type-lab">
+                    <!-- <div class="lesson-card type-lab">
                         <div class="card-content">
                             <div class="card-top">
                                 <div class="time-wrapper">
@@ -888,7 +818,7 @@
                             </div>
                         </div>
                         <button class="card-btn">Толығырақ</button>
-                    </div>
+                    </div> -->
                 </div>
                 <div class="week-schedule-container" style="display: none;">
 
@@ -1114,100 +1044,6 @@
                             <option>Семестр бойынша</option>
                         </select>
                     </div>
-
-                    <!-- 1. Предмет: Алгоритмы (Высокий балл) -->
-                    <div class="subject-card-journal">
-                        <div class="subject-header-journal">
-                            <div class="subject-name-wrapper-journal">
-                                <!-- Иконка тренда (зеленая стрелка вверх) -->
-                                <svg class="trend-icon-journal up-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                                    <polyline points="17 6 23 6 23 12"></polyline>
-                                </svg>
-                                <span class="subject-name-journal">Алгоритмдер және деректер құрылымы</span>
-                            </div>
-                            <!-- Статистика справа -->
-                            <div class="subject-stats-journal">
-                                <div class="stat-box-journal">
-                                    <span class="stat-label-journal">Орташа балл</span>
-                                    <span class="stat-value-journal">4.6</span>
-                                </div>
-                                <div class="stat-box-journal">
-                                    <span class="stat-label-journal">Қатысу</span>
-                                    <span class="stat-value-journal">95%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <!-- Список оценок -->
-                        <div class="grades-list-journal">
-                            <span class="grade-badge-journal grade-5-journal">5</span>
-                            <span class="grade-badge-journal grade-4-journal">4</span>
-                            <span class="grade-badge-journal grade-5-journal">5</span>
-                            <span class="grade-badge-journal grade-5-journal">5</span>
-                            <span class="grade-badge-journal grade-4-journal">4</span>
-                        </div>
-                    </div>
-
-                    <!-- 2. Предмет: ООП (Отличный балл) -->
-                    <div class="subject-card-journal">
-                        <div class="subject-header-journal">
-                            <div class="subject-name-wrapper-journal">
-                                <svg class="trend-icon-journal up-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                                    <polyline points="17 6 23 6 23 12"></polyline>
-                                </svg>
-                                <span class="subject-name-journal">Объектіге бағытталған бағдарламалау</span>
-                            </div>
-                            <div class="subject-stats-journal">
-                                <div class="stat-box-journal">
-                                    <span class="stat-label-journal">Орташа балл</span>
-                                    <span class="stat-value-journal">4.8</span>
-                                </div>
-                                <div class="stat-box-journal">
-                                    <span class="stat-label-journal">Қатысу</span>
-                                    <span class="stat-value-journal">100%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grades-list-journal">
-                            <span class="grade-badge-journal grade-5-journal">5</span>
-                            <span class="grade-badge-journal grade-5-journal">5</span>
-                            <span class="grade-badge-journal grade-4-journal">4</span>
-                            <span class="grade-badge-journal grade-5-journal">5</span>
-                            <span class="grade-badge-journal grade-5-journal">5</span>
-                        </div>
-                    </div>
-
-                    <!-- 3. Предмет: Базы данных (Средний балл) -->
-                    <div class="subject-card-journal">
-                        <div class="subject-header-journal">
-                            <div class="subject-name-wrapper-journal">
-                                <!-- Иконка "минус" для стабильного/низкого тренда -->
-                                <svg class="trend-icon-journal flat-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                    <line x1="5" y1="12" x2="19" y2="12"></line>
-                                </svg>
-                                <span class="subject-name-journal">Дерекқор жүйелері</span>
-                            </div>
-                            <div class="subject-stats-journal">
-                                <div class="stat-box-journal">
-                                    <span class="stat-label-journal">Орташа балл</span>
-                                    <span class="stat-value-journal">3.8</span>
-                                </div>
-                                <div class="stat-box-journal">
-                                    <span class="stat-label-journal">Қатысу</span>
-                                    <span class="stat-value-journal">90%</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="grades-list-journal">
-                            <span class="grade-badge-journal grade-4-journal">4</span>
-                            <span class="grade-badge-journal grade-4-journal">4</span>
-                            <span class="grade-badge-journal grade-3-journal">3</span>
-                            <span class="grade-badge-journal grade-4-journal">4</span>
-                            <span class="grade-badge-journal grade-4-journal">4</span>
-                        </div>
-                    </div>
-
                 </div>
                 <!-- Новый контейнер специально для отчета о посещаемости -->
                 <div id="attendance-section-unique" class="attendance-section-wrapper">
@@ -1349,7 +1185,8 @@
     <script src="{% static 'script/course_content.js' %}"></script>
     <script src="{% static 'script/script_test.js' %}"></script>
     <script src="{% static 'script/test_check.js' %}"></script>
-    <script src="{% static 'script/schedule_attendance.js' %}"></script>
+    <script src="{% static 'script/performance_attendance.js' %}"></script>
+    <script src="{% static 'script/schedule_day_week.js' %}"></script>
 
 
     <script>
@@ -1530,6 +1367,140 @@
         });
 
     });
+    </script>
+
+    <!-- Динамичный home расписание -->
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+    // 1. Данные о расписании в виде массива объектов
+    const scheduleData = [
+        {
+            time: "09:00",
+            subject: "Киберқауіпсіздік",
+            teacher: "Ахметов Е.К.",
+            room: "А-305"
+        },
+        {
+            time: "10:45",
+            subject: "Бағдарламалау",
+            teacher: "Омарова А.С.",
+            room: "Б-201"
+        },
+        {
+            time: "12:30",
+            subject: "Ағылшын тілі",
+            teacher: "Сүлейменов Б.Т.",
+            room: "В-102"
+        }
+    ];
+
+    // 2. Находим контейнер, куда будем вставлять расписание
+    const scheduleContainer = document.getElementById('tab-home').querySelector('.column-schedule');
+
+    // 3. Перебираем каждый элемент в массиве данных и создаем для него HTML-разметку
+    scheduleData.forEach(item => {
+        // Создаем главный div-контейнер для одного урока
+        // <div class="list-card schedule-item"></div>
+        const scheduleItem = document.createElement('div');
+        scheduleItem.className = 'list-card schedule-item';
+
+        // Создаем блок для времени
+        // <div class="time-box">...</div>
+        const timeBox = document.createElement('div');
+        timeBox.className = 'time-box';
+        timeBox.innerHTML = `<i class="fa-regular fa-clock"></i> ${item.time}`;
+
+        // Создаем блок с информацией об уроке
+        // <div class="schedule-info">...</div>
+        const scheduleInfo = document.createElement('div');
+        scheduleInfo.className = 'schedule-info';
+        scheduleInfo.innerHTML = `
+            <h4>${item.subject}</h4>
+            <p>${item.teacher} • ${item.room}</p>
+        `;
+
+        // Собираем все вместе: вставляем timeBox и scheduleInfo внутрь scheduleItem
+        scheduleItem.appendChild(timeBox);
+        scheduleItem.appendChild(scheduleInfo);
+
+        // Добавляем готовый элемент урока в общий контейнер на странице
+        scheduleContainer.appendChild(scheduleItem);
+    });
+
+});
+    </script>
+
+    <!-- Динамичный home домашка -->
+    <script>
+document.addEventListener("DOMContentLoaded", function() {
+
+    // 1. Данные о домашних заданиях в виде массива объектов
+    // Добавил свойство 'statusColor' для удобного управления цветом статуса
+    const homeworkData = [
+        {
+            subject: "Алгоритмдер",
+            status: "Басталмаған",
+            statusColor: "gray",
+            title: "Екілік іздеу ағашын (BST) жүзеге асыру",
+            dueDate: "28.11.2025"
+        },
+        {
+            subject: "Web-әзірлеу",
+            status: "Орындалуда",
+            statusColor: "yellow",
+            title: "React компоненттерін жасау және API қосу",
+            dueDate: "29.11.2025"
+        },
+        {
+            subject: "Дерекқорлар",
+            status: "Басталмаған",
+            statusColor: "gray",
+            title: "Күрделі SQL сұраныстар және JOIN",
+            dueDate: "30.11.2025"
+        }
+    ];
+
+    // 2. Находим контейнер, куда будем вставлять домашние задания
+    const homeworkContainer = document.getElementById('tab-home').querySelector('.column-homework');
+
+    // 3. Перебираем каждый элемент в массиве и создаем для него HTML-разметку
+    homeworkData.forEach(hw => {
+        // Создаем основной контейнер для карточки
+        // <div class="list-card"></div>
+        const card = document.createElement('div');
+        card.className = 'list-card';
+
+        // Создаем заголовок карточки
+        // <div class="hw-header">...</div>
+        const header = document.createElement('div');
+        header.className = 'hw-header';
+        header.innerHTML = `
+            <span class="subject-name">${hw.subject}</span>
+            <span class="badge ${hw.statusColor}">${hw.status}</span>
+        `;
+
+        // Создаем название задания
+        // <div class="hw-title">...</div>
+        const title = document.createElement('div');
+        title.className = 'hw-title';
+        title.textContent = hw.title; // .textContent безопаснее для вставки простого текста
+
+        // Создаем футер (нижнюю часть) карточки
+        // <div class="hw-footer">...</div>
+        const footer = document.createElement('div');
+        footer.className = 'hw-footer';
+        footer.innerHTML = `<i class="fa-regular fa-calendar"></i> Мерзімі: ${hw.dueDate}`;
+
+        // Собираем карточку: добавляем заголовок, название и футер внутрь нее
+        card.appendChild(header);
+        card.appendChild(title);
+        card.appendChild(footer);
+
+        // Добавляем готовую карточку в общий контейнер на странице
+        homeworkContainer.appendChild(card);
+    });
+
+});
     </script>
     
 </body>
