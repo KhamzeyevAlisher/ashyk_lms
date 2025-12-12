@@ -1522,6 +1522,26 @@ document.addEventListener("DOMContentLoaded", function() {
 
 });
     </script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+
+            const pageToOpen = urlParams.get('page');
+            const itemLesson = urlParams.get('lesson');
+
+            if (pageToOpen) {
+                openTab(pageToOpen);
+            } else {
+                openTab('home');
+            }
+
+            if (itemLesson) {
+                openLesson(itemLesson);
+            }
+        });
+
+    </script>
     
 </body>
 </html>

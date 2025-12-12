@@ -1,4 +1,26 @@
 /**
+ * Обновляет или добавляет параметр в строку запроса URL без перезагрузки страницы.
+ *
+ * @param {string} key Ключ параметра, который нужно изменить или добавить.
+ * @param {string} value Новое значение для параметра.
+ */
+function updateURLParameter(key, value) {
+  // Создаем объект URLSearchParams из текущей строки запроса
+  const searchParams = new URLSearchParams(window.location.search);
+
+  // Устанавливаем новое значение для параметра.
+  // Если параметр с таким ключом уже существует, его значение будет обновлено.
+  // Если нет, он будет добавлен.
+  searchParams.set(key, value);
+
+  // Формируем новый относительный путь с обновленными параметрами
+  const newRelativePathQuery = window.location.pathname + '?' + searchParams.toString();
+
+  // Обновляем URL в адресной строке браузера
+  history.pushState(null, '', newRelativePathQuery);
+}
+
+/**
  * Функция для переключения вкладок (табов) на странице.
  * Управляет видимостью контента и активным состоянием кнопок навигации.
  * 
@@ -66,6 +88,8 @@ function openTab(tabName) {
     // Устанавливаем текст заголовка в соответствии с открытой вкладкой.
     // Если для tabName нет соответствующего заголовка в объекте titles, используется значение по умолчанию 'Ashyk LMS'.
     document.getElementById('page-header-title').innerText = titles[tabName] || 'Ashyk LMS';
+
+    updateURLParameter('page', tabName);
 }
 
 /**
@@ -123,3 +147,5 @@ function toggleSchedule(type) {
         weekContainer.style.display = 'grid'; 
     }
 }
+
+

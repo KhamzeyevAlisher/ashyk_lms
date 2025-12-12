@@ -603,24 +603,3 @@ function clearWatchStats(lessonName) {
     console.log('🗑️  Вся видеостатистика очищена');
   }
 }
-
-/**
- * ====================================
- * ФУНКЦИЯ: ЭКСПОРТ СТАТИСТИКИ
- * ====================================
- * Экспортирует всю статистику просмотров в формате JSON
- * Выводит в консоль и возвращает JSON строку
- * 
- * Используется для:
- * - Отладки
- * - Отправки на сервер
- * - Резервной копии данных
- * 
- * @return {string} JSON строка со всей статистикой
- */
-function exportWatchStats() {
-  const allStats = getAllWatchStats();
-  const jsonString = JSON.stringify(allStats, null, 2);
-  console.log('📊 Статистика просмотров:', jsonString);
-  return jsonString;
-}
