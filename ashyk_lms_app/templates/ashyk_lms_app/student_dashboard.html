@@ -107,17 +107,22 @@
                 <i class="fa-solid fa-calendar-days"></i>
                 <span>Кесте</span>
             </button>
-            <!-- 5. ДНЕВНИК -->
+            <!-- 5. УЧЕБНЫЙ ПЛАН -->
+            <button class="nav-btn" onclick="openTab('curriculum')">
+                <i class="fa-solid fa-list-check"></i>
+                <span>Оқу жоспары</span>
+            </button>
+            <!-- 6. ДНЕВНИК -->
             <button class="nav-btn" onclick="openTab('diary')">
                 <i class="fa-solid fa-book-open"></i>
                 <span>Журнал</span>
             </button>
-            <!-- 6. ДОМАШНИЕ ЗАДАНИЯ -->
+            <!-- 7. ДОМАШНИЕ ЗАДАНИЯ -->
             <button class="nav-btn" onclick="openTab('homework')">
                 <i class="fa-solid fa-pen-to-square"></i>
                 <span>Үй тапсырмалары</span>
             </button>
-            <!-- 7. ПРОФИЛЬ -->
+            <!-- 8. ПРОФИЛЬ -->
             <button class="nav-btn" onclick="openTab('profile')">
                 <i class="fa-solid fa-user"></i>
                 <span>Профиль</span>
@@ -1051,7 +1056,12 @@
                 </div>
             </div>
 
-            <!-- TAB 6: ДОМАШНИЕ ЗАДАНИЯ -->
+            <!-- TAB 6: УЧЕБНЫЙ ПЛАН -->
+            <div id="tab-curriculum" class="tab-content hidden">
+
+            </div>
+
+            <!-- TAB 7: ДОМАШНИЕ ЗАДАНИЯ -->
             <div id="tab-homework" class="tab-content hidden">
                 <!-- Основной блок -->
                 <div class="container_homework">
@@ -1119,7 +1129,7 @@
                 </div>
             </div>
 
-            <!-- TAB 7: ПРОФИЛЬ -->
+            <!-- TAB 8: ПРОФИЛЬ -->
             <div id="tab-profile" class="tab-content hidden">
                 <div class="card profile-header">
                     <div class="avatar-circle">

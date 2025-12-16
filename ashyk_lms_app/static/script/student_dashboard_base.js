@@ -32,6 +32,7 @@ function updateURLParameter(key, value) {
  * Элементы DOM, с которыми взаимодействует функция:
  * 
  * Классы:
+ *   .sidebar:     Контейнер боковой навигационной панели. 
  * - .tab-content:  Контейнеры с содержимым вкладок. Функция скрывает все элементы с этим классом,
  *                  а затем показывает один из них.
  * - .hidden:       CSS-класс для скрытия элементов (например, display: none;). 
@@ -51,11 +52,15 @@ function openTab(tabName) {
     // 1. Получаем все элементы с классом 'tab-content' и скрываем их.
     // Это гарантирует, что перед показом новой вкладки все остальные будут скрыты.
     const contents = document.querySelectorAll('.tab-content');
+    
     contents.forEach(el => el.classList.add('hidden'));
 
     // 2. Находим и показываем нужный контейнер с контентом.
     // Ищем элемент по id, который формируется как 'tab-' + имя вкладки (например, 'tab-home').
     const activeContent = document.getElementById(`tab-${tabName}`);
+
+    console.log(activeContent, tabName);
+
     if (activeContent) {
         // Если элемент найден, удаляем класс 'hidden', чтобы сделать его видимым.
         activeContent.classList.remove('hidden');
@@ -63,7 +68,7 @@ function openTab(tabName) {
 
     // 3. Обновляем активный класс для кнопок навигации.
     // Сначала убираем класс 'active' со всех кнопок.
-    const buttons = document.querySelectorAll('.nav-btn');
+    const buttons = document.querySelector('.sidebar').querySelectorAll('.nav-btn');
     buttons.forEach(btn => btn.classList.remove('active'));
     
     // Затем ищем кнопку, которая вызвала эту функцию, сравнивая значение в атрибуте 'onclick'.
