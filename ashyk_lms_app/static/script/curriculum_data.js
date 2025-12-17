@@ -1,4 +1,4 @@
-{
+let curriculum_data = {
     "credits":240,
     "lectures":600,
     "practicals":2190,
