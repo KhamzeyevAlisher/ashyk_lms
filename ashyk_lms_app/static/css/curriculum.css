@@ -35,7 +35,7 @@
     color: #6E6B7B;
 }
 
-/* .semester-card {
+.semester-card {
     background: white;
     border-radius: 10px;
     box-shadow: 0 4px 24px 0 rgba(34, 41, 47, 0.1);
@@ -120,4 +120,4 @@
 .empty-course {
     color: #b9b9c3;
     font-style: italic;
-} */
+}
