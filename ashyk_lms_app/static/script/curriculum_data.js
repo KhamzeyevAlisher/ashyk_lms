@@ -888,3 +888,135 @@ let curriculum_data = {
         }
     }
 }
+
+
+// Функция рендеринга
+function renderCurriculum(data, containerId) {
+    const container = document.getElementById(containerId);
+    if (!container) return;
+
+    // 1. Создаем обертку
+    let html = `<div class="curriculum-wrapper">`;
+
+    // 2. Генерируем верхнюю статистику (Total Stats)
+    html += `
+        <div class="stats-grid-curriculum">
+            <div class="stat-card-curriculum">
+                <div class="stat-value-curriculum">${data.credits}</div>
+                <div class="stat-label-curriculum">Кредиттер</div>
+            </div>
+            <div class="stat-card-curriculum">
+                <div class="stat-value-curriculum">${data.lectures}</div>
+                <div class="stat-label-curriculum">Лекциялар</div>
+            </div>
+            <div class="stat-card-curriculum">
+                <div class="stat-value-curriculum">${data.practicals}</div>
+                <div class="stat-label-curriculum">Практика</div>
+            </div>
+            <div class="stat-card-curriculum">
+                <div class="stat-value-curriculum">${data.SRS}</div>
+                <div class="stat-label-curriculum">СРС</div>
+            </div>
+        </div>
+    `;
+
+    // 3. Проходим по семестрам
+    // Object.entries превращает объект семестров в массив [ключ, значение]
+    Object.entries(data.semester).forEach(([semName, semData]) => {
+        html += `
+            <div class="semester-card">
+                <div class="semester-header">
+                    <h3 class="semester-title">${semName}</h3>
+                    <div class="semester-info">
+                        ${semData.credits} кредит | ${semData.lectures + semData.practicals + semData.lab_work} ауд. сағат
+                    </div>
+                </div>
+                <div class="table-responsive">
+                    <table class="curriculum-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 40%">Пән атауы</th>
+                                <th style="text-align: center">Кредит</th>
+                                <th style="text-align: center">Лекц.</th>
+                                <th style="text-align: center">Прак.</th>
+                                <th style="text-align: center">Лаб.</th>
+                                <th style="text-align: center">СӨЖ</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+        `;
+
+        // 4. Проходим по дисциплинам внутри семестра
+        if (semData.disciplines && semData.disciplines.length > 0) {
+            semData.disciplines.forEach(discBlock => {
+                // discBlock - это объект вида {"Жалпы білім...": {type: "...", courses: [...]}}
+                // Так как ключ динамический, берем первый ключ
+                const categoryName = Object.keys(discBlock)[0];
+                const categoryData = discBlock[categoryName];
+                
+                // Рендерим заголовок категории
+                html += `
+                    <tr class="category-row">
+                        <td colspan="6">
+                            <div class="category-title">
+                                ${categoryName}
+                                <span class="badge-type">${categoryData.type}</span>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+
+                // 5. Проходим по курсам внутри категории
+                // Структура courses: [{ "History": {...}, "English": {...} }] - массив с одним объектом
+                if (categoryData.courses && categoryData.courses.length > 0) {
+                    const coursesObj = categoryData.courses[0]; // Берем первый объект из массива
+                    
+                    Object.entries(coursesObj).forEach(([courseName, courseStats]) => {
+                        // Проверка на пустые курсы (иногда бывают пустышки в данных)
+                        const isPlaceholder = courseStats.credits === 0 && courseStats.lectures === 0;
+                        
+                        html += `
+                            <tr class="course-row ${isPlaceholder ? 'empty-course' : ''}">
+                                <td>${courseName}</td>
+                                <td style="text-align: center"><strong>${courseStats.credits || '-'}</strong></td>
+                                <td style="text-align: center">${courseStats.lectures || '-'}</td>
+                                <td style="text-align: center">${courseStats.practicals || '-'}</td>
+                                <td style="text-align: center">${courseStats.lab_work || '-'}</td>
+                                <td style="text-align: center">${courseStats.SRS || '-'}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            });
+        } else {
+            html += `<tr><td colspan="6" style="text-align:center; padding: 20px;">Пәндер жоқ</td></tr>`;
+        }
+
+        html += `
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        `;
+    });
+
+    html += `</div>`; // Закрываем wrapper
+
+    // Вставка в DOM
+    container.innerHTML = html;
+    
+    // Показываем контейнер (убираем класс hidden, если он есть)
+    container.classList.remove('hidden');
+}
+
+// Данные JSON (вставь сюда переменную curriculum_data из твоего вопроса)
+// let curriculum_data = { ... твой JSON ... }; 
+
+// Вызов функции
+// Убедись, что DOM загружен
+document.addEventListener('DOMContentLoaded', () => {
+    // Вставь сюда свой объект curriculum_data целиком, либо убедись, что он доступен глобально
+    if(typeof curriculum_data !== 'undefined') {
+        renderCurriculum(curriculum_data, 'tab-curriculum');
+    }
+});
