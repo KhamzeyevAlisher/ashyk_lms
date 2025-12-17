@@ -4,6 +4,8 @@
     color: #5E5873;
     background-color: #F8F9FA; /* Светлый фон как на скрине */
     padding: 20px;
+    max-width: 1300px;
+    margin: auto;
 }
 
 /* Карточка статистики (верхняя часть) */
@@ -117,7 +119,7 @@
     background-color: #fbfbfb;
 }
 
-.empty-course {
+/* .empty-course {
     color: #b9b9c3;
     font-style: italic;
-}
+} */
