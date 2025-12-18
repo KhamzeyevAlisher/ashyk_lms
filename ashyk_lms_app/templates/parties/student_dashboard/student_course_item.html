@@ -1,0 +1,134 @@
+                <!-- 1. Карточка с информацией о курсе -->
+                <div class="card course-header">
+                    <!-- Картинка курса -->
+                    <div class="course-cover">
+                        <img src="https://cdn.culture.ru/images/6c3b2d76-23b7-5372-a282-81a13cf3d4f4" alt="Курс суреті">
+                    </div>
+                    <div class="course-details">
+
+                        <!-- Тэги курса -->
+                        <div class="course-tags">
+                            <span class="tag">Кәсіпкерлік</span>
+                            <span class="tag">Менеджмент</span>
+                        </div>
+
+                        <!-- Название курса и его описание -->
+                        <h2>Бизнес негіздері және басқару</h2>
+                        <p class="description">Бұл курс кәсіпкерлік қызметті ұйымдастыру, басқару психологиясы және кадрлық саясаттың заманауи әдістерін қамтиды.</p>
+                        
+                        <!-- Кафедра - предподаватель - Срок  -->
+                        <div class="instructor-info">
+                            <div class="info-row">
+                                <span class="label">Кафедра:</span>
+                                <span class="value">Экономика және басқару</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Оқытушы:</span>
+                                <span class="value">Примжанова Амина Абуталиновна</span>
+                            </div>
+                            <div class="info-row">
+                                <span class="label">Ұзақтығы:</span>
+                                <span class="value">8 апта (16 сағат)</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 2. Список лекций -->
+                <div class="lectures-container">
+                    <h3 class="section-title">Курс бағдарламасы</h3>
+                    
+                    <div class="lecture-stack">
+                        <!-- 1 лекция (Пройдено - green border) -->
+                        <div class="lecture-row completed">
+                            <div class="status-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <div class="lecture-content">
+                                <span class="lecture-number">1-дәріс</span>
+                                <h4>Кәсіпкерлік мәдениет пен этикасы</h4>
+                            </div>
+                            <button class="btn-review">Қайталау</button>
+                        </div>
+
+                        <!-- 2 лекция (Пройдено - green border) -->
+                        <div class="lecture-row completed">
+                            <div class="status-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <div class="lecture-content">
+                                <span class="lecture-number">2-дәріс</span>
+                                <h4>Кәсіпкерліктің ұйымдық - құқықтық нысандары</h4>
+                            </div>
+                            <button class="btn-review">Қайталау</button>
+                        </div>
+
+                        <!-- 3 лекция (Пройдено - green border) -->
+                        <div class="lecture-row completed">
+                            <div class="status-icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                            </div>
+                            <div class="lecture-content">
+                                <span class="lecture-number">3-дәріс</span>
+                                <h4>Менеджмент мәні мен қағидалары</h4>
+                            </div>
+                            <button class="btn-review">Қайталау</button>
+                        </div>
+
+                        <!-- 4 лекция (Активная/Текущая) -->
+                        <div class="lecture-row">
+                            <div class="status-icon play">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                            </div>
+                            <div class="lecture-content">
+                                <span class="lecture-number">4-дәріс</span>
+                                <h4>Менеджменттің мәні мен қағидалары (Жалғасы)</h4>
+                            </div>
+                            <button class="btn-start" onclick="openLesson('Менеджменттің мәні мен қағидалары')">Бастау</button>
+                        </div>
+
+                        <!-- 5 лекция -->
+                        <div class="lecture-row">
+                            <div class="status-icon lock">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <div class="lecture-content">
+                                <span class="lecture-number">5-дәріс</span>
+                                <h4>HR менеджментке кіріспе</h4>
+                            </div>
+                        </div>
+
+                        <!-- 6 лекция -->
+                        <div class="lecture-row">
+                            <div class="status-icon lock">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <div class="lecture-content">
+                                <span class="lecture-number">6-дәріс</span>
+                                <h4>Кәсіпкерлік ұйымды кадрмен қамтамасыз ету</h4>
+                            </div>
+                        </div>
+
+                        <!-- 7 лекция -->
+                        <div class="lecture-row">
+                            <div class="status-icon lock">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <div class="lecture-content">
+                                <span class="lecture-number">7-дәріс</span>
+                                <h4>Инновациялық менеджменттегі негізгі түсініктер</h4>
+                            </div>
+                        </div>
+
+                        <!-- 8 лекция -->
+                        <div class="lecture-row">
+                            <div class="status-icon lock">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                            </div>
+                            <div class="lecture-content">
+                                <span class="lecture-number">8-дәріс</span>
+                                <h4>Басқарудағы стратегиялық тәжірибелердің даму тарихы</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>

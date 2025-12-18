@@ -1,0 +1,151 @@
+                <!-- 1 Блок. Лекции и видеоуроки + фильтр (Барлық курстар) -->
+                <div class="card">
+                    <div class="card-header">
+                        <!-- Заголовок: Дәрістер мен бейнесабақтар (Лекции и видеоуроки) -->
+                        <h3>Дәрістер мен бейнесабақтар</h3>
+                        <!-- Подзаголовок: Материалдарды ыңғайлы қарқынмен оқыңыз (Изучайте материалы в удобном темпе) -->
+                        <p>Материалдарды ыңғайлы қарқынмен оқыңыз</p>
+                    </div>
+
+                    <div class="filter-controls">
+                        <!-- Поле поиска с иконкой -->
+                        <div class="search-wrapper">
+                            <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <!-- Плейсхолдер: Дәрістерді іздеу... (Поиск лекций...) -->
+                            <input type="text" placeholder="Дәрістерді іздеу...">
+                        </div>
+
+                        <!-- Выпадающий список -->
+                        <div class="select-wrapper">
+                            <select>
+                                <!-- Опции: Барлық курстар (Все курсы) -->
+                                <option value="all">Барлық курстар</option>
+                                <option value="math">Сайттын сәулеті</option>
+                                <option value="it">IT және Бағдарламалау</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 2 Блок. Статистика успеваемости -->
+                <div class="card">
+                    <!-- Добавьте класс "purple-card" к вашему существующему классу "card" -->
+                    <div class="card purple-card">
+                        <!-- Заголовок: Оқу үлгерімі (Прогресс обучения) -->
+                        <h3>Оқу үлгерімі</h3>
+                        
+                        <div class="stats-container">
+                            <!-- Блок 1: Всего лекций -->
+                            <div class="stat-box">
+                                <div class="stat-number">6</div>
+                                <div class="stat-label">Барлық дәрістер</div>
+                            </div>
+
+                            <!-- Блок 2: Просмотрено -->
+                            <div class="stat-box">
+                                <div class="stat-number">2</div>
+                                <div class="stat-label">Қаралды</div>
+                            </div>
+
+                            <!-- Блок 3: Завершено -->
+                            <div class="stat-box">
+                                <div class="stat-number">33%</div>
+                                <div class="stat-label">Аяқталды</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Список лекции (Дәрістер тізімі) + кнопка Все курсы (Барлық курстар) -->
+                <div class="lecture-list">
+                    <!-- Шапка списка: Заголовок слева, Кнопка справа -->
+                    <div class="list-header-row">
+                        <!-- "Что-то еще": Заголовок секции -->
+                        <h3 class="list-title">Дәрістер тізімі</h3>
+                        
+                        <!-- Кнопка справа -->
+                        <button class="btn-view-all" onclick="openTab('courses')">
+                            Барлық курстар
+                            <!-- Добавим маленькую стрелочку для красоты -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left: 5px; vertical-align: middle;">
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                                <polyline points="12 5 19 12 12 19"></polyline>
+                            </svg>
+                        </button>
+                    </div>
+
+                </div>
+
+                <!-- ТЕКУЩИЕ ЛЕКЦИИ  -->
+                <!-- Карточка 1 -->
+                <div class="card lecture-card">
+                    <!-- Левая часть: Иконка Play -->
+                    <div class="lecture-icon-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="play-icon">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </div>
+
+                    <!-- Правая часть: Контент -->
+                    <div class="lecture-content">
+                        <div class="lecture-category">Бағдарламалау</div>
+                        <h3 class="lecture-title">JavaScript-тегі ООП: Кластар және мұрагерлік</h3>
+                        <p class="lecture-desc">Объектіге бағытталған бағдарламалауды, кластарды және прототиптерді үйрену</p>
+                        
+                        <!-- Мета-данные: Время и Дата -->
+                        <div class="lecture-meta">
+                            <div class="meta-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                <span>1 сағ 15 мин</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>22.11.2025</span>
+                            </div>
+                        </div>
+
+                        <!-- Файлы для скачивания -->
+                        <div class="lecture-files">
+                            <a href="#" class="file-badge">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                slides.pdf
+                            </a>
+                            <a href="#" class="file-badge">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                                code-examples.zip
+                            </a>
+                        </div>
+
+                        <!-- Кнопка -->
+                        <button class="btn-primary btn-watch" onclick="openLesson('JavaScript-тегі ООП: Кластар және мұрагерлік')">Көруді бастау</button>
+                    </div>
+                </div>
+
+                <!-- Карточка 2 -->
+                <div class="card lecture-card">
+                    <div class="lecture-icon-box">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="play-icon">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                    </div>
+
+                    <div class="lecture-content">
+                        <div class="lecture-category">Бағдарламалау</div>
+                        <h3 class="lecture-title">Асинхронды бағдарламалау және Promises</h3>
+                        <p class="lecture-desc">Асинхронды кодпен, промистермен, async/await-пен жұмыс</p>
+                        
+                        <div class="lecture-meta">
+                            <div class="meta-item">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                <span>1 сағ</span>
+                            </div>
+                            <div class="meta-item">
+                                <span>26.11.2025</span>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary btn-watch">Көруді бастау</button>
+                    </div>
+                </div>
