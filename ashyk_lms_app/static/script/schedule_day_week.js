@@ -1,47 +1,213 @@
-document.addEventListener("DOMContentLoaded", function() {
-    //Скрипт дневного расписание
-    // 1. Вспомогательные объекты (иконки и типы уроков) остаются без изменений
-    const iconsDay = {
-        clock: `<svg class="time-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
-        teacher: `<svg class="footer-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>`,
-        location: `<svg class="footer-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>`
-    };
+/**
+ * Функция для переключения вида расписания между "дневным" и "недельным".
+ * Управляет активным состоянием кнопок-переключателей и видимостью соответствующих контейнеров.
+ * 
+ * @param {string} type - Тип отображения, который нужно активировать. 
+ *                        Принимает два значения: 'day' или 'week'.
+ * 
+ * ---
+ * Элементы DOM, с которыми взаимодействует функция:
+ * 
+ * Классы:
+ * - .toggle-btns .btn:first-child: Кнопка для переключения на дневной вид ("Күн").
+ * - .toggle-btns .btn:last-child:  Кнопка для переключения на недельный вид ("Апта").
+ * - .active:                       CSS-класс для визуального выделения активной кнопки-переключателя.
+ *                                  Функция добавляет и удаляет этот класс.
+ * - .schedule-list:                Контейнер, в котором находится верстка расписания на один день.
+ *                                  Функция управляет его свойством `display`.
+ * - .week-schedule-container:      Контейнер, в котором находится верстка расписания на всю неделю (в виде колонок).
+ *                                  Функция управляет его свойством `display`.
+ * ---
+ */
+function toggleSchedule(type) {
+    // Находим все необходимые элементы в DOM один раз для эффективности
+    const dayBtn = document.querySelector('.toggle-btns .btn:first-child');
+    const weekBtn = document.querySelector('.toggle-btns .btn:last-child');
+    
+    const dayContainer = document.querySelector('.schedule-list');
+    const weekContainer = document.querySelector('.week-schedule-container');
 
-    const lessonTypeMap = {
-        lecture: { cssClass: 'type-lecture', badgeText: 'Дәріс' },
-        practice: { cssClass: 'type-practice', badgeText: 'Практика' },
-        lab: { cssClass: 'type-lab', badgeText: 'Зертханалық' }
-    };
+    // Проверяем, какой тип отображения был запрошен
+    if (type === 'day') {
+        // --- Логика для отображения дневного расписания ---
 
-    // 2. Новая структура данных, предоставленная вами
-    const dailyScheduleData = {
-        "25 қараша 2025": [
+        // 1. Обновляем классы активности на кнопках: "Күн" становится активной.
+        dayBtn.classList.add('active');
+        weekBtn.classList.remove('active');
+
+        // 2. Показываем контейнер с дневным расписанием (используя flex) и скрываем недельный.
+        dayContainer.style.display = 'flex';
+        weekContainer.style.display = 'none';
+        
+    } else if (type === 'week') {
+        // --- Логика для отображения недельного расписания ---
+
+        // 1. Обновляем классы активности на кнопках: "Апта" становится активной.
+        weekBtn.classList.add('active');
+        dayBtn.classList.remove('active');
+
+        // 2. Скрываем дневной контейнер и показываем недельный.
+        dayContainer.style.display = 'none';
+        
+        // Для недельного контейнера используется 'grid', чтобы расположить дни в колонки.
+        weekContainer.style.display = 'grid'; 
+    }
+}
+
+//Скрипт дневного расписание
+// 1. Вспомогательные объекты (иконки и типы уроков) 
+const iconsDay = {
+    clock: `<svg class="time-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+    teacher: `<svg class="footer-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>`,
+    location: `<svg class="footer-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>`
+};
+
+const lessonTypeMap = {
+    lecture: { cssClass: 'type-lecture', badgeText: 'Дәріс' },
+    practice: { cssClass: 'type-practice', badgeText: 'Практика' },
+    lab: { cssClass: 'type-lab', badgeText: 'Зертханалық' }
+};
+
+// Структура данных дневного расписание 
+const dailyScheduleData = {
+    "25 қараша 2025": [
+        {
+            "Алгоритмдер және деректер құрылымы": {
+                time: "09:00-10:30",
+                type: "lecture",
+                teacher: "Ахметова А.Н.",
+                room: "А-305"
+            }
+        },
+        {
+            "Web-бағдарламалау технологиялары": {
+                time: "10:45-12:15",
+                type: "practice",
+                teacher: "Омаров Б.К.",
+                room: "Б-201"
+            }
+        },
+        {
+            "Дерекқорларды басқару жүйелері": {
+                time: "12:30-14:00",
+                type: "lab",
+                teacher: "Сәдуақасова Г.М.",
+                room: "В-102"
+            }
+        }
+    ]
+};
+
+// иконки недельного расписание 
+const iconsWeek = {
+    clock: `<svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
+    user: `<svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>`,
+    location: `<svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>`
+};
+
+//Структура данных недельного расписание
+const weekScheduleData = [
+    {
+        day: "Дүйсенбі",
+        lessons: [
             {
-                "Алгоритмдер және деректер құрылымы": {
-                    time: "09:00-10:30",
-                    type: "lecture",
-                    teacher: "Ахметова А.Н.",
-                    room: "А-305"
-                }
+                time: "09:00-10:30",
+                type: "Дәріс",
+                subject: "Объектіге бағытталған бағдарламалау",
+                teacher: "Иванов А.П.",
+                room: "А-305",
+                styleClass: "style-blue" // style-blue, style-green, style-purple
             },
             {
-                "Web-бағдарламалау технологиялары": {
-                    time: "10:45-12:15",
-                    type: "practice",
-                    teacher: "Омаров Б.К.",
-                    room: "Б-201"
-                }
-            },
-            {
-                "Дерекқорларды басқару жүйелері": {
-                    time: "12:30-14:00",
-                    type: "lab",
-                    teacher: "Сәдуақасова Г.М.",
-                    room: "В-102"
-                }
+                time: "10:45-12:15",
+                type: "Практика",
+                subject: "Python тілінде бағдарламалау",
+                teacher: "Петров С.С.",
+                room: "Б-201",
+                styleClass: "style-green"
             }
         ]
-    };
+    },
+    {
+        day: "Сейсенбі",
+        lessons: [
+            {
+                time: "09:00-10:30",
+                type: "Дәріс",
+                subject: "Компьютерлік архитектура",
+                teacher: "Ахметова Г.К.",
+                room: "А-210",
+                styleClass: "style-blue"
+            },
+            {
+                time: "10:45-12:15",
+                type: "Зертханалық",
+                subject: "Linux операциялық жүйелері",
+                teacher: "Ким В.А.",
+                room: "Л-105",
+                styleClass: "style-purple"
+            }
+        ]
+    },
+    {
+        day: "Сәрсенбі",
+        lessons: [
+            {
+                time: "09:00-10:30",
+                type: "Практика",
+                subject: "Frontend әзірлеу (React JS)",
+                teacher: "Омаров Б.Н.",
+                room: "Б-404",
+                styleClass: "style-green"
+            },
+            {
+                time: "10:45-12:15",
+                type: "Дәріс",
+                subject: "Ақпараттық қауіпсіздік негіздері",
+                teacher: "Сыздықов Е.М.",
+                room: "А-101",
+                styleClass: "style-blue"
+            }
+        ]
+    },
+    {
+        day: "Бейсенбі",
+        lessons: [
+            {
+                time: "09:00-10:30",
+                type: "Зертханалық",
+                subject: "Мобильді қосымшаларды әзірлеу",
+                teacher: "Әлиев Р.Т.",
+                room: "Л-303",
+                styleClass: "style-purple"
+            },
+            {
+                time: "10:45-12:15",
+                type: "Дәріс",
+                subject: "Жасанды интеллект негіздері",
+                teacher: "Қасымов Д.А.",
+                room: "А-405",
+                styleClass: "style-blue"
+            }
+        ]
+    },
+    {
+        day: "Жұма",
+        lessons: [
+            {
+                time: "09:00-10:30",
+                type: "Практика",
+                subject: "Backend (Node.js & Express)",
+                teacher: "Омаров Б.Н.",
+                room: "Б-404",
+                styleClass: "style-green"
+            }
+        ]
+    }
+];
+
+
+document.addEventListener("DOMContentLoaded", function() {
 
     // 3. Находим главный контейнер
     const container = document.getElementById('tab-schedule').querySelector('.schedule-list');
@@ -102,116 +268,6 @@ document.addEventListener("DOMContentLoaded", function() {
             container.appendChild(lessonCard);
         });
     }
-
-
-
-    //Скрипт недельного расписание
-    const weekScheduleData = [
-        {
-            day: "Дүйсенбі",
-            lessons: [
-                {
-                    time: "09:00-10:30",
-                    type: "Дәріс",
-                    subject: "Объектіге бағытталған бағдарламалау",
-                    teacher: "Иванов А.П.",
-                    room: "А-305",
-                    styleClass: "style-blue" // style-blue, style-green, style-purple
-                },
-                {
-                    time: "10:45-12:15",
-                    type: "Практика",
-                    subject: "Python тілінде бағдарламалау",
-                    teacher: "Петров С.С.",
-                    room: "Б-201",
-                    styleClass: "style-green"
-                }
-            ]
-        },
-        {
-            day: "Сейсенбі",
-            lessons: [
-                {
-                    time: "09:00-10:30",
-                    type: "Дәріс",
-                    subject: "Компьютерлік архитектура",
-                    teacher: "Ахметова Г.К.",
-                    room: "А-210",
-                    styleClass: "style-blue"
-                },
-                {
-                    time: "10:45-12:15",
-                    type: "Зертханалық",
-                    subject: "Linux операциялық жүйелері",
-                    teacher: "Ким В.А.",
-                    room: "Л-105",
-                    styleClass: "style-purple"
-                }
-            ]
-        },
-        {
-            day: "Сәрсенбі",
-            lessons: [
-                {
-                    time: "09:00-10:30",
-                    type: "Практика",
-                    subject: "Frontend әзірлеу (React JS)",
-                    teacher: "Омаров Б.Н.",
-                    room: "Б-404",
-                    styleClass: "style-green"
-                },
-                {
-                    time: "10:45-12:15",
-                    type: "Дәріс",
-                    subject: "Ақпараттық қауіпсіздік негіздері",
-                    teacher: "Сыздықов Е.М.",
-                    room: "А-101",
-                    styleClass: "style-blue"
-                }
-            ]
-        },
-        {
-            day: "Бейсенбі",
-            lessons: [
-                {
-                    time: "09:00-10:30",
-                    type: "Зертханалық",
-                    subject: "Мобильді қосымшаларды әзірлеу",
-                    teacher: "Әлиев Р.Т.",
-                    room: "Л-303",
-                    styleClass: "style-purple"
-                },
-                {
-                    time: "10:45-12:15",
-                    type: "Дәріс",
-                    subject: "Жасанды интеллект негіздері",
-                    teacher: "Қасымов Д.А.",
-                    room: "А-405",
-                    styleClass: "style-blue"
-                }
-            ]
-        },
-        {
-            day: "Жұма",
-            lessons: [
-                {
-                    time: "09:00-10:30",
-                    type: "Практика",
-                    subject: "Backend (Node.js & Express)",
-                    teacher: "Омаров Б.Н.",
-                    room: "Б-404",
-                    styleClass: "style-green"
-                }
-            ]
-        }
-    ];
-
-    // SVG белгішелері (Қайталанатын кодты азайту үшін)
-    const iconsWeek = {
-        clock: `<svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>`,
-        user: `<svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>`,
-        location: `<svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>`
-    };
 
     // 2. РЕНДЕРИНГ ФУНКЦИЯСЫ
     function renderSchedule() {

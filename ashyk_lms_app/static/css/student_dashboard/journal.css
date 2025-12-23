@@ -1,0 +1,311 @@
+/* 
+=========================================================================
+======================== ЖУРНАЛ: СТАТИСТИКА  ============================ 
+=========================================================================
+*/
+
+/* Настройки контейнера для выравнивания карточек в ряд */
+.stats-container-journal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Отступ между карточками */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Общие стили для самой карточки */
+.stat-card-journal {
+    flex: 1; /* Карточки растягиваются равномерно */
+    min-width: 200px; /* Минимальная ширина, чтобы не сжимались слишком сильно */
+    border-radius: 12px; /* Закругление углов */
+    padding: 24px;
+    color: #ffffff; /* Белый цвет текста */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+/* Цветовые модификаторы для карточек */
+.blue-card-journal {
+    background-color: #2b7bf5; /* Ярко-синий как на фото */
+}
+
+.green-card-journal {
+    background-color: #00c853; /* Зеленый */
+}
+
+.purple-card-journal {
+    background-color: #9d33ff; /* Фиолетовый */
+}
+
+/* Стили для заголовка (название показателя) */
+.card-header-journal {
+    font-size: 16px;
+    font-weight: 400;
+    margin-bottom: 10px;
+    opacity: 0.9;
+}
+
+/* Стили для крупного значения (цифры) */
+.card-value-journal {
+    font-size: 48px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    line-height: 1;
+}
+
+/* Стили для подписи снизу */
+.card-footer-journal {
+    font-size: 14px;
+    font-weight: 400;
+    opacity: 0.9;
+}
+
+
+/* 
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+======================================================
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+*/
+
+/* 
+=========================================================================
+========================= РАСПИСАНИЕ: ОЦЕНКИ  =========================== 
+=========================================================================
+*/
+
+/* Основной контейнер */
+.card-journal {
+    background: #fff;
+    border: 1px solid var(--border-color);
+    border-radius: 8px; /* Скругление углов всего блока */
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Шапка с заголовком и селектом */
+.header-section-journal {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.title-journal {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Стили для выпадающего списка */
+.select-box-journal {
+    padding: 8px 12px;
+    border: var(--card-border);
+    border-radius: 6px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* Карточка отдельного предмета */
+.subject-card-journal {
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Легкая тень */
+}
+
+/* Верхняя часть предмета (Название + Статистика) */
+.subject-header-journal {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+    flex-wrap: wrap; /* Чтобы на мобильных не ломалось */
+    gap: 15px;
+}
+
+/* Блок с иконкой и названием */
+.subject-name-wrapper-journal {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.subject-name-journal {
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+}
+
+/* SVG иконки трендов */
+.trend-icon-journal {
+    width: 20px;
+    height: 20px;
+}
+.trend-icon-journal.up-journal {
+    stroke: #00c853; /* Зеленая стрелка */
+}
+.trend-icon-journal.flat-journal {
+    stroke: #999; /* Серый минус */
+}
+
+/* Правая часть со статистикой */
+.subject-stats-journal {
+    display: flex;
+    gap: 20px;
+    text-align: right;
+}
+
+.stat-box-journal {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.stat-label-journal {
+    font-size: 12px;
+    color: #888;
+    margin-bottom: 4px;
+}
+
+.stat-value-journal {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Список оценок (квадратики) */
+.grades-list-journal {
+    display: flex;
+    gap: 8px;
+}
+
+.grade-badge-journal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px; /* Мягкий квадрат */
+    font-weight: 500;
+    font-size: 14px;
+}
+
+/* Цвета для разных оценок */
+.grade-5-journal {
+    background-color: #dbfadd; /* Светло-зеленый фон */
+    color: #1b8e38; /* Темно-зеленый текст */
+}
+
+.grade-4-journal {
+    background-color: #dbeafe; /* Светло-синий фон */
+    color: #1e40af; /* Темно-синий текст */
+}
+
+.grade-3-journal {
+    background-color: #fff9c4; /* Светло-желтый фон */
+    color: #f57f17; /* Оранжевый текст */
+}
+
+/* 
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+======================================================
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+*/
+
+/* 
+=========================================================================
+======================= РАСПИСАНИЕ: ПОСЕЩАЕМОСТЬ  ======================= 
+=========================================================================
+*/
+
+/* Основной контейнер секции */
+.attendance-section-wrapper {
+    background-color: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    margin-bottom: 20px;
+    margin-top: 40px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* Заголовок секции */
+.att-main-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Карточка для каждого месяца */
+.att-month-card {
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    padding: 16px;
+    margin-bottom: 16px;
+    background-color: #fff;
+    transition: transform 0.2s ease;
+}
+
+.att-month-card:hover {
+    border-color: #dce1e6;
+}
+
+/* Верхняя часть карточки: Месяц и Дробь */
+.att-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.att-month-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.att-fraction-text {
+    font-size: 16px;
+    font-weight: 500;
+    color: #2c3e50;
+}
+
+/* Контейнер прогресс-бара */
+.att-progress-track {
+    width: 100%;
+    height: 10px;
+    background-color: #e9ecef;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+/* Заполнение прогресс-бара */
+.att-progress-fill {
+    height: 100%;
+    background-color: #00c853; /* Зеленый цвет как на скрине */
+    border-radius: 5px;
+    transition: width 0.6s ease-in-out;
+}
+
+/* Текст с процентами снизу */
+.att-percent-subtitle {
+    font-size: 13px;
+    color: #7f8c8d;
+    margin: 0;
+}
+
+/* 
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+======================================================
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+*/
+
