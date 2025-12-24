@@ -81,8 +81,6 @@ function checkTest(testName) {
         <span style="font-size: 0.9em; margin-top: 5px; display:block">${comment}</span>
     `;
 
-    console.log(12);
-
     // Открытие модалки
     modal.classList.add('active');
 }

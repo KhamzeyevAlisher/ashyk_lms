@@ -105,7 +105,8 @@ function openTab(tabName) {
         'diary': 'Журнал',
         'homework': 'Үй тапсырмалары',
         'profile': 'Профиль',
-        'courses':'Курстар'
+        'courses':'Курстар',
+
     };
     // Устанавливаем текст заголовка в соответствии с открытой вкладкой.
     // Если для tabName нет соответствующего заголовка в объекте titles, используется значение по умолчанию 'Ashyk LMS'.
@@ -113,3 +114,21 @@ function openTab(tabName) {
 
     updateURLParameter('page', tabName);
 }
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    const pageToOpen = urlParams.get('page');
+    const itemLesson = urlParams.get('lesson');
+
+    if (pageToOpen) {
+        openTab(pageToOpen);
+    } else {
+        openTab('home');
+    }
+
+    if (itemLesson) {
+        openLesson(itemLesson);
+    }
+});
