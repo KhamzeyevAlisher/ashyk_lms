@@ -6,27 +6,31 @@
  * Структура: название урока => объект с данными урока
  */
 let item_lessons = {
-  "Менеджменттің мәні мен қағидалары": {
-    category: "Менеджмент негіздері",
-    description: "Менеджменттің негізгі түсініктері, мақсаттары және басқару қағидалары туралы кіріспе сабақ.",
-    duration: "45 мин",
-    date: "01.12.2025",
-    iframe: '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/aqZ_qz7vkjk?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
-    files: [
-      { name: "slides.pdf", url: "#" },
-      { name: "glossary.docx", url: "#" }
-    ]
+  "Кәсіпкерлік" : {
+    "Менеджменттің мәні мен қағидалары (Жалғасы)": {
+      category: "Менеджмент негіздері",
+      description: "Менеджменттің негізгі түсініктері, мақсаттары және басқару қағидалары туралы кіріспе сабақ.",
+      duration: "45 мин",
+      date: "01.12.2025",
+      iframe: '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/aqZ_qz7vkjk?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+      files: [
+        { name: "slides.pdf", url: "#" },
+        { name: "glossary.docx", url: "#" }
+      ]
+    }
   },
-  "JavaScript-тегі ООП: Кластар және мұрагерлік": {
-    category: "javascript",
-    description: "Бұл сабақта JavaScript тіліндегі объектіге бағытталған бағдарламалаудың негізгі концепциялары қарастырылады, соның ішінде кластар мен мұрагерлік.",
-    duration: "50 мин",
-    date: "05.12.2025",
-    iframe: '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/H-Uwil_2qH0?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
-    files: [
-      { name: "oop_examples.zip", url: "#" }
-    ]
-  }
+  "JavaScript":{
+    "JavaScript-тегі ООП: Кластар және мұрагерлік": {
+        category: "javascript",
+        description: "Бұл сабақта JavaScript тіліндегі объектіге бағытталған бағдарламалаудың негізгі концепциялары қарастырылады, соның ішінде кластар мен мұрагерлік.",
+        duration: "50 мин",
+        date: "05.12.2025",
+        iframe: '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/H-Uwil_2qH0?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+        files: [
+          { name: "oop_examples.zip", url: "#" }
+        ]
+      }
+    }
 };
 
 
@@ -41,9 +45,9 @@ let item_lessons = {
  * DOM элементы, с которыми взаимодействует:
  * - #tab-item-lesson (id) - контейнер для вывода урока
  */
-function openLesson(lessonName) {
+function openLesson(courseName, lessonName) {
   const container = document.getElementById('tab-item-lesson');
-  const lesson = item_lessons[lessonName];
+  const lesson = item_lessons[courseName][lessonName];
 
   // Проверка: найден ли урок в базе данных
   if (!lesson) {

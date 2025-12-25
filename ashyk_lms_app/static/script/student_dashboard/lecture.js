@@ -1,6 +1,7 @@
 let lecturesData = [
     {
         category: "Бағдарламалау",
+        course: "JavaScript",
         title: "JavaScript-тегі ООП: Кластар және мұрагерлік",
         description: "Объектіге бағытталған бағдарламалауды, кластарды және прототиптерді үйрену",
         duration: "1 сағ 15 мин",
@@ -12,6 +13,7 @@ let lecturesData = [
     },
     {
         category: "Бағдарламалау",
+        course: "JavaScript",
         title: "Асинхронды бағдарламалау және Promises",
         description: "Асинхронды кодпен, промистермен, async/await-пен жұмыс",
         duration: "1 сағ",
@@ -65,7 +67,7 @@ function renderLectures(data) {
 
                     ${filesHtml}
 
-                    <button class="btn-primary btn-watch" onclick="openLesson('${lecture.title}')">Көруді бастау</button>
+                    <button class="btn-primary btn-watch" onclick="openLesson('${lecture.course}', '${lecture.title}')">Көруді бастау</button>
                 </div>
             </div>
         `;
