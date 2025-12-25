@@ -59,11 +59,19 @@
 
 Переключение между разделами осуществляется функцией `openTab(tabName)` (student_dashboard_base.js).
 
+### Файлы:
+
+1.sidebar_student.html
+2.student_dashboard.css
+3.student_dashboard_base.js
+
 ### Принцип работы `openTab`
 
 Функция принимает строковый идентификатор вкладки и выполняет следующие действия:
 
-1.  **Скрытие вкладок:** Находит все элементы `.tab-content`(main.content-body --> все элементы `.tab-content`) и добавляет класс `.hidden`.
+> ⚠️ **Важно:** Все элементы кроме элементов `.tab-content` находиться в sidebar_student.html. Элементы `.tab-content` находиться внутри `main.content-body`
+
+1.  **Скрытие вкладок:** Находит все элементы `.tab-content` и добавляет класс `.hidden`.
 2.  **Отображение активной:** Удаляет класс `.hidden` у элемента с `id="tab-{tabName}"`.
 3.  **Сайдбар:**
     *   Находит все кнопки `.nav-btn` внутри `.sidebar`.
@@ -87,11 +95,11 @@
 
 ---
 
-## 3. Управление состоянием URL
+## 3. Управление состоянием URL (student_dashboard_base.js)
 
 Для сохранения состояния при перезагрузке страницы (F5) или отправке ссылки используется работа с `History API`.
 
-### Функция `updateURLParameter` (student_dashboard_base.js)
+### Функция `updateURLParameter`
 
 Обновляет GET-параметры без перезагрузки страницы. 
 
@@ -127,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 ---
 
-## 4. Структура данных (Data Models)
+## 4. Структура данных (Data Models) (home.js)
 
 Данные хранятся в массивах объектов (JSON-формат). В будущем эти данные должны приходить через AJAX/Fetch запрос к API.
 
@@ -174,75 +182,3 @@ document.addEventListener('DOMContentLoaded', function() {
 
 1.  Целевой контейнер: `.column-homework` внутри `#tab-home`.
 2.  Для каждого элемента создается `div.list-card`.
-3.  **Безопасность:** Для заголовка задания (`title`) используется `textContent`, чтобы предотвратить XSS-атаки, если данные приходят от пользователя.
-
-```javascript
-// Пример создания элемента
-const title = document.createElement('div');
-title.className = 'hw-title';
-title.textContent = hw.title; // Безопасная вставка текста
-```
-
----
-
-## 6. Руководство по расширению
-
-### Как добавить новую страницу (вкладку)?
-
-1.  **HTML:** Добавьте новый блок в основной контент.
-    ```html
-    <div id="tab-settings" class="tab-content hidden">
-        <h2>Настройки</h2>
-        <!-- Контент настроек -->
-    </div>
-    ```
-
-2.  **HTML (Sidebar):** Добавьте кнопку навигации.
-    ```html
-    <div class="nav-btn" onclick="openTab('settings')">
-        <i class="fa-solid fa-cog"></i> Настройки
-    </div>
-    ```
-
-3.  **JavaScript:** Обновите словарь заголовков в функции `openTab`.
-    ```javascript
-    const titles = {
-        // ... старые записи
-        'settings': 'Баптаулар' // Новый заголовок
-    };
-    ```
-
-### Как добавить новый статус для ДЗ?
-
-1.  **CSS:** Убедитесь, что класс существует в стилях.
-    ```css
-    .badge.red { background-color: #ffebee; color: #c62828; }
-    ```
-
-2.  **JavaScript (Data):** Используйте этот цвет в объекте данных.
-    ```javascript
-    {
-        subject: "Математика",
-        status: "Мерзімі өтті", // Просрочено
-        statusColor: "red",     // Ссылка на CSS класс
-        // ...
-    }
-    ```
-
-### Как подключить реальный API?
-
-Замените статические массивы на вызов `fetch`.
-
-```javascript
-document.addEventListener("DOMContentLoaded", async function() {
-    // 1. Получение данных
-    const response = await fetch('/api/student/schedule');
-    const scheduleDataHome = await response.json();
-
-    // 2. Логика рендеринга (остается той же)
-    const scheduleContainer = document.querySelector('.column-schedule');
-    scheduleDataHome.forEach(item => {
-        // ... код генерации карточек
-    });
-});
-```
