@@ -33,8 +33,8 @@
         {% include 'parties/student_dashboard/student_home.html' %}
     </div>
 
-    <!-- Вкладка 2: Профиль (скрыта по умолчанию) -->
-    <div id="tab-profile" class="tab-content hidden">
+    <!-- TAB 2: ЛЕКЦИИ -->
+    <div id="tab-lectures" class="tab-content hidden">
         ...
     </div>
 
@@ -57,13 +57,13 @@
 
 ## 2. Система навигации (Routing)
 
-Переключение между разделами осуществляется функцией `openTab(tabName)`.
+Переключение между разделами осуществляется функцией `openTab(tabName)` (student_dashboard_base.js).
 
 ### Принцип работы `openTab`
 
 Функция принимает строковый идентификатор вкладки и выполняет следующие действия:
 
-1.  **Скрытие вкладок:** Находит все элементы `.tab-content` и добавляет класс `.hidden`.
+1.  **Скрытие вкладок:** Находит все элементы `.tab-content`(main.content-body --> все элементы `.tab-content`) и добавляет класс `.hidden`.
 2.  **Отображение активной:** Удаляет класс `.hidden` у элемента с `id="tab-{tabName}"`.
 3.  **Сайдбар:**
     *   Находит все кнопки `.nav-btn` внутри `.sidebar`.
@@ -91,9 +91,9 @@
 
 Для сохранения состояния при перезагрузке страницы (F5) или отправке ссылки используется работа с `History API`.
 
-### Функция `updateURLParameter`
+### Функция `updateURLParameter` (student_dashboard_base.js)
 
-Обновляет GET-параметры без перезагрузки страницы.
+Обновляет GET-параметры без перезагрузки страницы. 
 
 ```javascript
 /**
