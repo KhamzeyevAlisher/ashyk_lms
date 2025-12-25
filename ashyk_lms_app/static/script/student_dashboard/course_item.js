@@ -46,7 +46,7 @@ function renderCourseByTitle(courseTitle) {
         if (lecture.state === 'completed') {
             rowClass += ' completed';
             icon = `<div class="status-icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg></div>`;
-            btn = `<button class="btn-review">Қайталау</button>`;
+            btn = `<button class="btn-review" onclick="openLesson('${courseTitle}', '${lecture.topic}')">Қайталау</button>`;
         } else if (lecture.state === 'active') {
             icon = `<div class="status-icon play"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg></div>`;
             btn = `<button class="btn-start" onclick="openLesson('${courseTitle}', '${lecture.topic}')">Бастау</button>`;

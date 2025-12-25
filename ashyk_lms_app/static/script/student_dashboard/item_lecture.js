@@ -7,6 +7,17 @@
  */
 let item_lessons = {
   "Кәсіпкерлік" : {
+    "Менеджмент мәні мен қағидалары": {
+      category: "Менеджмент негіздері",
+      description: "Менеджменттің негізгі түсініктері, мақсаттары және басқару қағидалары туралы кіріспе сабақ.",
+      duration: "45 мин",
+      date: "01.12.2025",
+      iframe: '<iframe width="560" height="315" src="https://www.youtube.com/embed/shZGLze2iwA?si=2atWKjpsh9AWtQOv&amp;controls=0&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
+      files: [
+        { name: "slides.pdf", url: "#" },
+        { name: "glossary.docx", url: "#" }
+      ]
+    },
     "Менеджменттің мәні мен қағидалары (Жалғасы)": {
       category: "Менеджмент негіздері",
       description: "Менеджменттің негізгі түсініктері, мақсаттары және басқару қағидалары туралы кіріспе сабақ.",
@@ -47,6 +58,7 @@ let item_lessons = {
  */
 function openLesson(courseName, lessonName) {
   const container = document.getElementById('tab-item-lesson');
+  console.log(courseName, lessonName);
   const lesson = item_lessons[courseName][lessonName];
 
   // Проверка: найден ли урок в базе данных
