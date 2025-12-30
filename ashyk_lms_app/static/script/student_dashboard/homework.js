@@ -156,9 +156,21 @@ function filterHomeworkCards(status) {
     for (const [subject, details] of Object.entries(homeworkData)) {
         if (status === 'all' || details.status === status) {
             const cardElement = createHomeworkCard(subject, details);
+
             container.appendChild(cardElement);
         }
     }
+
+    const detailsButtons = document.querySelectorAll('.btn_details_homework');
+
+    // Перебираем каждую найденную кнопку и добавляем ей обработчик клика
+    detailsButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Внутри этой функции 'this' будет ссылаться именно на ту кнопку,
+            // по которой кликнули.
+            openHomeworkModalOverley(this);
+        });
+    });
 }
 
 function setActiveTab(clickedButton) {

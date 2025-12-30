@@ -889,16 +889,18 @@ let curriculum_data = {
     }
 }
 
-
 // Функция рендеринга
 function renderCurriculum(data, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    // 1. Создаем обертку
-    let html = `<div class="curriculum-wrapper">`;
+    // 1. Семестр кілттерін алып аламыз (массив қылып)
+    const semesterKeys = Object.keys(data.semester);
+    let currentSemesterIndex = 0; // Бастапқы семестр
 
-    // 2. Генерируем верхнюю статистику (Total Stats)
+    // 2. Статистика (Өзгеріссіз қалды)
+    let html = `<div class="curriculum-wrapper">`;
+    
     html += `
         <div class="stats-grid-curriculum">
             <div class="stat-card-curriculum">
@@ -920,19 +922,64 @@ function renderCurriculum(data, containerId) {
         </div>
     `;
 
-    // 3. Проходим по семестрам
-    // Object.entries превращает объект семестров в массив [ключ, значение]
-    Object.entries(data.semester).forEach(([semName, semData]) => {
-        html += `
+    // 3. ЖАҢАЛЫҚ: Пагинация және мазмұн контейнерін қосамыз
+    // Inline стильдер тек орналасу үшін (CSS бар болса, кластарын өзіңіз реттеңіз)
+    html += `
+        <!-- Пагинация батырмалары -->
+        <div id="sem-pagination"></div>
+        
+        <!-- Ауысатын контент орны -->
+        <div id="sem-content"></div>
+    `;
+    
+    html += `</div>`; // Wrapper жабылуы
+    container.innerHTML = html;
+
+    // --- ІШКІ ФУНКЦИЯЛАР ---
+
+    // Батырмаларды салу функциясы
+    const renderButtons = () => {
+        const navContainer = document.getElementById('sem-pagination');
+        let buttonsHtml = '';
+
+        semesterKeys.forEach((key, index) => {
+            // Активті батырманы бояу үшін стиль немесе класс шартты түрде қосылады
+            // Сізде CSS бар болса, 'active' класын қолданыңыз
+            const isActive = index === currentSemesterIndex;
+            const activeStyle = isActive ? 'background-color: #7367F0; color: white; border-color: #7367F0;' : 'background-color: white; color: #333;';
+            
+            // "1 академиялық кезең" деген ұзын сөзді қысқартып көрсетуге болады (мысалы: "1 семестр")
+            // немесе сол күйінде қалдыруға болады:
+            const btnLabel = `${index + 1}-семестр`; 
+
+            buttonsHtml += `
+                <button 
+                    onclick="switchSemester(${index})"
+                    class="btn-sem-nav ${isActive ? 'active' : ''}" 
+                    style="padding: 8px 16px; border-radius: 10px; border: 1px solid #ddd; cursor: pointer; white-space: nowrap; transition: 0.2s; ${activeStyle}">
+                    ${btnLabel}
+                </button>
+            `;
+        });
+        navContainer.innerHTML = buttonsHtml;
+    };
+
+    // Нақты семестрді салу функциясы (Бұрынғы код логикасы осында көшті)
+    const renderSemesterContent = (index) => {
+        const contentContainer = document.getElementById('sem-content');
+        const semName = semesterKeys[index];
+        const semData = data.semester[semName];
+
+        let semHtml = `
             <div class="semester-card">
-                <div class="semester-header">
-                    <h3 class="semester-title">${semName}</h3>
+                <div class="semester-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+                    <h3 class="semester-title" style="margin:0;">${semName}</h3>
                     <div class="semester-info">
                         ${semData.credits} кредит | ${semData.lectures + semData.practicals + semData.lab_work} ауд. сағат
                     </div>
                 </div>
                 <div class="table-responsive">
-                    <table class="curriculum-table">
+                    <table class="curriculum-table" style="width:100%;">
                         <thead>
                             <tr>
                                 <th style="width: 40%">Пән атауы</th>
@@ -946,36 +993,27 @@ function renderCurriculum(data, containerId) {
                         <tbody>
         `;
 
-        // 4. Проходим по дисциплинам внутри семестра
         if (semData.disciplines && semData.disciplines.length > 0) {
             semData.disciplines.forEach(discBlock => {
-                // discBlock - это объект вида {"Жалпы білім...": {type: "...", courses: [...]}}
-                // Так как ключ динамический, берем первый ключ
                 const categoryName = Object.keys(discBlock)[0];
                 const categoryData = discBlock[categoryName];
                 
-                // Рендерим заголовок категории
-                html += `
+                semHtml += `
                     <tr class="category-row">
                         <td colspan="6">
-                            <div class="category-title">
+                            <div class="category-title" style="font-weight:bold; background:#f4f4f4; padding:5px 10px;">
                                 ${categoryName}
-                                <span class="badge-type">${categoryData.type}</span>
+                                <span class="badge-type" style="float:right; font-size:0.8em; font-weight:normal; background:#fff; padding:2px 6px; border-radius:4px;">${categoryData.type}</span>
                             </div>
                         </td>
                     </tr>
                 `;
 
-                // 5. Проходим по курсам внутри категории
-                // Структура courses: [{ "History": {...}, "English": {...} }] - массив с одним объектом
                 if (categoryData.courses && categoryData.courses.length > 0) {
-                    const coursesObj = categoryData.courses[0]; // Берем первый объект из массива
-                    
+                    const coursesObj = categoryData.courses[0];
                     Object.entries(coursesObj).forEach(([courseName, courseStats]) => {
-                        // Проверка на пустые курсы (иногда бывают пустышки в данных)
                         const isPlaceholder = courseStats.credits === 0 && courseStats.lectures === 0;
-                        
-                        html += `
+                        semHtml += `
                             <tr class="course-row ${isPlaceholder ? 'empty-course' : ''}">
                                 <td>${courseName}</td>
                                 <td style="text-align: center"><strong>${courseStats.credits || '-'}</strong></td>
@@ -989,31 +1027,28 @@ function renderCurriculum(data, containerId) {
                 }
             });
         } else {
-            html += `<tr><td colspan="6" style="text-align:center; padding: 20px;">Пәндер жоқ</td></tr>`;
+            semHtml += `<tr><td colspan="6" style="text-align:center; padding: 20px;">Пәндер жоқ</td></tr>`;
         }
 
-        html += `
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        `;
-    });
+        semHtml += `</tbody></table></div></div>`;
+        
+        contentContainer.innerHTML = semHtml;
+    };
 
-    html += `</div>`; // Закрываем wrapper
+    // Глобалды ауыстыру функциясын жасаймыз (onclick істеуі үшін)
+    window.switchSemester = (index) => {
+        currentSemesterIndex = index;
+        renderButtons(); // Батырма түсін жаңарту
+        renderSemesterContent(index); // Кестені жаңарту
+    };
 
-    // Вставка в DOM
-    container.innerHTML = html;
-
+    // Бастапқы іске қосу
+    renderButtons();
+    renderSemesterContent(0);
 }
 
-// Данные JSON (вставь сюда переменную curriculum_data из твоего вопроса)
-// let curriculum_data = { ... твой JSON ... }; 
-
-// Вызов функции
-// Убедись, что DOM загружен
+// Бет жүктелгенде шақыру
 document.addEventListener('DOMContentLoaded', () => {
-    // Вставь сюда свой объект curriculum_data целиком, либо убедись, что он доступен глобально
     if(typeof curriculum_data !== 'undefined') {
         renderCurriculum(curriculum_data, 'tab-curriculum');
     }

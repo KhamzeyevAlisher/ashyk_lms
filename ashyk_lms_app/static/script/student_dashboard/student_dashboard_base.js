@@ -20,6 +20,16 @@ function updateURLParameter(key, value) {
   history.pushState(null, '', newRelativePathQuery);
 }
 
+let hrefLinks = {
+    "schedule":".schedule-wrapper",
+    "curriculum":".curriculum-wrapper",
+    "diary":".stats-container-journal",
+    "homework":".container_homework",
+    "tests":"#tab-tests .dashboard-header",
+    "lectures":"#tab-lectures .card",
+    "home":"#tab-home .dashboard-header",
+}
+
 /**
  * Структура страницы:
  * В <body> два основных дочерних элемента:
@@ -73,6 +83,10 @@ function openTab(tabName) {
     const contents = document.querySelectorAll('.tab-content');
     
     contents.forEach(el => el.classList.add('hidden'));
+
+    if (tabName in hrefLinks) {
+        document.querySelector(hrefLinks[tabName]).scrollIntoView({behavior: 'smooth'});
+    }   
 
     // 2. Находим и показываем нужный контейнер с контентом.
     // Ищем элемент по id, который формируется как 'tab-' + имя вкладки (например, 'tab-home').
