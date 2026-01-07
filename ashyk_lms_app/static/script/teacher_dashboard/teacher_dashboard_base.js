@@ -67,9 +67,8 @@ let hrefLinks = {
 /**
  * Структура страницы:
  * В <body> два основных дочерних элемента:
- *   - .sidebar (Боковая панель) parties/student_dashboard/sidebar_student.html
+ *   - .sidebar (Боковая панель) parties/teacher_dashboard/sidebar_teacher.html
  *   - .main-content (Основной контент)
- * 
  * 
  * Функция для переключения вкладок (табов) на странице.
  * Управляет видимостью контента и активным состоянием кнопок навигации.
@@ -118,9 +117,9 @@ function openTab(tabName, itemParam = false) {
     
     contents.forEach(el => el.classList.add('hidden'));
 
-    if (tabName in hrefLinks) {
-        document.querySelector(hrefLinks[tabName]).scrollIntoView({behavior: 'smooth'});
-    }   
+    // if (tabName in hrefLinks) {
+    //     document.querySelector(hrefLinks[tabName]).scrollIntoView({behavior: 'smooth'});
+    // }   
 
     // 2. Находим и показываем нужный контейнер с контентом.
     // Ищем элемент по id, который формируется как 'tab-' + имя вкладки (например, 'tab-home').
@@ -147,9 +146,10 @@ function openTab(tabName, itemParam = false) {
     // Создаем объект-словарь, где ключи - это имена вкладок, а значения - соответствующие заголовки.
     const titles = {
         'home': 'Басты бет',
-        'lectures': 'Дәрістер',
+        'content': 'Контент',
         'tests': 'Тесттер',
         'schedule': 'Кесте',
+        'silabus': 'Оқу жоспары',
         'diary': 'Журнал',
         'homework': 'Үй тапсырмалары',
         'profile': 'Профиль',
@@ -160,34 +160,34 @@ function openTab(tabName, itemParam = false) {
     // Если для tabName нет соответствующего заголовка в объекте titles, используется значение по умолчанию 'Ashyk LMS'.
     document.getElementById('page-header-title').innerText = titles[tabName] || 'Ashyk LMS';
 
-    if (itemParam) {
-        updateURLParameter('page', tabName, itemParam);
-    } else {
-        updateURLParameter('page', tabName);
-    }
+    // if (itemParam) {
+    //     updateURLParameter('page', tabName, itemParam);
+    // } else {
+    //     updateURLParameter('page', tabName);
+    // }
 }
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
+// document.addEventListener('DOMContentLoaded', function() {
+//     const urlParams = new URLSearchParams(window.location.search);
 
-    const pageToOpen = urlParams.get('page');
+//     const pageToOpen = urlParams.get('page');
     
 
-    if (pageToOpen === "item-lesson") {
-        const titleLesson = urlParams.get('titleLesson');
-        const itemLesson = urlParams.get('nameLesson');
-        openLesson(titleLesson, itemLesson);
-    } else if (pageToOpen === "item-test") {
-        const testName = urlParams.get('nameTest');
-        openTest(testName);
-    } else if (pageToOpen === "item-course") {
-        const courseTitle = urlParams.get('titleCourse');
-        renderCourseByTitle(courseTitle);
-    } else if (pageToOpen) {
-        openTab(pageToOpen);
-    } else {
-        openTab('home');
-    }
-});
+//     if (pageToOpen === "item-lesson") {
+//         const titleLesson = urlParams.get('titleLesson');
+//         const itemLesson = urlParams.get('nameLesson');
+//         openLesson(titleLesson, itemLesson);
+//     } else if (pageToOpen === "item-test") {
+//         const testName = urlParams.get('nameTest');
+//         openTest(testName);
+//     } else if (pageToOpen === "item-course") {
+//         const courseTitle = urlParams.get('titleCourse');
+//         renderCourseByTitle(courseTitle);
+//     } else if (pageToOpen) {
+//         openTab(pageToOpen);
+//     } else {
+//         openTab('home');
+//     }
+// });

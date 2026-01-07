@@ -1,0 +1,111 @@
+/* Основная белая карточка */
+.homework-paper-card {
+    background-color: #fff;
+    border-radius: 12px; /* Закругление всей карточки */
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+/* Шапка */
+.paper-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.header-title { display: flex; align-items: center; gap: 10px; }
+.header-icon-main { color: #ff6b35; font-size: 1.2rem; } /* Оранжевая иконка */
+.paper-header h3 { margin: 0; font-size: 1.1rem; color: #333; }
+.view-all-link { color: #6c5ce7; text-decoration: none; font-size: 0.9rem; font-weight: 500; }
+
+/* --- Стили самих блоков (Ivan Petrov, Maria...) --- */
+.list-block {
+    display: flex;
+    align-items: center; /* Центрируем по вертикали */
+    border: 1px solid rgba(170, 168, 168, 0.37); 
+    background-color: #f9fbff; /* Очень светлый фон блока (как на фото) */
+    border-radius: 10px;       /* Закругленные углы блока */
+    padding: 15px;             /* Отступы внутри блока */
+    margin-bottom: 12px;       /* Расстояние между блоками */
+    transition: background-color 0.2s;
+}
+
+.list-block:last-child { margin-bottom: 0; }
+.list-block:hover { background-color: #f0f4f8; } /* Эффект при наведении */
+
+/* Иконки слева */
+.icon-circle {
+    font-size: 1.4rem;
+    margin-right: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.icon-alert { color: #ff4757; } /* Красный цвет */
+.icon-doc { color: #a4b0be; }   /* Серый цвет */
+
+/* Текст посередине */
+.block-info {
+    flex-grow: 1; /* Занимает все место */
+}
+.block-subject {
+    color: #2f3542;
+    font-weight: 600;
+    font-size: 1rem;
+    margin-bottom: 4px;
+}
+.block-desc {
+    color: #747d8c;
+    font-size: 0.85rem;
+    line-height: 1.2;
+}
+
+/* Бейджи справа */
+.date-badge {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    font-weight: 500;
+}
+
+/* Розовый бейдж (срочно) */
+.badge-red {
+    background-color: #ffe0e0;
+    color: #ff4757;
+}
+
+/* Серый бейдж (обычно) */
+.badge-gray {
+    background-color: #dfe4ea;
+    color: #747d8c;
+}
+
+/* Общий класс для карточки (чтобы и домашка, и расписание были одинаковыми) */
+.paper-card {
+    background-color: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    height: 100%; /* Чтобы колонки были одной высоты, если нужно */
+}
+
+/* Цвет иконки в заголовке расписания (Фиолетовый) */
+.header-icon-schedule {
+    color: #6c5ce7; 
+    font-size: 1.2rem;
+}
+
+/* --- Цвета для элементов списка расписания --- */
+
+/* Иконка часов (голубая) */
+.icon-blue {
+    color: #0984e3;
+    background-color: transparent; /* Фон прозрачный, или можно сделать light blue */
+}
+
+/* Бейдж времени справа (голубой фон) */
+.badge-blue {
+    background-color: #e7f5ff; /* Очень светло-голубой */
+    color: #0984e3;            /* Текст в цвет иконки */
+}

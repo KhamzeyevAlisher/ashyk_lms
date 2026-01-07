@@ -107,5 +107,5 @@ function renderCourseByTitle(courseTitle) {
     `;
 
     container.innerHTML = fullHTML;
-    openTab('item-course');
+    openTab('item-course', `titleCourse=${courseTitle}`);
 }

@@ -1,0 +1,99 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ashyk LMS Dashboard</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="{% static 'css/student_dashboard_base.css' %}">
+
+    <!-- home page студента -->
+    <link rel="stylesheet" href="{% static 'css/student_dashboard/home.css' %}">   
+
+    <link rel="stylesheet" href="{% static 'css/teacher_dashboard/home.css' %}">
+
+
+</head>
+<body>
+    {% include 'parties/teacher_dashboard/sidebar_teacher.html' %}
+
+    <!-- MAIN AREA -->
+    <main class="main-content">
+        <!-- TOP HEADER -->
+        <header class="top-header">
+            <h2 id="page-header-title" class="page-title">Басты бет</h2>
+            <div class="user-info">
+                <i class="fa-regular fa-bell" style="margin-right: 15px; cursor: pointer; color: var(--text-light);"></i>
+                <span style="font-weight: 500;">Айгүл Ержанова</span>
+            </div>
+        </header>
+
+        <div class="content-body">
+
+            <!-- TAB 1: ГЛАВНАЯ -->
+            <div id="tab-home" class="tab-content">
+                {% include 'parties/teacher_dashboard/teacher_home.html' %}
+            </div>
+
+            <!-- TAB 2: ЛЕКЦИИ -->
+            <div id="tab-content" class="tab-content hidden">
+                <p>Бұл мұғалімнің контент беті.</p>
+            </div>
+
+            <!-- TAB 3: ТЕСТЫ -->
+            <div id="tab-tests" class="tab-content hidden">
+                <p>Бұл мұғалімнің тесттер беті.</p>
+            </div> 
+
+            <!-- TAB 4: РАСПИСАНИЕ -->
+            <div id="tab-schedule" class="tab-content hidden">
+                <p>Бұл мұғалімнің кесте беті.</p>
+            </div>
+
+            <!-- TAB 5: ДНЕВНИК -->
+            <div id="tab-diary" class="tab-content hidden">
+                <p>Бұл мұғалімнің журнал беті.</p>
+            </div>
+
+            <!-- TAB 6: УЧЕБНЫЙ ПЛАН -->
+            <div id="tab-silabus" class="tab-content hidden">
+                <p>Бұл мұғалімнің оқу жоспары беті.</p>
+            </div>
+
+            <!-- TAB 7: ДОМАШНИЕ ЗАДАНИЯ -->
+            <div id="tab-homework" class="tab-content hidden">
+                <p>Бұл мұғалімнің үй тапсырмалары беті.</p>
+            </div>
+
+            <!-- TAB 8: ПРОФИЛЬ -->
+            <div id="tab-profile" class="tab-content hidden">
+                <div class="card profile-header">
+                    <div class="avatar-circle">
+                        <i class="fa-solid fa-user"></i>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 24px;">Бауыржан Айдынов</h2>
+                        <p>Ақпараттық технологиялар факультеті</p>
+                        <p style="color: var(--accent-color);">3-курс, IT-301 тобы</p>
+                    </div>
+                </div>
+                <div class="card">
+                    <h3>Жеке ақпарат</h3>
+                    <p><strong>Email:</strong> student@gmail.com</p>
+                    <p><strong>Телефон:</strong> +7 (777) 123 45 67</p>
+                    <p><strong>Туған күні:</strong> 15.05.2006</p>
+                    <br>
+                    <button class="btn-primary">Профильді өңдеу</button>
+                    <button class="btn-primary" style="background-color: var(--sidebar-bg); margin-left: 10px;">Құпия сөзді өзгерту</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <script src="{% static 'script/teacher_dashboard/teacher_dashboard_base.js' %}"></script>
+    <script src="{% static 'script/teacher_dashboard/home.js' %}"></script>
+</body>
+</html>

@@ -458,7 +458,7 @@ function openTest(testName) {
     
     // Переключаемся на вкладку с тестом
     // (Функция из student_dashboard.html)
-    openTab('item-test');
+    openTab('item-test', `nameTest=${testName}`);
 }
 
 function initModal() {

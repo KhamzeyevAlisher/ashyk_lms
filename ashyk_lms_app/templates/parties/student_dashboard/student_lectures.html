@@ -19,14 +19,26 @@
                         </div>
 
                         <!-- Выпадающий список -->
-                        <div class="select-wrapper">
+                        <!-- <div class="select-wrapper">
                             <select>
-                                <!-- Опции: Барлық курстар (Все курсы) -->
                                 <option value="all">Барлық курстар</option>
                                 <option value="math">Сайттын сәулеті</option>
                                 <option value="it">IT және Бағдарламалау</option>
                             </select>
+                        </div> -->
+                        
+                        <div class="custom-select" id="courseSelect">
+                            <div class="select-trigger">
+                                <span>Барлық курстар</span>
+                                <i class="fa-solid fa-chevron-down"></i>
+                            </div>
+                            <div class="select-options">
+                                <div class="option selected" data-value="all">Барлық курстар</div>
+                                <div class="option" data-value="web-architecture">Сайттын сәулеті</div>
+                                <div class="option" data-value="it-programming">IT және Бағдарламалау</div>
+                            </div>
                         </div>
+
                     </div>
                 </div>
                 

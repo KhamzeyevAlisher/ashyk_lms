@@ -203,7 +203,7 @@ function openLesson(courseName, lessonName) {
 
   // Переключаемся на вкладку с уроком
   if (typeof openTab === "function") {
-    openTab('item-lesson');
+    openTab('item-lesson', `titleLesson=${courseName}&nameLesson=${lessonName}`);
   } else {
     container.classList.remove('hidden');
   }

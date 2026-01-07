@@ -34,3 +34,6 @@ def admin_panel(request):
 def student_dashboard(request):
     return render(request, 'ashyk_lms_app/student_dashboard.html')
 
+@login_required
+def teacher_dashboard(request):
+    return render(request, 'ashyk_lms_app/teacher_dashboard.html')
