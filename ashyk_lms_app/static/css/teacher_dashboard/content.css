@@ -1,0 +1,297 @@
+/* =========================================
+    1. НЕГІЗГІ ТОР ЖӘНЕ АНИМАЦИЯ (GRID)
+    ========================================= */
+.courses-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); /* 200px-тен сәл кеңейттім */
+    gap: 20px;
+    padding-top: 10px;
+    animation: fadeIn 0.5s ease;
+    width: 100%;
+}
+
+/* Анимация */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* =========================================
+    2. КАРТОЧКАЛАР (CARDS)
+    ========================================= */
+.mini-course-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05); /* Көлеңкені сәл жұмсарттым */
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid #e5e7eb; /* #cccfd5 орнына заманауи сұр түс */
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+}
+
+.mini-course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    border-color: #d1d5db;
+}
+
+.course-img-wrapper {
+    width: 100%;
+    height: 140px; /* Сурет биіктігін сәл өсірдім */
+    background-color: #f3f4f6;
+}
+
+.course-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.course-info {
+    padding: 15px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.course-info h4 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 600;
+    color: #1f2937;
+    line-height: 1.4;
+}
+
+.course-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+    line-height: 1.5;
+}
+
+/* =========================================
+    3. ФИЛЬТР КОНТЕЙНЕРІ ЖӘНЕ ОРНАЛАСУЫ
+    ========================================= */
+.filters-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px 20px;
+    border: 1px solid #e5e7eb; /* var(--border-color) жоқ болса */
+    border-radius: 12px;
+    margin-bottom: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+/* Сол жақ топтама (Іздеу + Селекттер) */
+.filters-left {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    flex: 1; /* Бос орынды алады */
+}
+
+/* =========================================
+    4. ІЗДЕУ (SEARCH BOX)
+    ========================================= */
+.search-box {
+    position: relative;
+    min-width: 220px;
+    flex-shrink: 0;
+}
+
+.search-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 10px 15px 10px 38px; /* icon үшін орын */
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+    background: #f9fafb;
+}
+
+.search-box input:focus {
+    background: #fff;
+    border-color: #6366f1; /* Негізгі түс */
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* =========================================
+    5. CUSTOM SELECT (DROPDOWN)
+    ========================================= */
+.filter-controls {
+    display: flex;
+    gap: 15px;
+}
+
+.custom-select {
+    position: relative;
+    width: 200px;
+    user-select: none;
+    font-family: inherit;
+}
+
+.select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: #ffffff;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #374151;
+    transition: all 0.3s ease;
+    height: 42px; /* Search box-пен бірдей биіктік */
+    box-sizing: border-box;
+}
+
+.select-trigger:hover {
+    border-color: #9ca3af;
+}
+
+.custom-select.active .select-trigger {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+.select-trigger i {
+    font-size: 12px;
+    color: #9ca3af;
+    transition: transform 0.3s ease;
+}
+
+.custom-select.active i {
+    transform: rotate(180deg);
+}
+
+.select-options {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    padding: 5px;
+}
+
+.custom-select.active .select-options {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.option {
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #4b5563;
+    cursor: pointer;
+    border-radius: 6px;
+    transition: 0.2s;
+}
+
+.option:hover {
+    background-color: #eff6ff;
+    color: #6366f1;
+}
+
+.option.selected {
+    background-color: #e0e7ff;
+    color: #4338ca;
+    font-weight: 600;
+}
+
+/* =========================================
+    6. КУРС ҚОСУ БАТЫРМАСЫ (NEW BUTTON)
+    ========================================= */
+.add-course-btn {
+    background-color: #6366f1; /* Индиго түсі */
+    color: white;
+    border: none;
+    padding: 0 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 6px rgba(99, 102, 241, 0.25);
+    height: 42px; /* Басқа элементтермен бірдей биіктік */
+    white-space: nowrap;
+}
+
+.add-course-btn:hover {
+    background-color: #4f46e5;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 12px rgba(99, 102, 241, 0.3);
+}
+
+.add-course-btn:active {
+    transform: translateY(0);
+}
+
+/* =========================================
+    7. МОБИЛЬДІ АДАПТАЦИЯ (RESPONSIVE)
+    ========================================= */
+@media (max-width: 992px) {
+    .filters-container {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filters-left {
+        width: 100%;
+        justify-content: space-between;
+    }
+    
+    .add-course-btn {
+        width: 100%; /* Мобильдіде толық ені */
+        margin-top: 10px;
+    }
+}
+
+@media (max-width: 768px) {
+    .filters-left {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .search-box, 
+    .filter-controls,
+    .custom-select {
+        width: 100%;
+        min-width: 100%;
+    }
+
+    .filter-controls {
+        flex-direction: column;
+    }
+}

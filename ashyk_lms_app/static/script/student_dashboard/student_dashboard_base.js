@@ -119,7 +119,11 @@ function openTab(tabName, itemParam = false) {
     contents.forEach(el => el.classList.add('hidden'));
 
     if (tabName in hrefLinks) {
-        document.querySelector(hrefLinks[tabName]).scrollIntoView({behavior: 'smooth'});
+        try {
+            document.querySelector(hrefLinks[tabName]).scrollIntoView({behavior: 'smooth'});
+        } catch (e) {
+            console.error("Error scrolling to element:", e);
+        }
     }   
 
     // 2. Находим и показываем нужный контейнер с контентом.

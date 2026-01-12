@@ -170,6 +170,16 @@
         </div>
     </div>
 
+    {{ curriculum|json_script:"curriculum-data" }}
+
+    <script>
+        try {
+            let curriculum_data = JSON.parse(document.getElementById('curriculum-data').textContent);
+        } catch (e) {
+            let curriculum_data = null;
+        }
+    </script>
+
     <script src="{% static 'script/student_dashboard/student_dashboard_base.js' %}"></script>
     <script src="{% static 'script/student_dashboard/home.js' %}"></script>
     <script src="{% static 'script/student_dashboard/lecture.js' %}"></script>

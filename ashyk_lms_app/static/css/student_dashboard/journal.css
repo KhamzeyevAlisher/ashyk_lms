@@ -212,6 +212,61 @@
     color: #f57f17; /* Оранжевый текст */
 }
 
+/* Стиль для оценки, у которой есть комментарий */
+.grade-badge-journal.has-comment-journal {
+    cursor: pointer;
+    position: relative;
+    border: 2px solid #3498db; /* Синяя обводка для индикации */
+}
+
+/* Маленькая точка-индикатор (опционально) */
+.grade-badge-journal.has-comment-journal::after {
+    content: '';
+    position: absolute;
+    top: -2px;
+    right: -2px;
+    width: 8px;
+    height: 8px;
+    background-color: #e74c3c;
+    border-radius: 50%;
+    border: 1px solid white;
+}
+
+/* Стили для всплывающего комментария (Тултип) */
+.comment-tooltip-journal {
+    position: absolute;
+    background-color: #333;
+    color: #fff;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    z-index: 1000;
+    max-width: 200px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    
+    /* Стрелочка снизу */
+    transform: translate(-50%, -130%); /* Центрируем и поднимаем над оценкой */
+    pointer-events: none; /* Чтобы клик проходил сквозь него, если нужно */
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.comment-tooltip-journal.visible {
+    opacity: 1;
+}
+
+/* Стрелочка тултипа */
+.comment-tooltip-journal::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    margin-left: -5px;
+    border-width: 5px;
+    border-style: solid;
+    border-color: #333 transparent transparent transparent;
+}
+
 /* 
 =\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
 ======================================================

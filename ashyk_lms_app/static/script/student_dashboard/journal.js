@@ -17,41 +17,44 @@ let attendanceStats = {
     }
 };
 
-// Данные об успеваемости
 let journalData = {
     "Алгоритмдер және деректер құрылымы": {
         trend: "up",
         averageScore: 4.6,
         attendance: "95%",
-        grades: [5, 4, 5, 5, 4]
+        grades: [
+            5, 
+            { value: 4, comment: "Тақырыпты толық ашпадыңыз." }, // Оценка с комментом
+            5, 
+            5, 
+            { value: 4, comment: "Кешігіп тапсырдыңыз." }        // Оценка с комментом
+        ]
     },
     "Объектіге бағытталған бағдарламалау": {
         trend: "up",
         averageScore: 4.8,
         attendance: "100%",
-        grades: [5, 5, 4, 5, 5]
+        grades: [5, 5, 4, 5, 5] // Обычные оценки без комментов
     },
     "Дерекқор жүйелері": {
         trend: "flat",
         averageScore: 3.8,
         attendance: "90%",
-        grades: [4, 4, 3, 4, 4]
+        grades: [
+            4, 
+            { value: 4, comment: "Жақсы, бірақ SQL сұраныста қате бар." }, 
+            3, 
+            4, 
+            4
+        ]
     }
 };
 
 // 1. SVG-иконки для трендов, чтобы не хранить их в основном объекте
 let trendIcons = {
-    up: `<svg class="trend-icon-journal up-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                <polyline points="17 6 23 6 23 12"></polyline>
-            </svg>`,
-    flat: `<svg class="trend-icon-journal flat-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <line x1="5" y1="12" x2="19" y2="12"></line>
-            </svg>`,
-    down: `<svg class="trend-icon-journal down-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline>
-                <polyline points="17 18 23 18 23 12"></polyline>
-            </svg>`
+    up: `<svg class="trend-icon-journal up-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
+    flat: `<svg class="trend-icon-journal flat-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
+    down: `<svg class="trend-icon-journal down-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>`
 };
 
 // Генерация отчета о посещаемости
@@ -96,21 +99,36 @@ document.addEventListener("DOMContentLoaded", () => {
     // Находим контейнер, куда будем вставлять сгенерированные карточки
     const journalContainer = document.getElementById('tab-diary').querySelector('.card-journal');
 
-    // Перебираем объект journalData
+    // Очищаем старые данные (на случай перезапуска скрипта)
+    // journalContainer.innerHTML = '...'; // (Если нужно сохранить заголовок, не очищаем весь контейнер, а удаляем только карточки)
+    const oldCards = journalContainer.querySelectorAll('.subject-card-journal');
+    oldCards.forEach(card => card.remove());
+
+
+    // 2. Генерация HTML
     Object.entries(journalData).forEach(([subjectName, subjectDetails]) => {
         
-        // Создаем главный контейнер для карточки предмета
         const subjectCard = document.createElement('div');
         subjectCard.className = 'subject-card-journal';
 
-        // Генерируем HTML для списка оценок
-        // .map() создает из массива оценок массив HTML-строк
-        // .join('') объединяет их в одну строку
-        const gradesHtml = subjectDetails.grades.map(grade => 
-            `<span class="grade-badge-journal grade-${grade}-journal">${grade}</span>`
-        ).join('');
+        const gradesHtml = subjectDetails.grades.map(gradeItem => {
+            // Проверяем, является ли оценка объектом или числом
+            let value, commentAttr = '', classAttr = '';
+            
+            if (typeof gradeItem === 'object' && gradeItem !== null) {
+                value = gradeItem.value;
+                // Добавляем атрибут data-comment и класс has-comment-journal
+                if (gradeItem.comment) {
+                    commentAttr = `data-comment="${gradeItem.comment}"`;
+                    classAttr = 'has-comment-journal';
+                }
+            } else {
+                value = gradeItem;
+            }
 
-        // Формируем полную HTML-структуру карточки с помощью шаблонной строки
+            return `<span class="grade-badge-journal grade-${value}-journal ${classAttr}" ${commentAttr}>${value}</span>`;
+        }).join('');
+
         subjectCard.innerHTML = `
             <div class="subject-header-journal">
                 <div class="subject-name-wrapper-journal">
@@ -133,7 +151,37 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         `;
 
-        // 5. Добавляем готовую карточку в основной контейнер
         journalContainer.appendChild(subjectCard);
+    });
+
+
+    // 3. Логика обработки клика (Делегирование событий)
+    // Создаем один элемент тултипа, который будем перемещать
+    let tooltip = document.createElement('div');
+    tooltip.className = 'comment-tooltip-journal';
+    document.body.appendChild(tooltip);
+
+    document.addEventListener('click', function(e) {
+        const target = e.target;
+
+        // Если кликнули на оценку с комментарием
+        if (target.classList.contains('has-comment-journal')) {
+            const commentText = target.getAttribute('data-comment');
+            
+            // Получаем координаты оценки
+            const rect = target.getBoundingClientRect();
+            
+            // Заполняем и позиционируем тултип
+            tooltip.textContent = commentText;
+            tooltip.classList.add('visible');
+            
+            // Позиционируем: Сверху по центру от элемента + скролл страницы
+            tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+            tooltip.style.top = (rect.top + window.scrollY) + 'px';
+
+        } else {
+            // Если кликнули в любое другое место - скрываем тултип
+            tooltip.classList.remove('visible');
+        }
     });
 });

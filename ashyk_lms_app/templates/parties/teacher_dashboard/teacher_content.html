@@ -1,0 +1,55 @@
+    <!-- Секция тақырыбы -->
+    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+        <h3>Менің курстарым</h3>
+    </div>
+
+    <!-- Фильтрация және Батырма панелі -->
+    <div class="filters-container">
+        
+        <!-- Сол жақ: Іздеу және Селектілер -->
+        <div class="filters-left">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="myCourseSearch" placeholder="Курсты іздеу...">
+            </div>
+            
+            <div class="filter-controls">
+                <!-- 1. Санат селекті -->
+                <div class="custom-select" id="myCategorySelect">
+                    <div class="select-trigger">
+                        <span>Барлық санаттар</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="select-options">
+                        <div class="option selected" data-value="all">Барлық санаттар</div>
+                        <div class="option" data-value="programming">Бағдарламалау</div>
+                        <div class="option" data-value="business">Бизнес</div>
+                        <div class="option" data-value="design">Дизайн</div>
+                    </div>
+                </div>
+
+                <!-- 2. Статус селекті -->
+                <div class="custom-select" id="myStatusSelect">
+                    <div class="select-trigger">
+                        <span>Статус</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="select-options">
+                        <div class="option selected" data-value="all">Статус</div>
+                        <div class="option" data-value="active">Белсенді</div>
+                        <div class="option" data-value="completed">Аяқталған</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Оң жақ: Курс қосу батырмасы -->
+        <button class="add-course-btn" onclick="openAddCourseModal()">
+            <i class="fa-solid fa-plus"></i> Курс қосу
+        </button>
+    </div>
+
+    <!-- Курстар торы (Grid) -->
+    <div id="my-courses-grid" class="courses-grid courses-grid-visible">
+        <!-- JS арқылы толтырылады -->
+    </div>
