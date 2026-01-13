@@ -1,6 +1,7 @@
 from django.urls import path
 from django.contrib.auth.views import LogoutView
 from . import views
+from .views_api import student_api
 
 urlpatterns = [
     path('', views.CustomLoginView.as_view(), name='login'),
@@ -9,4 +10,6 @@ urlpatterns = [
     path('admin_dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('student_dashboard/', views.student_dashboard, name='student_dashboard'),
     path('teacher_dashboard/', views.teacher_dashboard, name='teacher_dashboard'),
+    path('api/curriculum/', student_api.get_curriculum_data, name='api_curriculum'),
+    path('api/journal/', student_api.get_student_grades, name='get_student_grades'),
 ]

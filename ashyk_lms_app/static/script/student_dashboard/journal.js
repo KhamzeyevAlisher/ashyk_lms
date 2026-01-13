@@ -17,38 +17,38 @@ let attendanceStats = {
     }
 };
 
-let journalData = {
-    "Алгоритмдер және деректер құрылымы": {
-        trend: "up",
-        averageScore: 4.6,
-        attendance: "95%",
-        grades: [
-            5, 
-            { value: 4, comment: "Тақырыпты толық ашпадыңыз." }, // Оценка с комментом
-            5, 
-            5, 
-            { value: 4, comment: "Кешігіп тапсырдыңыз." }        // Оценка с комментом
-        ]
-    },
-    "Объектіге бағытталған бағдарламалау": {
-        trend: "up",
-        averageScore: 4.8,
-        attendance: "100%",
-        grades: [5, 5, 4, 5, 5] // Обычные оценки без комментов
-    },
-    "Дерекқор жүйелері": {
-        trend: "flat",
-        averageScore: 3.8,
-        attendance: "90%",
-        grades: [
-            4, 
-            { value: 4, comment: "Жақсы, бірақ SQL сұраныста қате бар." }, 
-            3, 
-            4, 
-            4
-        ]
-    }
-};
+// let journalData = {
+//     "Алгоритмдер және деректер құрылымы": {
+//         trend: "up",
+//         averageScore: 4.6,
+//         attendance: "95%",
+//         grades: [
+//             5, 
+//             { value: 4, comment: "Тақырыпты толық ашпадыңыз." }, // Оценка с комментом
+//             5, 
+//             5, 
+//             { value: 4, comment: "Кешігіп тапсырдыңыз." }        // Оценка с комментом
+//         ]
+//     },
+//     "Объектіге бағытталған бағдарламалау": {
+//         trend: "up",
+//         averageScore: 4.8,
+//         attendance: "100%",
+//         grades: [5, 5, 4, 5, 5] // Обычные оценки без комментов
+//     },
+//     "Дерекқор жүйелері": {
+//         trend: "flat",
+//         averageScore: 3.8,
+//         attendance: "90%",
+//         grades: [
+//             4, 
+//             { value: 4, comment: "Жақсы, бірақ SQL сұраныста қате бар." }, 
+//             3, 
+//             4, 
+//             4
+//         ]
+//     }
+// };
 
 // 1. SVG-иконки для трендов, чтобы не хранить их в основном объекте
 let trendIcons = {
@@ -56,6 +56,88 @@ let trendIcons = {
     flat: `<svg class="trend-icon-journal flat-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
     down: `<svg class="trend-icon-journal down-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>`
 };
+
+function renderJournal(journalData, containerId) {
+    const tabContainer = document.getElementById(containerId);
+    if (!tabContainer) {
+        console.error(`Контейнер #${containerId} табылмады`);
+        return;
+    }
+
+    const journalContainer = tabContainer.querySelector('.card-journal');
+    if (!journalContainer) {
+        console.error(`.card-journal класы табылмады #${containerId} ішінде`);
+        return;
+    }
+
+    // const trendIcons = {
+    //     up: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trending-up text-success"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
+    //     down: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-trending-down text-danger"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"></polyline><polyline points="17 18 23 18 23 12"></polyline></svg>`,
+    //     flat: `<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-minus text-warning"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`
+    // };
+
+    // Ескі карточкаларды тазалаймыз
+    const oldCards = journalContainer.querySelectorAll('.subject-card-journal');
+    oldCards.forEach(card => card.remove());
+
+    // Деректер жоқ болса хабарлама
+    if (!journalData || Object.keys(journalData).length === 0) {
+        journalContainer.innerHTML = '<p class="text-center p-4">Бағалар әзірге қойылмаған.</p>';
+        return;
+    }
+
+    // HTML генерациясы
+    Object.entries(journalData).forEach(([subjectName, subjectDetails]) => {
+        const subjectCard = document.createElement('div');
+        subjectCard.className = 'subject-card-journal';
+
+        const gradesHtml = subjectDetails.grades.map(gradeItem => {
+            let value, commentAttr = '', classAttr = '';
+            
+            // Баға объект немесе жай сан екенін тексереміз
+            if (typeof gradeItem === 'object' && gradeItem !== null) {
+                value = gradeItem.value;
+                if (gradeItem.comment) {
+                    commentAttr = `data-comment="${gradeItem.comment}"`;
+                    classAttr = 'has-comment-journal';
+                }
+            } else {
+                value = gradeItem;
+            }
+
+            return `<span class="grade-badge-journal grade-${value}-journal ${classAttr}" ${commentAttr}>${value}</span>`;
+        }).join('');
+
+        // Қатысу (attendance) жоқ болса, дефолт мән қоямыз
+        const attendance = subjectDetails.attendance || 'N/A';
+        // Тренд иконын алу (егер қате келсе, flat қоямыз)
+        const trendIcon = trendIcons[subjectDetails.trend] || trendIcons.flat;
+
+        subjectCard.innerHTML = `
+            <div class="subject-header-journal">
+                <div class="subject-name-wrapper-journal">
+                    ${trendIcon}
+                    <span class="subject-name-journal">${subjectName}</span>
+                </div>
+                <div class="subject-stats-journal">
+                    <div class="stat-box-journal">
+                        <span class="stat-label-journal">Орташа балл</span>
+                        <span class="stat-value-journal">${subjectDetails.averageScore}</span>
+                    </div>
+                    <div class="stat-box-journal">
+                        <span class="stat-label-journal">Қатысу</span>
+                        <span class="stat-value-journal">${attendance}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="grades-list-journal">
+                ${gradesHtml}
+            </div>
+        `;
+
+        journalContainer.appendChild(subjectCard);
+    });
+}
 
 // Генерация отчета о посещаемости
 document.addEventListener("DOMContentLoaded", () => {
@@ -97,14 +179,14 @@ document.addEventListener("DOMContentLoaded", () => {
     //============== Скрипт для успеваемости ==============
 
     // Находим контейнер, куда будем вставлять сгенерированные карточки
-    const journalContainer = document.getElementById('tab-diary').querySelector('.card-journal');
+    // const journalContainer = document.getElementById('tab-diary').querySelector('.card-journal');
 
     // Очищаем старые данные (на случай перезапуска скрипта)
     // journalContainer.innerHTML = '...'; // (Если нужно сохранить заголовок, не очищаем весь контейнер, а удаляем только карточки)
-    const oldCards = journalContainer.querySelectorAll('.subject-card-journal');
-    oldCards.forEach(card => card.remove());
+    // const oldCards = journalContainer.querySelectorAll('.subject-card-journal');
+    // oldCards.forEach(card => card.remove());
 
-
+/** 
     // 2. Генерация HTML
     Object.entries(journalData).forEach(([subjectName, subjectDetails]) => {
         
@@ -154,6 +236,7 @@ document.addEventListener("DOMContentLoaded", () => {
         journalContainer.appendChild(subjectCard);
     });
 
+*/
 
     // 3. Логика обработки клика (Делегирование событий)
     // Создаем один элемент тултипа, который будем перемещать
@@ -184,4 +267,39 @@ document.addEventListener("DOMContentLoaded", () => {
             tooltip.classList.remove('visible');
         }
     });
+});
+
+document.addEventListener('DOMContentLoaded', async () => {
+    // API URL (Django urls.py-да көрсетілген жол)
+    const JOURNAL_API_URL = '/api/journal/'; 
+    const CONTAINER_ID = 'tab-diary'; // HTML-дегі контейнер ID-і
+
+    try {
+        const response = await fetch(JOURNAL_API_URL);
+        
+        // Егер пайдаланушы авторизациядан өтпеген болса (401/403)
+        if (response.status === 401 || response.status === 403) {
+            console.warn("Авторизация қажет");
+            return;
+        }
+
+        const data = await response.json();
+
+        if (response.ok) {
+            // 1. Журналды саламыз
+            renderJournal(data, CONTAINER_ID);
+            
+            // 2. Тултиптерді іске қосамыз (тек бір рет)
+            // initJournalTooltips();
+        } else {
+            console.warn("Журнал деректері алынбады:", data);
+            const container = document.getElementById(CONTAINER_ID);
+            if (container) container.innerHTML = `<p style="color:red">Қате: ${data.error || 'Белгісіз қате'}</p>`;
+        }
+
+    } catch (error) {
+        console.error("Критическая ошибка API (Journal):", error);
+        const container = document.getElementById(CONTAINER_ID);
+        if (container) container.innerHTML = `<p>Сервермен байланыс жоқ.</p>`;
+    }
 });

@@ -75,6 +75,7 @@ class Curriculum(models.Model):
         related_name='curriculums',
         verbose_name="Образовательная программа"
     )
+    
     plan_data = models.JSONField(
         verbose_name="Учебный план (JSON)"
     )

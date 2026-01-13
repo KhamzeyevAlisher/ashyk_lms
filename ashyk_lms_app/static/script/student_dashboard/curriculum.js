@@ -891,8 +891,6 @@
 
 // Функция рендеринга 
 
-
-
 function renderCurriculum(data, containerId) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -1051,19 +1049,29 @@ function renderCurriculum(data, containerId) {
 }
 
 // Бет жүктелгенде шақыру
-document.addEventListener('DOMContentLoaded', () => {
+// document.addEventListener('DOMContentLoaded', () => {
 
-    let curriculum_data;
+//     if(typeof curriculum_data !== 'undefined' && curriculum_data !== null) {
+//         renderCurriculum(curriculum_data, 'tab-curriculum');
+//     }
+// });
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const api_url = window.CURRICULUM_API_URL || '/api/curriculum/';
+    const container_id = 'tab-curriculum';
 
     try {
-        curriculum_data = JSON.parse(document.getElementById('curriculum-data').textContent);
-    } catch (e) {
-        curriculum_data = null;
-    }
-    console.log(curriculum_data);
+        const response = await fetch(api_url);
+        const data = await response.json();
 
-
-    if(typeof curriculum_data !== 'undefined' && curriculum_data !== null) {
-        renderCurriculum(curriculum_data, 'tab-curriculum');
+        if (response.ok && data.curriculum) {
+            // Вызываем вашу функцию отрисовки
+            renderCurriculum(data.curriculum, container_id);
+        } else {
+            console.warn("Данные плана отсутствуют");
+            document.getElementById(container_id).innerHTML = "План отсутствует";
+        }
+    } catch (error) {
+        console.error("Критическая ошибка API:", error);
     }
 });
