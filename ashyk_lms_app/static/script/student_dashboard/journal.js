@@ -105,7 +105,11 @@ function renderJournal(journalData, containerId) {
                 value = gradeItem;
             }
 
-            return `<span class="grade-badge-journal grade-${value}-journal ${classAttr}" ${commentAttr}>${value}</span>`;
+            let color = value >= 90 ? 'green' : value >= 70 ? 'blue': value > 50 && value < 70 ? 'yellow' : 'gray';
+
+            console.log("Grade value:", color);
+
+            return `<span class="grade-badge-journal grade-${color}-journal ${classAttr} ${color}-journal-comment" ${commentAttr}>0</span>`;
         }).join('');
 
         // Қатысу (attendance) жоқ болса, дефолт мән қоямыз
