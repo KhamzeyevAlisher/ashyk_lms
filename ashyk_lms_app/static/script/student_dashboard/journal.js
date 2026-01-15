@@ -17,38 +17,44 @@ let attendanceStats = {
     }
 };
 
-// let journalData = {
-//     "Алгоритмдер және деректер құрылымы": {
-//         trend: "up",
-//         averageScore: 4.6,
-//         attendance: "95%",
-//         grades: [
-//             5, 
-//             { value: 4, comment: "Тақырыпты толық ашпадыңыз." }, // Оценка с комментом
-//             5, 
-//             5, 
-//             { value: 4, comment: "Кешігіп тапсырдыңыз." }        // Оценка с комментом
-//         ]
-//     },
-//     "Объектіге бағытталған бағдарламалау": {
-//         trend: "up",
-//         averageScore: 4.8,
-//         attendance: "100%",
-//         grades: [5, 5, 4, 5, 5] // Обычные оценки без комментов
-//     },
-//     "Дерекқор жүйелері": {
-//         trend: "flat",
-//         averageScore: 3.8,
-//         attendance: "90%",
-//         grades: [
-//             4, 
-//             { value: 4, comment: "Жақсы, бірақ SQL сұраныста қате бар." }, 
-//             3, 
-//             4, 
-//             4
-//         ]
-//     }
-// };
+let journalData_1 = {
+    "Алгоритмдер және деректер құрылымы": {
+        trend: "up",
+        averageScore: 89.8,
+        attendance: "95%",
+        grades: [
+            95, 
+            { value: 84, comment: "Тақырыпты толық ашпадыңыз." }, // Оценка с комментом
+            92, 
+            98, 
+            { value: 80, comment: "Кешігіп тапсырдыңыз." }        // Оценка с комментом
+        ]
+    },
+    "Объектіге бағытталған бағдарламалау": {
+        trend: "up",
+        averageScore: 78.8,
+        attendance: "95%",
+        grades: [
+            82, 
+            { value: 85, comment: "Ошибка в SQL." }, 
+            65, 
+            { value: 87, comment: "___" }, 
+            75
+        ] // Обычные оценки без комментов
+    },
+    "Дерекқор жүйелері": {
+        trend: "flat",
+        averageScore: 91.6,
+        attendance: "95%",
+        grades: [
+            95, 
+            98, 
+            75, 
+            { value: 95, comment: "!" }, 
+            95
+        ]
+    }
+};
 
 // 1. SVG-иконки для трендов, чтобы не хранить их в основном объекте
 let trendIcons = {
@@ -109,7 +115,7 @@ function renderJournal(journalData, containerId) {
 
             console.log("Grade value:", color);
 
-            return `<span class="grade-badge-journal grade-${color}-journal ${classAttr} ${color}-journal-comment" ${commentAttr}>0</span>`;
+            return `<span class="grade-badge-journal grade-${color}-journal ${classAttr} ${color}-journal-comment" ${commentAttr}>${value}</span>`;
         }).join('');
 
         // Қатысу (attendance) жоқ болса, дефолт мән қоямыз
