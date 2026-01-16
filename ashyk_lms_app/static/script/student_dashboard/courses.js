@@ -2,7 +2,7 @@ let coursesData = [
     {
         title: "Кәсіпкерлік",
         description: "Бизнес негіздері",
-        image: "https://cdn.culture.ru/images/6c3b2d76-23b7-5372-a282-81a13cf3d4f4",
+        image: "https://c8.alamy.com/comp/2FMPWAA/tiny-businesspeople-grows-business-idea-business-characters-invest-in-new-idea-concept-making-money-teamwork-development-project-crowdfunding-and-2FMPWAA.jpg",
     },
     {
         title: "Маркетинг",
