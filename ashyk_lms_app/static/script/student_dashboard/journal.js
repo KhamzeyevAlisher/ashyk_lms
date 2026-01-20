@@ -17,46 +17,47 @@ let attendanceStats = {
     }
 };
 
-let journalData_1 = {
-    "Алгоритмдер және деректер құрылымы": {
-        trend: "up",
-        averageScore: 89.8,
-        attendance: "95%",
-        grades: [
-            95, 
-            { value: 84, comment: "Тақырыпты толық ашпадыңыз." }, // Оценка с комментом
-            92, 
-            98, 
-            { value: 80, comment: "Кешігіп тапсырдыңыз." }        // Оценка с комментом
-        ]
-    },
-    "Объектіге бағытталған бағдарламалау": {
-        trend: "up",
-        averageScore: 78.8,
-        attendance: "95%",
-        grades: [
-            82, 
-            { value: 85, comment: "Ошибка в SQL." }, 
-            65, 
-            { value: 87, comment: "___" }, 
-            75
-        ] // Обычные оценки без комментов
-    },
-    "Дерекқор жүйелері": {
-        trend: "flat",
-        averageScore: 91.6,
-        attendance: "95%",
-        grades: [
-            95, 
-            98, 
-            75, 
-            { value: 95, comment: "!" }, 
-            95
-        ]
-    }
-};
+// let journalData_1 = {
+//     "Алгоритмдер және деректер құрылымы": {
+//         trend: "up",
+//         averageScore: 89.8,
+//         attendance: "95%",
+//         grades: [
+//             95, 
+//             { value: 84, comment: "Тақырыпты толық ашпадыңыз." }, // Оценка с комментом
+//             92, 
+//             98, 
+//             { value: 80, comment: "Кешігіп тапсырдыңыз." }        // Оценка с комментом
+//         ]
+//     },
+//     "Объектіге бағытталған бағдарламалау": {
+//         trend: "up",
+//         averageScore: 78.8,
+//         attendance: "95%",
+//         grades: [
+//             82, 
+//             { value: 85, comment: "Ошибка в SQL." }, 
+//             65, 
+//             { value: 87, comment: "___" }, 
+//             75
+//         ] // Обычные оценки без комментов
+//     },
+//     "Дерекқор жүйелері": {
+//         trend: "flat",
+//         averageScore: 91.6,
+//         attendance: "95%",
+//         grades: [
+//             95, 
+//             98, 
+//             75, 
+//             { value: 95, comment: "!" }, 
+//             95
+//         ]
+//     }
+// };
 
 // 1. SVG-иконки для трендов, чтобы не хранить их в основном объекте
+
 let trendIcons = {
     up: `<svg class="trend-icon-journal up-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>`,
     flat: `<svg class="trend-icon-journal flat-journal" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"></line></svg>`,
@@ -88,6 +89,7 @@ function renderJournal(journalData, containerId) {
 
     // Деректер жоқ болса хабарлама
     if (!journalData || Object.keys(journalData).length === 0) {
+        
         journalContainer.innerHTML = '<p class="text-center p-4">Бағалар әзірге қойылмаған.</p>';
         return;
     }
@@ -250,6 +252,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // 3. Логика обработки клика (Делегирование событий)
     // Создаем один элемент тултипа, который будем перемещать
+
+/** 
     let tooltip = document.createElement('div');
     tooltip.className = 'comment-tooltip-journal';
     document.body.appendChild(tooltip);
@@ -277,12 +281,14 @@ document.addEventListener("DOMContentLoaded", () => {
             tooltip.classList.remove('visible');
         }
     });
+    */
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
     // API URL (Django urls.py-да көрсетілген жол)
     const JOURNAL_API_URL = '/api/journal/'; 
     const CONTAINER_ID = 'tab-diary'; // HTML-дегі контейнер ID-і
+    let dataGrade = null;
 
     try {
         const response = await fetch(JOURNAL_API_URL);
@@ -294,6 +300,9 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
 
         const data = await response.json();
+        dataGrade = data;
+
+        console.log("Journal data received:", data);
 
         if (response.ok) {
             // 1. Журналды саламыз
@@ -312,4 +321,163 @@ document.addEventListener('DOMContentLoaded', async () => {
         const container = document.getElementById(CONTAINER_ID);
         if (container) container.innerHTML = `<p>Сервермен байланыс жоқ.</p>`;
     }
+
+    const gradeModal = document.getElementById('grade-modal-overlay');
+    const closeBtn = document.getElementById('modal-grade-close-btn');
+    const cancelBtn = document.getElementById('modal-grade-cancel-btn');
+    
+    // Өрістер
+    const subjectField = document.getElementById('modal-subject-grade');
+    const taskNameField = document.getElementById('modal-grade-task-name');
+    const gradeValueField = document.getElementById('grade-value');
+    const commentField = document.getElementById('grade-comment-area');
+
+    // Барлық баға белгішелерін алу
+    // МАҢЫЗДЫ: Бұл код renderJournal() функциясы жұмыс істеп болғаннан кейін орындалуы керек!
+    const gradeBadges = document.querySelectorAll('.grade-badge-journal');
+
+    console.log("Found grade badges:", gradeBadges.length);
+
+    // Әр батырмаға click event қосу
+    gradeBadges.forEach(badge => {
+        badge.addEventListener('click', function() {
+
+            // 1. Деректерді HTML атрибуттардан (dataset) алу
+            // renderJournal функциясында біз оларды data-subject, data-comment деп сақтағанбыз
+            const subject = this.dataset.subject || "Пән аты белгісіз";
+            const type = this.dataset.type || "Тапсырма";
+            const date = this.dataset.date || "";
+            const grade = this.innerText || this.dataset.value || "0";
+            const comment = this.dataset.comment; // Бос болуы мүмкін
+
+            // 2. Модальды терезені толтыру
+            subjectField.textContent = subject;
+            taskNameField.textContent = `${type} (${date})`; // Мысалы: Лекция (13.01.2026)
+            gradeValueField.textContent = grade;
+            
+            // Пікірді тексеру
+            if (comment && comment.trim() !== "") {
+                commentField.textContent = comment;
+                commentField.style.color = "#333";
+                commentField.style.fontStyle = "normal";
+            } else {
+                commentField.textContent = "Мұғалім пікір қалдырмаған.";
+                commentField.style.color = "#888"; // Сұр түс
+                commentField.style.fontStyle = "italic";
+            }
+
+            // Бағасына қарай түсін өзгерту
+            const gradeCircle = gradeValueField.parentElement;
+            const numericGrade = parseInt(grade);
+            
+            // Ескі стильдерді тазарту (қате кетпес үшін)
+            gradeCircle.style.borderColor = '';
+            gradeCircle.style.color = '';
+
+            if (numericGrade >= 90) {
+                gradeCircle.style.borderColor = '#28a745'; // Жасыл
+                gradeCircle.style.color = '#28a745';
+            } else if (numericGrade >= 70) {
+                gradeCircle.style.borderColor = '#007bff'; // Көк
+                gradeCircle.style.color = '#007bff';
+            } else {
+                gradeCircle.style.borderColor = '#dc3545'; // Қызыл
+                gradeCircle.style.color = '#dc3545';
+            }
+
+            // 3. Терезені ашу
+            gradeModal.classList.add('active');
+        });
+    });
+
+    // Жабу функциясы
+    function closeModal() {
+        gradeModal.classList.remove('active');
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+
+    // Фонды басқанда жабу
+    gradeModal.addEventListener('click', (e) => {
+        if (e.target === gradeModal) {
+            closeModal();
+        }
+    });
 });
+
+/** 
+document.addEventListener('DOMContentLoaded', function() {
+
+    console.log("Journal grade modal script loaded.");
+
+    // Модальды терезе элементтері
+    const gradeModal = document.getElementById('grade-modal-overlay');
+    const closeBtn = document.getElementById('modal-grade-close-btn');
+    const cancelBtn = document.getElementById('modal-grade-cancel-btn');
+    
+    // Өрістер
+    const subjectField = document.getElementById('modal-subject-grade');
+    const taskNameField = document.getElementById('modal-grade-task-name');
+    const gradeValueField = document.getElementById('grade-value');
+    const commentField = document.getElementById('grade-comment-area');
+
+    // Барлық баға белгішелерін (badge) алу
+    const gradeBadges = document.querySelectorAll('.grade-badge-journal');
+
+    console.log("Found grade badges:", gradeBadges.length);
+
+    // Әр батырмаға click event қосу
+    gradeBadges.forEach(badge => {
+        badge.addEventListener('click', function() {
+
+            console.log(123);
+            // 1. Деректерді алу (мысалы, data-атрибуттардан немесе серверден)
+            // Бұл жерде мысал үшін HTML элементінің өзінен немесе data атрибуттан аламыз
+            
+            // Мысал деректер (сіз бұларды backend-тен аласыз):
+            const subject = "Объектіге бағытталған бағдарламалау (Java)";
+            const task = "Зертханалық жұмыс №3";
+            const grade = this.innerText || "0"; // Badge-тің ішіндегі сан
+            const comment = "Тапсырма толық орындалды. Жарайсыз!";
+
+            // 2. Модальды терезені толтыру
+            subjectField.textContent = subject;
+            taskNameField.textContent = task;
+            gradeValueField.textContent = grade;
+            commentField.textContent = comment;
+
+            // Бағасына қарай түсін өзгерту (опционалды)
+            const gradeCircle = gradeValueField.parentElement;
+            if (parseInt(grade) >= 90) {
+                gradeCircle.style.borderColor = '#28a745'; // Жасыл
+                gradeCircle.style.color = '#28a745';
+            } else if (parseInt(grade) >= 70) {
+                gradeCircle.style.borderColor = '#007bff'; // Көк
+                gradeCircle.style.color = '#007bff';
+            } else {
+                gradeCircle.style.borderColor = '#dc3545'; // Қызыл
+                gradeCircle.style.color = '#dc3545';
+            }
+
+            // 3. Терезені ашу
+            gradeModal.classList.add('active');
+        });
+    });
+
+    // Жабу функциясы
+    function closeModal() {
+        gradeModal.classList.remove('active');
+    }
+
+    closeBtn.addEventListener('click', closeModal);
+    cancelBtn.addEventListener('click', closeModal);
+
+    // Фонды басқанда жабу
+    gradeModal.addEventListener('click', (e) => {
+        if (e.target === gradeModal) {
+            closeModal();
+        }
+    });
+});
+*/

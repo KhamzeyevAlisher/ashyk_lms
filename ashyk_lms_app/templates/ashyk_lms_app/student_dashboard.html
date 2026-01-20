@@ -170,6 +170,58 @@
         </div>
     </div>
 
+    <!-- Бағалауға арналған модальды терезе -->
+    <div id="grade-modal-overlay" class="modal-overlay">
+        <div class="modal-content">
+            <!-- Шапка -->
+            <div class="modal-header">
+                <!-- Сұраныс бойынша ID өзгертілді -->
+                <h2 id="modal-title-grade">Бағалау нәтижесі</h2>
+                <button id="modal-grade-close-btn" class="modal-close-btn" title="Жабу">×</button>
+            </div>
+
+            <!-- Тело -->
+            <div class="modal-body">
+                <!-- Сұраныс бойынша ID өзгертілді -->
+                <p id="modal-subject-grade" class="modal-subject">SUBJECT</p>
+                
+                <!-- Тапсырма атауы -->
+                <p class="modal-task-title" style="margin-bottom: 20px;">
+                    <strong>Тапсырма:</strong> <span id="modal-grade-task-name">TASK NAME</span>
+                </p>
+                
+                <!-- Импровизация: Бағаны көрсету блогы -->
+                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 25px; flex-direction: column;">
+                    <span class="modal-label" style="margin-bottom: 10px;">Сіздің бағаңыз:</span>
+                    
+                    <!-- Дөңгелек баға көрсеткіші -->
+                    <div style="width: 100px; height: 100px; border-radius: 50%; background: #f0f9ff; border: 3px solid #007bff; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #007bff;">
+                        <span id="grade-value" style="font-size: 32px; font-weight: bold; line-height: 1;">95</span>
+                        <span style="font-size: 12px; color: #666; border-top: 1px solid #ccc; padding-top: 2px; margin-top: 2px;">max 100</span>
+                    </div>
+                </div>
+
+                <!-- Мұғалімнің пікірі -->
+                <label class="modal-label">Оқытушының пікірі:</label>
+                <div id="grade-comment-area" style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 15px; color: #333; min-height: 60px; margin-bottom: 15px;">
+                    <!-- Мұнда пікір динамикалық түрде шығады -->
+                    Өте жақсы жұмыс! Интерфейстер дұрыс жүзеге асырылған, бірақ айнымалылардың атауларына назар аударыңыз.
+                </div>
+                
+                <!-- Қосымша ақпарат (Күні, тексеруші) -->
+                <div style="font-size: 12px; color: #888; display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 10px;">
+                    <span>Тексерген: <span id="grade-teacher">Оқытушы А.А.</span></span>
+                    <span>Уақыты: <span id="grade-date">20.01.2026</span></span>
+                </div>
+            </div>
+
+            <!-- Футер (тек жабу батырмасы жеткілікті) -->
+            <div class="modal-footer">
+                <button id="modal-grade-cancel-btn" class="btn-secondary" style="width: 100%;">Жабу</button>
+            </div>
+        </div>
+    </div>
+
     
 
     <script src="{% static 'script/student_dashboard/student_dashboard_base.js' %}"></script>
