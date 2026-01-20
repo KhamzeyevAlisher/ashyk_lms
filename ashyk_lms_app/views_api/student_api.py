@@ -24,22 +24,18 @@ def get_curriculum_data(request):
 @login_required
 def get_student_grades(request):
     try:
-        # 1. Студент профилін аламыз
+        # 1. Студент профилін алу
         if not hasattr(request.user, 'student_profile'):
             return JsonResponse({'error': 'Пайдаланушы студент емес'}, status=403)
         
         student = request.user.student_profile
 
-        # 2. Осы студенттің барлық бағаларын пәнмен қоса аламыз
-        # created_at бойынша сұрыптау маңызды (хронология)
+        # 2. Бағаларды алу (пән және дата бойынша сұрыпталған)
         grades_qs = Grade.objects.filter(student=student)\
                                  .select_related('subject')\
                                  .order_by('subject__name', 'created_at')
 
-        # 3. Деректерді топтастыруға арналған сөздік
-        # Құрылымы: { "Пән аты": [GradeObj, GradeObj, ...] }
         grouped_data = {}
-        
         for grade in grades_qs:
             subj_name = grade.subject.name
             if subj_name not in grouped_data:
@@ -50,40 +46,33 @@ def get_student_grades(request):
         response_data = {}
 
         for subject, grades_list in grouped_data.items():
-            # --- Есептеулер ---
-            
-            # Орташа балл
             values = [g.value for g in grades_list]
             avg_score = round(sum(values) / len(values), 1) if values else 0
 
-            # Трендті анықтау (Соңғы баға vs Алдыңғы баға)
+            # Тренд есептеу
             trend = "flat"
             if len(values) >= 2:
                 last_grade = values[-1]
                 prev_grade = values[-2]
-                if last_grade > prev_grade:
-                    trend = "up"
-                elif last_grade < prev_grade:
-                    trend = "down"
+                if last_grade > prev_grade: trend = "up"
+                elif last_grade < prev_grade: trend = "down"
             
-            # Бағалар тізімін форматтау (journalData стилінде)
+            # --- БАҒАЛАРДЫ ФОРМАТТАУ (Күнін қосу осы жерде) ---
             formatted_grades = []
             for g in grades_list:
+                grade_entry = {
+                    "value": g.value,
+                    "date": g.created_at.strftime("%d.%m.%Y"), # Күн-ай-жыл форматы
+                    "type": g.get_grade_type_display(),      # Жұмыс түрі (Лекция, Практика т.б.)
+                }
                 if g.comment:
-                    formatted_grades.append({
-                        "value": g.value,
-                        "comment": g.comment
-                    })
-                else:
-                    formatted_grades.append(g.value)
+                    grade_entry["comment"] = g.comment
+                
+                formatted_grades.append(grade_entry)
 
-            # --- Attendance (Қатысу) ---
-            # Ескерту: Модельдерде 'Attendance' жоқ. 
-            # Сондықтан әзірге статикалық немесе кездейсоқ мән береміз.
-            # Болашақта Attendance моделін қосып, осы жерде есептеу керек.
+            # Attendance (әзірге статикалық)
             attendance_placeholder = "95%" 
 
-            # --- Нәтижені жинау ---
             response_data[subject] = {
                 "trend": trend,
                 "averageScore": avg_score,
