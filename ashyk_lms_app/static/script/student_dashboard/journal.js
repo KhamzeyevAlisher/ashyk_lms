@@ -117,7 +117,9 @@ function renderJournal(journalData, containerId) {
 
             console.log("Grade value:", color);
 
-            return `<span class="grade-badge-journal grade-${color}-journal ${classAttr} ${color}-journal-comment" ${commentAttr}>${value}</span>`;
+            console.log("Grade value:", gradeItem.date);
+
+            return `<span class="grade-badge-journal grade-${color}-journal ${classAttr} ${color}-journal-comment" ${commentAttr} data-date="${gradeItem.date}">${value}</span>`;
         }).join('');
 
         // Қатысу (attendance) жоқ болса, дефолт мән қоямыз
@@ -331,6 +333,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const taskNameField = document.getElementById('modal-grade-task-name');
     const gradeValueField = document.getElementById('grade-value');
     const commentField = document.getElementById('grade-comment-area');
+    const dateGrade = document.getElementById('grade-date');
 
     // Барлық баға белгішелерін алу
     // МАҢЫЗДЫ: Бұл код renderJournal() функциясы жұмыс істеп болғаннан кейін орындалуы керек!
@@ -344,7 +347,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             // 1. Деректерді HTML атрибуттардан (dataset) алу
             // renderJournal функциясында біз оларды data-subject, data-comment деп сақтағанбыз
-            const subject = this.dataset.subject || "Пән аты белгісіз";
+            // const subject = this.dataset.subject || "Пән аты белгісіз";
+            const subject = this.parentElement.parentElement.querySelector('.subject-name-journal').innerText || "Пән аты белгісіз";
             const type = this.dataset.type || "Тапсырма";
             const date = this.dataset.date || "";
             const grade = this.innerText || this.dataset.value || "0";
@@ -354,6 +358,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             subjectField.textContent = subject;
             taskNameField.textContent = `${type} (${date})`; // Мысалы: Лекция (13.01.2026)
             gradeValueField.textContent = grade;
+            dateGrade.textContent = date;
             
             // Пікірді тексеру
             if (comment && comment.trim() !== "") {
@@ -375,13 +380,16 @@ document.addEventListener('DOMContentLoaded', async () => {
             gradeCircle.style.color = '';
 
             if (numericGrade >= 90) {
-                gradeCircle.style.borderColor = '#28a745'; // Жасыл
+                gradeCircle.style.borderColor = '#28a745'; 
                 gradeCircle.style.color = '#28a745';
             } else if (numericGrade >= 70) {
-                gradeCircle.style.borderColor = '#007bff'; // Көк
+                gradeCircle.style.borderColor = '#007bff'; 
                 gradeCircle.style.color = '#007bff';
+            } else if (numericGrade < 70 && numericGrade > 50) {
+                gradeCircle.style.borderColor = '#ebb112'; 
+                gradeCircle.style.color = '#ebb112';
             } else {
-                gradeCircle.style.borderColor = '#dc3545'; // Қызыл
+                gradeCircle.style.borderColor = '#dc3545';
                 gradeCircle.style.color = '#dc3545';
             }
 
