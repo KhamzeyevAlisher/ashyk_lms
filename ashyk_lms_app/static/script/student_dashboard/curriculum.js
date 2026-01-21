@@ -918,7 +918,7 @@ function renderCurriculum(data, containerId) {
             </div>
             <div class="stat-card-curriculum">
                 <div class="stat-value-curriculum">${data.SRS}</div>
-                <div class="stat-label-curriculum">СРС</div>
+                <div class="stat-label-curriculum">СРСП</div>
             </div>
         </div>
     `;

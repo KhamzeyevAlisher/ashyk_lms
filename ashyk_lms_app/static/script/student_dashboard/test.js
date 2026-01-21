@@ -41,15 +41,15 @@ let testsDataList = {
             status: "completed"
         },
         {
-        title: "Экономикалық теория",
-        subject: "Экономика",
-        questions: 15,
-        duration: "45 мин",
-        deadline: "30.11.2025",
-        grade: null,
-        iconType: "green",
-        status: "active"
-    }
+            title: "Экономикалық теория",
+            subject: "Экономика",
+            questions: 15,
+            duration: "45 мин",
+            deadline: "30.11.2025",
+            grade: null,
+            iconType: "purple",
+            status: "active"
+        }
     ]
 };
 
