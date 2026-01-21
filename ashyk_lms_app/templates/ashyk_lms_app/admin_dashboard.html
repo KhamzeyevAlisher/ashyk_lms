@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,12 +11,14 @@
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
         :root {
-            --sidebar-bg: #1e293b; /* Темно-синий фон меню */
+            --sidebar-bg: #1e293b;
+            /* Темно-синий фон меню */
             --sidebar-text: #94a3b8;
             --sidebar-active: #ffffff;
             --body-bg: #f0f2f6;
             --card-bg: #ffffff;
-            --accent-color: #10b981; /* Изумрудный (Emerald) вместо фиолетового */
+            --accent-color: #10b981;
+            /* Изумрудный (Emerald) вместо фиолетового */
             --accent-hover: #059669;
             --text-dark: #111827;
             --text-light: #6b7280;
@@ -53,7 +56,7 @@
             display: flex;
             align-items: center;
             padding: 0 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .brand {
@@ -106,12 +109,13 @@
         }
 
         .nav-btn:hover {
-            background-color: rgba(255,255,255,0.05);
+            background-color: rgba(255, 255, 255, 0.05);
             color: white;
         }
 
         .nav-btn.active {
-            background-color: rgba(16, 185, 129, 0.1); /* Прозрачный зеленый */
+            background-color: rgba(16, 185, 129, 0.1);
+            /* Прозрачный зеленый */
             color: var(--sidebar-active);
             border-left-color: var(--accent-color);
         }
@@ -123,7 +127,7 @@
 
         .sidebar-footer {
             padding: 20px;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .logout-btn {
@@ -135,7 +139,10 @@
             gap: 10px;
             transition: 0.2s;
         }
-        .logout-btn:hover { opacity: 0.8; }
+
+        .logout-btn:hover {
+            opacity: 0.8;
+        }
 
         /* --- MAIN CONTENT --- */
         .main-content {
@@ -204,7 +211,10 @@
             transition: background 0.2s;
             box-shadow: 0 2px 4px rgba(16, 185, 129, 0.2);
         }
-        .btn-primary:hover { background-color: var(--accent-hover); }
+
+        .btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
 
         .card {
             background: var(--card-bg);
@@ -230,7 +240,7 @@
         .input-group {
             position: relative;
         }
-        
+
         .input-field {
             padding: 10px 15px;
             border: 1px solid var(--border-color);
@@ -239,7 +249,10 @@
             outline: none;
             min-width: 200px;
         }
-        .input-field:focus { border-color: var(--accent-color); }
+
+        .input-field:focus {
+            border-color: var(--accent-color);
+        }
 
         table {
             width: 100%;
@@ -266,8 +279,13 @@
             vertical-align: middle;
         }
 
-        tr:last-child td { border-bottom: none; }
-        tr:hover td { background-color: #f9fafb; }
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        tr:hover td {
+            background-color: #f9fafb;
+        }
 
         /* BADGES */
         .status-badge {
@@ -276,7 +294,7 @@
             font-size: 12px;
             font-weight: 500;
         }
-        
+
 
         .action-btn {
             width: 30px;
@@ -289,7 +307,11 @@
             margin-right: 5px;
             transition: 0.2s;
         }
-        .action-btn:hover { border-color: var(--accent-color); color: var(--accent-color); }
+
+        .action-btn:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
 
         /* --- PROFILE SETTINGS --- */
         .profile-layout {
@@ -301,6 +323,7 @@
         .profile-header {
             text-align: center;
         }
+
         .profile-img {
             width: 100px;
             height: 100px;
@@ -313,9 +336,9 @@
             color: white;
             font-size: 40px;
             border: 4px solid white;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        
+
         .form-label {
             display: block;
             margin-bottom: 8px;
@@ -323,10 +346,14 @@
             font-weight: 600;
             color: var(--text-light);
         }
-        .form-row { margin-bottom: 20px; }
 
-        .hidden { display: none !important; }
+        .form-row {
+            margin-bottom: 20px;
+        }
 
+        .hidden {
+            display: none !important;
+        }
     </style>
     <style>
         /* Стили для древовидной структуры */
@@ -360,7 +387,8 @@
         .tree-item::before {
             content: '';
             position: absolute;
-            top: 18px; /* Половина высоты хедера */
+            top: 18px;
+            /* Половина высоты хедера */
             left: -20px;
             width: 20px;
             height: 1px;
@@ -368,13 +396,15 @@
         }
 
         /* Убираем линии для первого уровня */
-        #university-tree > .tree-ul {
+        #university-tree>.tree-ul {
             padding-left: 0;
         }
-        #university-tree > .tree-ul::before {
+
+        #university-tree>.tree-ul::before {
             display: none;
         }
-        #university-tree > .tree-ul > .tree-item::before {
+
+        #university-tree>.tree-ul>.tree-item::before {
             display: none;
         }
 
@@ -403,7 +433,7 @@
             text-align: center;
         }
 
-        .tree-item.open > .tree-header .toggle-icon {
+        .tree-item.open>.tree-header .toggle-icon {
             transform: rotate(90deg);
             color: var(--accent-color);
         }
@@ -434,8 +464,10 @@
         .student-node {
             cursor: default;
         }
+
         .student-node:hover {
-            background-color: #f0fdf4; /* Светло-зеленый */
+            background-color: #f0fdf4;
+            /* Светло-зеленый */
             border-color: #bbf7d0;
         }
 
@@ -451,11 +483,12 @@
             overflow: hidden;
         }
 
-        .tree-item.open > .tree-children {
+        .tree-item.open>.tree-children {
             display: block;
         }
     </style>
 </head>
+
 <body>
 
     <!-- SIDEBAR -->
@@ -488,10 +521,18 @@
                 <i class="fa-solid fa-gear"></i>
                 <span>Параметрлер</span>
             </button>
+            <button class="nav-btn" onclick="openTab('tests')">
+                <i class="fa-solid fa-file-import"></i>
+                <span>Тесттерді жүктеу</span>
+            </button>
+            <button class="nav-btn" onclick="openTab('upload-tests')">
+                <i class="fa-solid fa-file-import"></i>
+                <span>Тесттерді жүктеу</span>
+            </button>
             <a href="{% url 'student_dashboard' %}" style="text-decoration: none;"><button class="nav-btn">
-                <i class="fa-solid fa-gear"></i>
-                <span>Студент</span>
-            </button></a>
+                    <i class="fa-solid fa-gear"></i>
+                    <span>Студент</span>
+                </button></a>
         </nav>
 
         <form id="logout-form" action="{% url 'logout' %}" method="post" style="display: none;">
@@ -499,7 +540,8 @@
         </form>
 
         <div class="sidebar-footer">
-            <a href="#" class="logout-btn" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+            <a href="#" class="logout-btn"
+                onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 <span>Шығу</span>
             </a>
@@ -508,7 +550,7 @@
 
     <!-- MAIN CONTENT WRAPPER -->
     <main class="main-content">
-        
+
         <!-- TOP HEADER -->
         <header class="top-bar">
             <div class="current-page" id="page-header-title">Пайдаланушылар</div>
@@ -534,7 +576,8 @@
                 </div>
 
                 <div class="filters-area">
-                    <input type="text" placeholder="Аты-жөні бойынша іздеу..." class="input-field" style="width: 300px;">
+                    <input type="text" placeholder="Аты-жөні бойынша іздеу..." class="input-field"
+                        style="width: 300px;">
                     <select class="input-field">
                         <option>Барлық рөлдер</option>
                         <option>Преподаватель</option>
@@ -568,10 +611,12 @@
             <!-- TAB: STRUCTURE -->
             <div id="tab-structure" class="tab-content hidden">
                 <div class="card">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                         <div>
                             <h2>Университет құрылымы</h2>
-                            <p style="color: var(--text-light); margin-top: 5px;">Факультеттер, мамандықтар және топтар иерархиясы</p>
+                            <p style="color: var(--text-light); margin-top: 5px;">Факультеттер, мамандықтар және топтар
+                                иерархиясы</p>
                         </div>
                         <button class="btn-primary" onclick="expandAll()">
                             <i class="fa-solid fa-expand"></i> Барлығын ашу
@@ -587,9 +632,45 @@
 
             <!-- TAB: ASSIGNMENTS -->
             <div id="tab-assignments" class="tab-content hidden">
-                 <div class="card">
+                <div class="card">
                     <h2>Тағайындаулар</h2>
                     <p>Мұғалімдер мен пәндерді байланыстыру.</p>
+                </div>
+            </div>
+
+            <!-- TAB: TESTS (UPLOAD) -->
+            <div id="tab-tests" class="tab-content hidden">
+                <div class="card">
+                    <h2>Тесттерді жүктеу</h2>
+                    <p style="color: var(--text-light); margin-bottom: 20px;">Тест сұрақтарын JSON форматында енгізіңіз
+                        немесе файлды жүктеңіз.</p>
+
+                    <div style="margin-bottom: 20px;">
+                        <label class="form-label">JSON файлы: </label>
+                        <input type="file" id="json-file-input" accept=".json" class="input-field" style="width: auto;">
+                        <button class="btn-primary" onclick="uploadJSONFile()" style="padding: 8px 15px;">
+                            <i class="fa-solid fa-file-arrow-up"></i> Файлды жіберу
+                        </button>
+                    </div>
+
+                    <div style="margin-bottom: 10px;">
+                        <label class="form-label">Немесе JSON кодын осы жерге қойыңыз: </label>
+                        <textarea id="json-input" class="input-field"
+                            style="width: 100%; height: 300px; font-family: monospace; resize: vertical;" placeholder='{
+    "Тест атауы": {
+        "1": { 
+            "question": "Сұрақ...", 
+            "variants": ["А", "Б", "В"], 
+            "correct_variants": ["А"] 
+        } 
+    } 
+}'></textarea>
+                    </div>
+
+                    <button class="btn-primary" onclick="sendTestsJSON()">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> Кодты жіберу
+                    </button>
+                    <div id="upload-status" style="margin-top: 15px; font-weight: 500;"></div>
                 </div>
             </div>
 
@@ -610,11 +691,14 @@
 
                     <!-- Right Card -->
                     <div class="card">
-                        <h3 style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color);">Жеке ақпарат</h3>
-                        
+                        <h3
+                            style="margin-bottom: 20px; padding-bottom: 15px; border-bottom: 1px solid var(--border-color);">
+                            Жеке ақпарат</h3>
+
                         <div class="form-row">
                             <label class="form-label">Email мекенжайы</label>
-                            <input type="email" class="input-field" style="width: 100%;" value="nurislam_kanat@gmail.com">
+                            <input type="email" class="input-field" style="width: 100%;"
+                                value="nurislam_kanat@gmail.com">
                         </div>
 
                         <div class="form-row">
@@ -625,13 +709,17 @@
                         <div class="form-row">
                             <label class="form-label">Фотосуретті өзгерту</label>
                             <div style="display: flex; gap: 10px;">
-                                <button style="padding: 8px 15px; border: 1px solid var(--border-color); background: white; border-radius: 6px; cursor: pointer;">Файл таңдау</button>
+                                <button
+                                    style="padding: 8px 15px; border: 1px solid var(--border-color); background: white; border-radius: 6px; cursor: pointer;">Файл
+                                    таңдау</button>
                                 <button class="btn-primary" style="margin-left: auto;">Сақтау</button>
                             </div>
                         </div>
-                        
+
                         <h4 style="margin-top: 30px; margin-bottom: 15px; font-size: 16px;">Қауіпсіздік</h4>
-                        <button style="background: #374151; color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer;">Құпиясөзді өзгерту</button>
+                        <button
+                            style="background: #374151; color: white; padding: 10px 15px; border: none; border-radius: 6px; cursor: pointer;">Құпиясөзді
+                            өзгерту</button>
                     </div>
                 </div>
             </div>
@@ -655,7 +743,7 @@
 
             for (const key in fake_users) {
                 const user = fake_users[key];
-                
+
 
                 const row = `
                     <tr>
@@ -688,16 +776,92 @@
             // Обновить кнопки
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
             const activeBtn = Array.from(document.querySelectorAll('.nav-btn')).find(btn => btn.getAttribute('onclick').includes(tabName));
-            if(activeBtn) activeBtn.classList.add('active');
+            if (activeBtn) activeBtn.classList.add('active');
 
             // Обновить заголовок
             const titles = {
                 'users': 'Пайдаланушылар',
                 'structure': 'Университет құрылымы',
                 'assignments': 'Тағайындаулар',
-                'settings': 'Параметрлер'
+                'settings': 'Параметрлер',
+                'tests': 'Тесттерді жүктеу'
             };
             document.getElementById('page-header-title').innerText = titles[tabName];
+        }
+
+        async function sendTestsJSON(customData = null) {
+            let jsonInput = customData || document.getElementById('json-input').value;
+            const statusDiv = document.getElementById('upload-status');
+
+            if (typeof jsonInput !== 'string' || !jsonInput.trim()) {
+                statusDiv.innerHTML = '<span style="color: red;">JSON деректерін енгізіңіз!</span>';
+                return;
+            }
+
+            // Try to handle JS-style objects (with single quotes, etc.)
+            try {
+                // If it's valid JSON, this works.
+                JSON.parse(jsonInput);
+            } catch (e) {
+                // If not valid JSON, try to evaluate as JS object
+                try {
+                    // Using new Function is slightly safer than eval for this specific case
+                    const sanitizedData = new Function('return ' + jsonInput)();
+                    jsonInput = JSON.stringify(sanitizedData);
+                } catch (jsError) {
+                    console.error('JS Parse Error:', jsError);
+                    statusDiv.innerHTML = `<span style="color: red;">Деректер форматы қате: ${jsError.message}</span>`;
+                    return;
+                }
+            }
+
+            statusDiv.innerHTML = '<span style="color: blue;">Жіберілуде...</span>';
+
+            try {
+                const response = await fetch('/api/admin/upload_tests/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: jsonInput
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.status === 'success') {
+                    statusDiv.innerHTML = `<span style="color: green;">Сәтті жүктелді! ${result.message}</span>`;
+                    if (!customData) document.getElementById('json-input').value = '';
+                } else {
+                    statusDiv.innerHTML = `<span style="color: red;">Қате: ${result.message}</span>`;
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                statusDiv.innerHTML = `<span style="color: red;">Сервер қатесі: ${error.message}</span>`;
+            }
+        }
+
+        function uploadJSONFile() {
+            const fileInput = document.getElementById('json-file-input');
+            const statusDiv = document.getElementById('upload-status');
+
+            if (!fileInput.files || fileInput.files.length === 0) {
+                statusDiv.innerHTML = '<span style="color: red;">Файлды таңдаңыз!</span>';
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function (e) {
+                const content = e.target.result;
+                sendTestsJSON(content);
+            };
+
+            reader.onerror = function () {
+                statusDiv.innerHTML = '<span style="color: red;">Файлды оқу кезінде қате кетті.</span>';
+            };
+
+            reader.readAsText(file);
         }
 
         document.addEventListener('DOMContentLoaded', () => {
@@ -705,14 +869,14 @@
         });
     </script>
 
-    
+
     <script>
         // Исходные данные
         let structure = {
-            "Педагогика кафедрасы": { 
-                "Информатика": {  
-                    "ИНФ-22": { 
-                        "Гүлім Айтбаев": "gulim_aitbaev", 
+            "Педагогика кафедрасы": {
+                "Информатика": {
+                    "ИНФ-22": {
+                        "Гүлім Айтбаев": "gulim_aitbaev",
                         "Жарас Бекболат": "zharas_bekbolat"
                     },
                     "ИНФ-23": {
@@ -720,7 +884,7 @@
                     }
                 },
                 "Педагогика және психология": {
-                    "ПИП-21": {} 
+                    "ПИП-21": {}
                 },
                 // Новые добавленные данные:
                 "Бейнелеу өнері және сызу(Визуалды өнер, көркем еңбек, графика және жобалау)": {},
@@ -766,11 +930,11 @@
         function initTree() {
             const container = document.getElementById('university-tree');
             if (!container) return;
-            
+
             container.innerHTML = ''; // Очистка
             const rootUl = document.createElement('ul');
             rootUl.className = 'tree-ul';
-            
+
             // Запускаем рекурсию
             renderNodes(structure, rootUl, 0);
             container.appendChild(rootUl);
@@ -790,14 +954,14 @@
             for (const key in data) {
                 const value = data[key];
                 const isLeaf = typeof value === 'string'; // Если значение строка, это студент (конечный узел)
-                
+
                 const li = document.createElement('li');
                 li.className = 'tree-item';
 
                 // Создаем хедер элемента
                 const header = document.createElement('div');
                 header.className = isLeaf ? 'tree-header student-node' : 'tree-header';
-                
+
                 // 1. Иконка стрелочки (только если не лист)
                 let toggleHtml = '';
                 if (!isLeaf) {
@@ -831,7 +995,7 @@
                 if (!isLeaf) {
                     const childrenUl = document.createElement('ul');
                     childrenUl.className = 'tree-ul tree-children';
-                    
+
                     // Рекурсивный вызов для вложенных элементов
                     renderNodes(value, childrenUl, level + 1);
                     li.appendChild(childrenUl);
@@ -856,4 +1020,5 @@
         document.addEventListener('DOMContentLoaded', initTree);
     </script>
 </body>
+
 </html>
