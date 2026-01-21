@@ -1,57 +1,3 @@
-let testsDataList = {
-    "1 semester": [
-        {
-            title: "Алгоритмдер: Сұрыптау әдістері",
-            subject: "Компьютерлік ғылымдар",
-            questions: 10,
-            duration: "30 мин",
-            deadline: "25.11.2025",
-            grade: "85%",
-            iconType: "green",
-            status: "completed"
-        },
-        {
-            title: "JavaScript-тегі ООП",
-            subject: "Бағдарламалау",
-            questions: 15,
-            duration: "45 мин",
-            deadline: "30.11.2025",
-            grade: null,
-            iconType: "purple",
-            status: "active"
-        },
-        {
-            title: "Дерекқорлар негіздері: SQL",
-            subject: "Бэкенд әзірлеу",
-            questions: 12,
-            duration: "40 мин",
-            deadline: "02.12.2025",
-            grade: null,
-            iconType: "purple",
-            status: "active"
-        },
-        {
-            title: "IT English: Technical Terms",
-            subject: "Кәсіби ағылшын тілі",
-            questions: 20,
-            duration: "25 мин",
-            deadline: "20.11.2025",
-            grade: "92%",
-            iconType: "green",
-            status: "completed"
-        },
-        {
-            title: "Экономикалық теория",
-            subject: "Экономика",
-            questions: 15,
-            duration: "45 мин",
-            deadline: "30.11.2025",
-            grade: null,
-            iconType: "purple",
-            status: "active"
-        }
-    ]
-};
 
 let iconsTestList = {
     green: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>`,
@@ -61,66 +7,83 @@ let iconsTestList = {
 };
 
 /**
- * @param {Object} data - Объект с данными
  * @param {string} semester - Ключ семестра (н-р: "1 semester")
  * @param {string} filterStatus - 'active' или 'completed'. Если null, выведет всё.
  */
-function renderTests(semester, filterStatus = null) {
+async function renderTests(semester, filterStatus = null) {
     const container = document.querySelector('#tab-tests').querySelector('#test-list');
-    if (!container || !testsDataList[semester]) return;
+    if (!container) return;
 
-    // 1. Сначала фильтруем массив, если передан статус
-    let filteredArray = testsDataList[semester];
-    if (filterStatus) {
-        filteredArray = filteredArray.filter(test => test.status === filterStatus);
-    }
+    try {
+        const response = await fetch('/api/tests/');
+        const data = await response.json();
 
-    // 2. Генерируем HTML
-    const html = filteredArray.map(test => {
-        const isCompleted = test.status === 'completed';
+        if (data.status !== 'success') {
+            container.innerHTML = `<p>${data.error || 'Қате орын алды'}</p>`;
+            return;
+        }
 
-        const actionBtn = isCompleted
-            ? `<button class="btn-test btn-retry">Қайта тапсыру</button>`
-            : `<button class="btn-test btn-start" onclick="openTest('${test.title}')">
-                ${iconsTestList.play} Тестті бастау
-               </button>`;
+        // 1. Сначала фильтруем массив, если передан статус
+        let filteredArray = data.tests;
+        if (filterStatus) {
+            filteredArray = filteredArray.filter(test => test.status === filterStatus);
+        }
 
-        const gradeBadge = test.grade
-            ? `<span class="grade-badge">${test.grade}</span>`
-            : '';
+        // 2. Генерируем HTML
+        const html = filteredArray.map(test => {
+            const isCompleted = test.status === 'completed';
 
-        return `
-            <div class="test-card">
-                <div class="test-info-wrapper">
-                    <div class="test-icon icon-${test.iconType}">
-                        ${iconsTestList[test.iconType]}
-                    </div>
-                    <div class="test-content">
-                        <div class="test-header">
-                            <h3 class="test-list-title">${test.title}</h3>
-                            ${gradeBadge}
+            const actionBtn = isCompleted
+                ? `<button class="btn-test btn-retry">Қайта тапсыру</button>`
+                : `<button class="btn-test btn-start" onclick="openTest(${test.id})">
+                    ${iconsTestList.play} Тестті бастау
+                   </button>`;
+
+            const gradeBadge = test.grade
+                ? `<span class="grade-badge">${test.grade}</span>`
+                : '';
+
+            return `
+                <div class="test-card">
+                    <div class="test-info-wrapper">
+                        <div class="test-icon icon-${test.iconType}">
+                            ${iconsTestList[test.iconType]}
                         </div>
-                        <div class="test-subject">${test.subject}</div>
-                        <div class="test-meta">
-                            <span>${test.questions} сұрақ</span>
-                            <div class="meta-item">
-                                ${iconsTestList.clock}
-                                ${test.duration}
+                        <div class="test-content">
+                            <div class="test-header">
+                                <h3 class="test-list-title">${test.title}</h3>
+                                ${gradeBadge}
                             </div>
-                            <span>Мерзімі: ${test.deadline}</span>
+                            <div class="test-subject">${test.subject}</div>
+                            <div class="test-meta">
+                                <span>${test.questions} сұрақ</span>
+                                <div class="meta-item">
+                                    ${iconsTestList.clock}
+                                    ${test.duration}
+                                </div>
+                                <span>Мерзімі: ${test.deadline}</span>
+                            </div>
                         </div>
                     </div>
+                    <div class="test-action">
+                        ${actionBtn}
+                    </div>
                 </div>
-                <div class="test-action">
-                    ${actionBtn}
-                </div>
-            </div>
-        `;
-    }).join('');
+            `;
+        }).join('');
 
-    // Если после фильтрации пусто, можно вывести сообщение
-    container.innerHTML = html || '<p>Бұл санатта тесттер жоқ.</p>';
+        // Если после фильтрации пусто, можно вывести сообщение
+        container.innerHTML = html || '<p>Бұл санатта тесттер жоқ.</p>';
+
+    } catch (error) {
+        console.error('Test API Error:', error);
+        container.innerHTML = '<p>Деректерді жүктеу мүмкін болмады.</p>';
+    }
 }
 
-renderTests("1 semester", "active");
+// Вызываем загрузку тестов при инициализации
+document.addEventListener('DOMContentLoaded', () => {
+    // Ждем немного чтобы кастомные селекты инициализировались если нужно
+    setTimeout(() => renderTests("1 semester", "active"), 100);
+});
 

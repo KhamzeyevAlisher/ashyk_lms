@@ -46,392 +46,7 @@
  * - variants: массив всех вариантов ответа
  * - correct_variants: массив правильных ответов (может быть 1 или несколько)
  */
-let tests = {
-    'Экономикалық теория': {
-        1: {
-            'question': "Экономикалық теория нені зерттейді?",
-            'variants': ['Адам ағзасының құрылымын', 'Шексіз қажеттіліктер мен шектеулі ресурстарды басқаруды', 'Табиғат құбылыстарын', 'Химиялық реакцияларды', 'Жұлдыздардың орналасуын'],
-            'correct_variants': ['Шексіз қажеттіліктер мен шектеулі ресурстарды басқаруды']
-        },
-        2: {
-            'question': "Баға өскенде тауарға деген сұраныс азаяды, ал баға төмендегенде сұраныс артады. Бұл қай заң?",
-            'variants': ['Ұсыныс заңы', 'Сұраныс заңы', 'Оукен заңы', 'Грешем заңы', 'Филлипс заңы'],
-            'correct_variants': ['Сұраныс заңы']
-        },
-        3: {
-            'question': "Жалпы ішкі өнім (ЖІӨ / GDP) дегеніміз не?",
-            'variants': ['Мемлекеттің бір жылғы барлық шығындары', 'Ел ішінде бір жылда өндірілген тауарлар мен қызметтердің нарықтық құны', 'Халықтың банктегі жинақтары', 'Импортталған тауарлардың көлемі', 'Мемлекеттік қарыз мөлшері'],
-            'correct_variants': ['Ел ішінде бір жылда өндірілген тауарлар мен қызметтердің нарықтық құны']
-        },
-        4: {
-            'question': "Инфляция дегеніміз не?",
-            'variants': ['Бағаның жалпы деңгейінің ұзақ мерзімді өсуі', 'Бағаның күрт төмендеуі', 'Өндіріс көлемінің артуы', 'Жұмыссыздықтың азаюы', 'Ақша массасының азаюы'],
-            'correct_variants': ['Бағаның жалпы деңгейінің ұзақ мерзімді өсуі']
-        },
-        5: {
-            'question': "Бір сатушы билейтін және бәсекелестері жоқ нарықтық құрылым қалай аталады?",
-            'variants': ['Олигополия', 'Монополия', 'Монопсония', 'Жетілген бәсеке', 'Дуополия'],
-            'correct_variants': ['Монополия']
-        },
-
-        6: {
-            'question': "Экономикалық ресурстарға (өндіріс факторларына) жататындарды белгілеңіз:",
-            'variants': [
-                'Жер (табиғи ресурстар)',
-                'Еңбек (жұмыс күші)',
-                'Капитал (құрал-жабдықтар)',
-                'Кәсіпкерлік қабілет',
-                'Ауа райы',
-                'Көңіл-күй',
-                'Саяси партиялар'
-            ],
-            'correct_variants': [
-                'Жер (табиғи ресурстар)',
-                'Еңбек (жұмыс күші)',
-                'Капитал (құрал-жабдықтар)',
-                'Кәсіпкерлік қабілет'
-            ]
-        },
-        7: {
-            'question': "Экономикалық жүйелердің негізгі түрлерін көрсетіңіз:",
-            'variants': [
-                'Дәстүрлі экономика',
-                'Жоспарлы (әкімшілік) экономика',
-                'Нарықтық экономика',
-                'Аралас экономика',
-                'Виртуалды экономика',
-                'Физикалық экономика',
-                'Кездейсоқ экономика'
-            ],
-            'correct_variants': [
-                'Дәстүрлі экономика',
-                'Жоспарлы (әкімшілік) экономика',
-                'Нарықтық экономика',
-                'Аралас экономика'
-            ]
-        },
-        8: {
-            'question': "Ақшаның атқаратын негізгі қызметтері қандай?",
-            'variants': [
-                'Құн өлшемі',
-                'Айналым құралы',
-                'Төлем құралы',
-                'Қор жинау (қазына) құралы',
-                'Өндіріс құралы',
-                'Эстетикалық қызмет',
-                'Тұтыну заттары'
-            ],
-            'correct_variants': [
-                'Құн өлшемі',
-                'Айналым құралы',
-                'Төлем құралы',
-                'Қор жинау (қазына) құралы'
-            ]
-        },
-        9: {
-            'question': "Макроэкономика зерттейтін негізгі көрсеткіштер:",
-            'variants': [
-                'Жеке фирманың табысы',
-                'Жұмыссыздық деңгейі',
-                'Инфляция қарқыны',
-                'Экономикалық өсу',
-                'Бір тауардың бағасы',
-                'Жеке тұтынушының талғамы'
-            ],
-            'correct_variants': [
-                'Жұмыссыздық деңгейі',
-                'Инфляция қарқыны',
-                'Экономикалық өсу'
-            ]
-        },
-        10: {
-            'question': "Мемлекеттің фискалдық (салық-бюджет) саясатының құралдарына не жатады?",
-            'variants': [
-                'Салықтар',
-                'Мемлекеттік шығыстар',
-                'Пайыздық мөлшерлеме',
-                'Ақша эмиссиясы',
-                'Трансферттік төлемдер',
-                'Валюта бағамы'
-            ],
-            'correct_variants': [
-                'Салықтар',
-                'Мемлекеттік шығыстар',
-                'Трансферттік төлемдер'
-            ]
-        },
-
-        11: {
-            'question': "Экономиканың кез келген қоғамы жауап іздейтін негізгі үш сұрағы:",
-            'variants': [
-                'Не өндіру керек?',
-                'Қалай өндіру керек?',
-                'Кім үшін өндіру керек?',
-                'Қашан демалу керек?',
-                'Қайда сату керек?',
-                'Қанша салық төлеу керек?'
-            ],
-            'correct_variants': [
-                'Не өндіру керек?',
-                'Қалай өндіру керек?',
-                'Кім үшін өндіру керек?'
-            ]
-        },
-        12: {
-            'question': "Жұмыссыздықтың негізгі түрлерін таңдаңыз:",
-            'variants': [
-                'Фрикциялық',
-                'Құрылымдық',
-                'Циклдық',
-                'Тұрақты',
-                'Абсолюттік',
-                'Жалпылама'
-            ],
-            'correct_variants': [
-                'Фрикциялық',
-                'Құрылымдық',
-                'Циклдық'
-            ]
-        },
-        13: {
-            'question': "Жетілген бәсеке (Perfect Competition) нарығының сипаттамалары:",
-            'variants': [
-                'Нарықта сатушылар мен сатып алушылар өте көп',
-                'Тауарлары біртекті (стандартталған)',
-                'Нарыққа кіру және шығу еркін',
-                'Бір ғана ірі сатушы бар',
-                'Бағаны сатушы бекітеді',
-                'Ақпарат жабық түрде болады'
-            ],
-            'correct_variants': [
-                'Нарықта сатушылар мен сатып алушылар өте көп',
-                'Тауарлары біртекті (стандартталған)',
-                'Нарыққа кіру және шығу еркін'
-            ]
-        },
-        14: {
-            'question': "Орталық банктің ақша-несие (монетарлық) саясатының құралдары:",
-            'variants': [
-                'Қайта қаржыландыру мөлшерлемесі (базалық мөлшерлеме)',
-                'Міндетті резервтер нормасы',
-                'Ашық нарықтағы операциялар',
-                'Салық кодексін өзгерту',
-                'Мемлекеттік бюджетті бекіту',
-                'Заң шығару'
-            ],
-            'correct_variants': [
-                'Қайта қаржыландыру мөлшерлемесі (базалық мөлшерлеме)',
-                'Міндетті резервтер нормасы',
-                'Ашық нарықтағы операциялар'
-            ]
-        },
-        15: {
-            'question': "Сұраныстың бағалық икемділігіне (elasticity) әсер ететін факторлар:",
-            'variants': [
-                'Алмастырушы тауарлардың болуы',
-                'Тауардың тұтынушы бюджетіндегі үлесі',
-                'Уақыт факторы',
-                'Сатушының жасы',
-                'Дүкеннің атауы',
-                'Ауа температурасы'
-            ],
-            'correct_variants': [
-                'Алмастырушы тауарлардың болуы',
-                'Тауардың тұтынушы бюджетіндегі үлесі',
-                'Уақыт факторы'
-            ]
-        }
-    },
-    'JavaScript-тегі ООП': {
-        1: {
-            'question': "JavaScript-те ES6 стандарты бойынша класс құру үшін қандай кілт сөз қолданылады?",
-            'variants': ['struct', 'class', 'object', 'function', 'define'],
-            'correct_variants': ['class']
-        },
-        2: {
-            'question': "Класс ішіндегі объектіні инициализациялау (бастапқы мәндерін беру) үшін қолданылатын арнайы әдіс қалай аталады?",
-            'variants': ['init', 'start', 'constructor', 'main', 'create'],
-            'correct_variants': ['constructor']
-        },
-        3: {
-            'question': "Бір кластың екінші кластан мұрагерлік алуы (inheritance) үшін қандай кілт сөз қолданылады?",
-            'variants': ['inherits', 'implements', 'extends', 'super', 'using'],
-            'correct_variants': ['extends']
-        },
-        4: {
-            'question': "Объектінің ағымдағы контекстіне немесе инстансына сілтеме жасайтын кілт сөз?",
-            'variants': ['self', 'me', 'it', 'context', 'this'],
-            'correct_variants': ['this']
-        },
-        5: {
-            'question': "Объектінің белгілі бір классқа тиесілі екенін тексеретін оператор қандай?",
-            'variants': ['typeof', 'instanceof', 'is', 'check', 'belongsTo'],
-            'correct_variants': ['instanceof']
-        },
-
-        6: {
-            'question': "JavaScript-те жаңа объект құрудың дұрыс жолдарын көрсетіңіз:",
-            'variants': [
-                'const obj = {};',
-                'const obj = new Object();',
-                'const obj = Object.construct();',
-                'const obj = class {};',
-                'const obj = create.object();',
-                'const obj = [];'
-            ],
-            'correct_variants': [
-                'const obj = {};',
-                'const obj = new Object();'
-            ]
-        },
-        7: {
-            'question': "JavaScript кластарындағы `static` әдістері туралы дұрыс тұжырымдарды таңдаңыз:",
-            'variants': [
-                'Олар кластың экземпляры (instance) арқылы шақырылады',
-                'Олар тікелей класс аты арқылы шақырылады',
-                'Олар `this` сөзі арқылы объект қасиеттеріне қол жеткізе алады',
-                'Олар жаңа объект құрылғанда ғана іске қосылады',
-                'Олар көбінесе көмекші (utility) функциялар үшін қолданылады',
-                'Олар міндетті түрде `constructor` ішінде жазылуы керек'
-            ],
-            'correct_variants': [
-                'Олар тікелей класс аты арқылы шақырылады',
-                'Олар көбінесе көмекші (utility) функциялар үшін қолданылады'
-            ]
-        },
-        8: {
-            'question': "ES2022 стандарты бойынша жеке (private) өрістер мен әдістер туралы не белгілі?",
-            'variants': [
-                'Олар `private` кілт сөзімен жазылады',
-                'Атауы `#` белгісімен басталады (мысалы, #name)',
-                'Оларға кластан тыс жерден қол жеткізу мүмкін емес',
-                'Олар `_` (астын сызу) белгісімен басталуы міндетті',
-                'Олар мұрагер кластарда (child classes) көрінеді',
-                'Бұл мүмкіндік JavaScript-те мүлдем жоқ'
-            ],
-            'correct_variants': [
-                'Атауы `#` белгісімен басталады (мысалы, #name)',
-                'Оларға кластан тыс жерден қол жеткізу мүмкін емес'
-            ]
-        },
-        9: {
-            'question': "Объектінің қасиеттерін оқу және өзгерту үшін қолданылатын арнайы әдістер (accessors):",
-            'variants': [
-                'read',
-                'get',
-                'put',
-                'set',
-                'write',
-                'fetch'
-            ],
-            'correct_variants': [
-                'get',
-                'set'
-            ]
-        },
-        10: {
-            'question': "`super` кілт сөзі қандай жағдайларда қолданылады?",
-            'variants': [
-                'Ата-аналық кластың конструкторын шақыру үшін',
-                'Глобалды айнымалыларды жариялау үшін',
-                'Ата-аналық кластың әдістерін шақыру үшін',
-                'Циклды тоқтату үшін',
-                'Жаңа класс құру үшін',
-                'Объектіні жою үшін'
-            ],
-            'correct_variants': [
-                'Ата-аналық кластың конструкторын шақыру үшін',
-                'Ата-аналық кластың әдістерін шақыру үшін'
-            ]
-        },
-
-        11: {
-            'question': "Объектіге бағытталған бағдарламалаудың (ООП) негізгі үш қағидасын көрсетіңіз:",
-            'variants': [
-                'Компиляция',
-                'Инкапсуляция',
-                'Итерация',
-                'Мұрагерлік (Inheritance)',
-                'Рекурсия',
-                'Полиморфизм',
-                'Хостинг'
-            ],
-            'correct_variants': [
-                'Инкапсуляция',
-                'Мұрагерлік (Inheritance)',
-                'Полиморфизм'
-            ]
-        },
-        12: {
-            'question': "Функцияның контекстін (`this`) басқаруға немесе өзгертуге арналған әдістерді таңдаңыз:",
-            'variants': [
-                'bind',
-                'map',
-                'call',
-                'filter',
-                'apply',
-                'reduce',
-                'push'
-            ],
-            'correct_variants': [
-                'bind',
-                'call',
-                'apply'
-            ]
-        },
-        13: {
-            'question': "Жебелік функциялардың (Arrow functions) кәдімгі функциялардан айырмашылығы (ООП тұрғысынан):",
-            'variants': [
-                'Өзінің `this` контексті жоқ',
-                'Оларды `new` операторымен шақыруға болмайды',
-                'Оларда `constructor` әдісі бар',
-                'Оларда `arguments` объектісі жоқ',
-                'Оларды айнымалыға теңестіруге болмайды',
-                'Олар әрқашан асинхронды',
-                'Олар кластың ішінде жазылмайды'
-            ],
-            'correct_variants': [
-                'Өзінің `this` контексті жоқ',
-                'Оларды `new` операторымен шақыруға болмайды',
-                'Оларда `arguments` объектісі жоқ'
-            ]
-        },
-        14: {
-            'question': "Объектіде белгілі бір қасиеттің (property) бар-жоғын тексерудің жолдары:",
-            'variants': [
-                '"propertyName" in object',
-                'object.hasOwnProperty("propertyName")',
-                'object.checkProp("propertyName")',
-                'object["propertyName"] !== undefined',
-                'object.exists("propertyName")',
-                'object.contains("propertyName")',
-                'object.isSet("propertyName")'
-            ],
-            'correct_variants': [
-                '"propertyName" in object',
-                'object.hasOwnProperty("propertyName")',
-                'object["propertyName"] !== undefined'
-            ]
-        },
-        15: {
-            'question': "Прототиптік мұрагерлікке қатысты кілт сөздер мен әдістер:",
-            'variants': [
-                'prototype',
-                '__proto__',
-                'Object.create()',
-                'Object.keys()',
-                'Object.freeze()',
-                'JSON.parse()',
-                'Array.from()'
-            ],
-            'correct_variants': [
-                'prototype',
-                '__proto__',
-                'Object.create()'
-            ]
-        }
-    }
-}
+let tests = {};
 
 // Глобальное состояние теста
 let currentTestName = null;
@@ -465,98 +80,85 @@ function shuffleArray(array) {
 /**
  * ОТКРЫТИЕ ТЕСТА И СОЗДАНИЕ ИНТЕРФЕЙСА
  * 
- * @param {string} testName - название теста (ключ из объекта `tests`)
- * 
- * Назначение: главная функция для загрузки и отображения тестового интерфейса
- * 
- * Процесс:
- * 1. Получает тест из глобального объекта `tests`
- * 2. Очищает контейнер #tab-item-test
- * 3. Создает элементы: заголовок, форма, вопросы, варианты
- * 4. Добавляет кнопку "Аяқтау" для проверки ответов
- * 5. Инициализирует модальное окно для результатов
- * 6. Переключается на вкладку 'item-test'
- * 
- * Взаимодействие с элементами:
- * ├─ Получает: #tab-item-test (контейнер)
- * ├─ Создает: .test-container, .test-title, form#current-quiz-form
- * ├─ Генерирует: 15 вопросов с динамическими элементами
- * ├─ Вызывает: initModal(), openTab()
- * └─ Результат: форма готова к заполнению и проверке
+ * @param {number} testId - ID теста из базы данных
  */
-function openTest(testName) {
+async function openTest(testId) {
     const container = document.getElementById('tab-item-test');
 
-    if (!tests[testName]) {
-        console.error(`Тест "${testName}" не найден`);
-        return;
+    // Показываем лоадер если нужно
+    container.innerHTML = '<div style="text-align: center; padding: 50px;">Жүктелуде...</div>';
+
+    try {
+        const response = await fetch(`/api/tests/${testId}/`);
+        const data = await response.json();
+
+        if (data.status !== 'success') {
+            container.innerHTML = `<div style="text-align: center; padding: 50px; color: red;">${data.error || 'Қате'}</div>`;
+            return;
+        }
+
+        // Обновляем глобальный объект тестов (мини-кэш для текущей сессии)
+        tests[data.title] = data.questions;
+
+        // Инициализация состояния
+        currentTestName = data.title;
+        currentQuestionIndex = 0;
+        userAnswers = {};
+
+        // Подготовка контейнера
+        container.innerHTML = '';
+        container.classList.add('test-container');
+
+        // Навигатор (Сұрақтар торшасы)
+        const navigator = document.createElement('div');
+        navigator.id = 'test-navigator';
+        navigator.classList.add('test-navigator');
+        container.appendChild(navigator);
+
+        // Контейнер для активного вопроса
+        const questionContainer = document.createElement('div');
+        questionContainer.id = 'active-question-container';
+        container.appendChild(questionContainer);
+
+        // Пагинация (Келесі/Алдыңғы)
+        const paginationControls = document.createElement('div');
+        paginationControls.classList.add('pagination-controls');
+
+        const prevBtn = document.createElement('button');
+        prevBtn.id = 'prev-q-btn';
+        prevBtn.textContent = 'Алдыңғы';
+        prevBtn.classList.add('btn-nav');
+        prevBtn.onclick = () => navigateQuestion(-1);
+
+        const nextBtn = document.createElement('button');
+        nextBtn.id = 'next-q-btn';
+        nextBtn.textContent = 'Келесі';
+        nextBtn.classList.add('btn-nav');
+        nextBtn.onclick = () => navigateQuestion(1);
+
+        const finishBtn = document.createElement('button');
+        finishBtn.id = 'finish-test-btn';
+        finishBtn.textContent = 'Тестті аяқтау';
+        finishBtn.classList.add('submit-btn');
+        finishBtn.style.display = 'none';
+        finishBtn.onclick = () => checkTest(currentTestName);
+
+        paginationControls.appendChild(prevBtn);
+        paginationControls.appendChild(nextBtn);
+        paginationControls.appendChild(finishBtn);
+        container.appendChild(paginationControls);
+
+        // Отрисовка первого вопроса
+        renderNavigator();
+        showQuestion(0);
+
+        initModal();
+        openTab('item-test', `nameTest=${data.title}`);
+
+    } catch (error) {
+        console.error('Test Details Error:', error);
+        container.innerHTML = '<div style="text-align: center; padding: 50px; color: red;">Деректерді жүктеу қатесі</div>';
     }
-
-    // Инициализация состояния
-    currentTestName = testName;
-    currentQuestionIndex = 0;
-    userAnswers = {};
-
-    // Подготовка контейнера
-    container.innerHTML = '';
-    container.classList.add('test-container');
-
-    // Күтіп алу(Header)
-    // const headerRow = document.createElement('div');
-    // headerRow.classList.add('test-header-row');
-
-    // const title = document.createElement('h2');
-    // title.textContent = testName;
-    // title.classList.add('test-title');
-    // headerRow.appendChild(title);
-
-    // container.appendChild(headerRow);
-
-    // Навигатор (Сұрақтар торшасы)
-    const navigator = document.createElement('div');
-    navigator.id = 'test-navigator';
-    navigator.classList.add('test-navigator');
-    container.appendChild(navigator);
-
-    // Контейнер для активного вопроса
-    const questionContainer = document.createElement('div');
-    questionContainer.id = 'active-question-container';
-    container.appendChild(questionContainer);
-
-    // Пагинация (Келесі/Алдыңғы)
-    const paginationControls = document.createElement('div');
-    paginationControls.classList.add('pagination-controls');
-
-    const prevBtn = document.createElement('button');
-    prevBtn.id = 'prev-q-btn';
-    prevBtn.textContent = 'Алдыңғы';
-    prevBtn.classList.add('btn-nav');
-    prevBtn.onclick = () => navigateQuestion(-1);
-
-    const nextBtn = document.createElement('button');
-    nextBtn.id = 'next-q-btn';
-    nextBtn.textContent = 'Келесі';
-    nextBtn.classList.add('btn-nav');
-    nextBtn.onclick = () => navigateQuestion(1);
-
-    const finishBtn = document.createElement('button');
-    finishBtn.id = 'finish-test-btn';
-    finishBtn.textContent = 'Тестті аяқтау';
-    finishBtn.classList.add('submit-btn');
-    finishBtn.style.display = 'none';
-    finishBtn.onclick = () => checkTest(currentTestName);
-
-    paginationControls.appendChild(prevBtn);
-    paginationControls.appendChild(nextBtn);
-    paginationControls.appendChild(finishBtn);
-    container.appendChild(paginationControls);
-
-    // Отрисовка первого вопроса
-    renderNavigator();
-    showQuestion(0);
-
-    initModal();
-    openTab('item-test', `nameTest=${testName}`);
 }
 
 /**

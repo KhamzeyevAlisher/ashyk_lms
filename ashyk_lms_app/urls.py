@@ -12,4 +12,6 @@ urlpatterns = [
     path('teacher_dashboard/', views.teacher_dashboard, name='teacher_dashboard'),
     path('api/curriculum/', student_api.get_curriculum_data, name='api_curriculum'),
     path('api/journal/', student_api.get_student_grades, name='get_student_grades'),
+    path('api/tests/', student_api.get_tests_list, name='api_tests_list'),
+    path('api/tests/<int:test_id>/', student_api.get_test_details, name='api_test_details'),
 ]

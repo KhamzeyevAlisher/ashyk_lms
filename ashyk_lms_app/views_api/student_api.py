@@ -1,6 +1,68 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from ..models import Curriculum, Grade
+from ..models import Curriculum, Grade, Test, Question, Variant, TestResult
+import random
+
+@login_required
+def get_tests_list(request):
+    try:
+        if not hasattr(request.user, 'student_profile'):
+            return JsonResponse({'error': 'Пользователь не является студентом'}, status=403)
+        
+        student = request.user.student_profile
+        tests_qs = Test.objects.filter(is_active=True).select_related('subject')
+        
+        # Получаем результаты студента для этих тестов
+        results_map = {res.test_id: res for res in TestResult.objects.filter(student=student)}
+
+        tests_data = []
+        for test in tests_qs:
+            result = results_map.get(test.id)
+            tests_data.append({
+                'id': test.id,
+                'title': test.title,
+                'subject': test.subject.name,
+                'questions': test.questions.count(),
+                'duration': f"{test.duration_minutes} мин",
+                'deadline': test.deadline.strftime("%d.%m.%Y"),
+                'grade': f"{int(result.percentage)}%" if result else None,
+                'status': 'completed' if result else 'active',
+                'iconType': 'green' if result else 'purple'
+            })
+
+        return JsonResponse({'tests': tests_data, 'status': 'success'})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def get_test_details(request, test_id):
+    try:
+        test = Test.objects.prefetch_related('questions__variants').get(id=test_id, is_active=True)
+        
+        questions_data = {}
+        for i, q in enumerate(test.questions.all(), 1):
+            variants = list(q.variants.all())
+            random.shuffle(variants)
+            
+            questions_data[i] = {
+                'id': q.id,
+                'question': q.text,
+                'variants': [v.text for v in variants],
+                'correct_variants': [v.text for v in variants if v.is_correct]
+            }
+
+        return JsonResponse({
+            'id': test.id,
+            'title': test.title,
+            'questions': questions_data,
+            'status': 'success'
+        })
+
+    except Test.DoesNotExist:
+        return JsonResponse({'error': 'Тест не найден'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
 
 @login_required
 def get_curriculum_data(request):
