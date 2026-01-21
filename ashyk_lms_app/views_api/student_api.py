@@ -2,6 +2,7 @@ from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from ..models import Curriculum, Grade, Test, Question, Variant, TestResult
 import random
+from django.db.models import Q
 
 @login_required
 def get_tests_list(request):
@@ -10,7 +11,19 @@ def get_tests_list(request):
             return JsonResponse({'error': 'Пользователь не является студентом'}, status=403)
         
         student = request.user.student_profile
-        tests_qs = Test.objects.filter(is_active=True).select_related('subject')
+        
+        # Filter tests:
+        # 1. Active tests
+        # 2. MATCH student's group OR MATCH student individually OR (optional) public tests if group is null
+        # BUT user requirement said "only specific group", so we strictly filter.
+        # We also include tests where student_group is NULL assuming they are "General" tests for everyone 
+        # (or remove that if strictly group-bound).
+        # Let's include: Group match OR Individual match OR Group is Null (Global).
+        
+        tests_qs = Test.objects.filter(
+            Q(is_active=True) & 
+            (Q(student_group=student.group) | Q(student=student))
+        ).select_related('subject')
         
         # Получаем результаты студента для этих тестов
         results_map = {res.test_id: res for res in TestResult.objects.filter(student=student)}

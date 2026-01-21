@@ -238,8 +238,40 @@ class Grade(models.Model):
 # ==========================================
 
 class Test(models.Model):
+    STATUS_CHOICES = [
+        ('active', 'Активный'),
+        ('retake', 'Пересдача'),
+        ('closed', 'Закрыт'),
+    ]
+
     title = models.CharField(max_length=255, verbose_name="Название теста")
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='tests', verbose_name="Предмет")
+    
+    # New fields
+    student_group = models.ForeignKey(
+        'StudentGroup', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='tests', 
+        verbose_name="Группа"
+    )
+    student = models.ForeignKey(
+        'Student', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        default=None,
+        related_name='individual_tests', 
+        verbose_name="Студент (индивидуально)"
+    )
+    status = models.CharField(
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        default='active', 
+        verbose_name="Статус"
+    )
+
     duration_minutes = models.PositiveIntegerField(default=30, verbose_name="Длительность (мин)")
     deadline = models.DateTimeField(verbose_name="Дедлайн")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
@@ -250,7 +282,8 @@ class Test(models.Model):
         verbose_name_plural = "Тесты"
 
     def __str__(self):
-        return f"{self.title} ({self.subject.name})"
+        target = f" - {self.student_group.name}" if self.student_group else ""
+        return f"{self.title} ({self.subject.name}){target}"
 
 
 class Question(models.Model):
