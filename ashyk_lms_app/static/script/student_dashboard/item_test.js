@@ -20,7 +20,13 @@
  * ├─ .variants-list          → Класс контейнера вариантов
  * ├─ .variant-label          → Класс метки варианта ответа
  * ├─ .variant-input          → Класс input элемента (radio/checkbox)
- * └─ .submit-btn             → Класс кнопки отправки теста
+ * ├─ .submit-btn             → Класс кнопки отправки теста
+ * └─ #test-navigator          → Контейнер для навигации по вопросам
+ * 
+ * ГЛОБАЛЬНЫЕ ПЕРЕМЕННЫЕ КҮЙІ (STATE):
+ * ├─ currentTestName        → Ағымдағы тест атауы
+ * ├─ currentQuestionIndex   → Ағымдағы сұрақ индексі (0-ден бастап)
+ * └─ userAnswers            → Пайдаланушы жауаптары { questionKey: [selectedVariants] }
  * 
  * ВНЕШНИЕ ФУНКЦИИ (используются из других файлов):
  * ├─ checkTest(testName)     → Проверяет ответы и показывает результаты
@@ -427,6 +433,11 @@ let tests = {
     }
 }
 
+// Глобальное состояние теста
+let currentTestName = null;
+let currentQuestionIndex = 0;
+let userAnswers = {};
+
 /**
  * ПЕРЕМЕШИВАНИЕ МАССИВА (алгоритм Фишера-Йетса)
  * 
@@ -439,7 +450,7 @@ let tests = {
 function shuffleArray(array) {
     // Создаем копию массива, чтобы не изменять исходный
     let arr = [...array];
-    
+
     // Алгоритм перемешивания (идем с конца массива)
     for (let i = arr.length - 1; i > 0; i--) {
         // Выбираем случайный индекс от 0 до i
@@ -447,7 +458,7 @@ function shuffleArray(array) {
         // Меняем местами элементы с индексами i и j
         [arr[i], arr[j]] = [arr[j], arr[i]];
     }
-    
+
     return arr;
 }
 
@@ -474,186 +485,235 @@ function shuffleArray(array) {
  * └─ Результат: форма готова к заполнению и проверке
  */
 function openTest(testName) {
-    // 1. ПОЛУЧЕНИЕ И ПРОВЕРКА ТЕСТА
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    // Получаем контейнер для отображения теста (ID: tab-item-test)
     const container = document.getElementById('tab-item-test');
-    
-    // Проверяем, существует ли такой тест в объекте `tests`
+
     if (!tests[testName]) {
         console.error(`Тест "${testName}" не найден`);
         return;
     }
-    
-    // Получаем все вопросы текущего теста
-    const currentTest = tests[testName];
 
-    // 2. ОЧИСТКА И ПОДГОТОВКА КОНТЕЙНЕРА
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    // Удаляем все предыдущее содержимое из контейнера
+    // Инициализация состояния
+    currentTestName = testName;
+    currentQuestionIndex = 0;
+    userAnswers = {};
+
+    // Подготовка контейнера
     container.innerHTML = '';
-    
-    // Добавляем класс для стилизации контейнера
     container.classList.add('test-container');
 
-    // 3. СОЗДАНИЕ И ДОБАВЛЕНИЕ ЗАГОЛОВКА
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    // Создаем элемент h2 для заголовка теста
-    const title = document.createElement('h2');
-    title.textContent = testName;
-    title.classList.add('test-title');
-    // Добавляем заголовок в контейнер
-    container.appendChild(title);
+    // Күтіп алу(Header)
+    // const headerRow = document.createElement('div');
+    // headerRow.classList.add('test-header-row');
 
-    // 4. СОЗДАНИЕ ФОРМЫ
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    // Создаем основную форму для всех вопросов
-    const form = document.createElement('form');
-    form.id = 'current-quiz-form';
+    // const title = document.createElement('h2');
+    // title.textContent = testName;
+    // title.classList.add('test-title');
+    // headerRow.appendChild(title);
 
-    // 5. ГЕНЕРАЦИЯ ВОПРОСОВ И ВАРИАНТОВ
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    // Перебираем каждый вопрос в тесте (ключ = номер вопроса)
-    Object.keys(currentTest).forEach((key) => {
-        const qData = currentTest[key];
-        
-        // ─────────────────────────────────────────────────────────────────────
-        // 5.1 СОЗДАНИЕ КАРТОЧКИ ВОПРОСА
-        // ─────────────────────────────────────────────────────────────────────
-        
-        // Основной контейнер для одного вопроса
-        const card = document.createElement('div');
-        card.classList.add('question-card');
-        
-        // ─────────────────────────────────────────────────────────────────────
-        // 5.2 СОЗДАНИЕ ШАПКИ ВОПРОСА (номер + текст + подсказка)
-        // ─────────────────────────────────────────────────────────────────────
-        
-        // Контейнер для шапки
-        const header = document.createElement('div');
-        header.classList.add('question-header');
-        
-        // НОМЕР ВОПРОСА (циклическая иконка)
-        const numberIcon = document.createElement('div');
-        numberIcon.classList.add('question-number-icon');
-        numberIcon.textContent = key;  // Порядковый номер вопроса (1, 2, 3...)
-        
-        // ТЕКСТ ВОПРОСА + ПОДСКАЗКА
-        const textBlock = document.createElement('div');
-        
-        // Сам текст вопроса
-        const qText = document.createElement('p');
-        qText.classList.add('question-text');
-        qText.textContent = qData.question;
-        
-        // ОПРЕДЕЛЕНИЕ ТИПА ВОПРОСА
-        // Если несколько правильных ответов → множественный выбор (чекбоксы)
-        // Если один правильный ответ → одиночный выбор (радио кнопки)
-        const isMultiple = qData.correct_variants.length > 1;
-        
-        // ПОДСКАЗКА ДЛЯ ПОЛЬЗОВАТЕЛЯ
-        // Показывает сколько правильных ответов нужно выбрать
-        const hint = document.createElement('span');
-        hint.classList.add('question-hint');
-        hint.textContent = isMultiple 
-            ? `Бірнеше дұрыс жауап (${qData.correct_variants.length})` 
-            : `Бір дұрыс жауап`;
+    // container.appendChild(headerRow);
 
-        // Добавляем текст и подсказку в блок
-        textBlock.appendChild(qText);
-        textBlock.appendChild(hint);
-        
-        // Добавляем номер и текст в шапку
-        header.appendChild(numberIcon);
-        header.appendChild(textBlock);
-        
-        // Добавляем шапку в карточку
-        card.appendChild(header);
+    // Навигатор (Сұрақтар торшасы)
+    const navigator = document.createElement('div');
+    navigator.id = 'test-navigator';
+    navigator.classList.add('test-navigator');
+    container.appendChild(navigator);
 
-        // ─────────────────────────────────────────────────────────────────────
-        // 5.3 СОЗДАНИЕ ВАРИАНТЫ ОТВЕТОВ
-        // ─────────────────────────────────────────────────────────────────────
-        
-        // Контейнер для всех вариантов ответа
-        const variantsContainer = document.createElement('div');
-        variantsContainer.classList.add('variants-list');
-        
-        // Определяем тип input элемента:
-        // - checkbox для множественного выбора (несколько правильных)
-        // - radio для одиночного выбора (один правильный)
-        const inputType = isMultiple ? 'checkbox' : 'radio';
-        
-        // ПЕРЕМЕШИВАЕМ ВАРИАНТЫ
-        // Порядок вариантов случайный для каждого запуска теста
-        const shuffledVariants = shuffleArray(qData.variants);
+    // Контейнер для активного вопроса
+    const questionContainer = document.createElement('div');
+    questionContainer.id = 'active-question-container';
+    container.appendChild(questionContainer);
 
-        // Создаем элементы для каждого варианта ответа
-        shuffledVariants.forEach(variant => {
-            // Метка (label) - это кликаемый элемент
-            const label = document.createElement('label');
-            label.classList.add('variant-label');
+    // Пагинация (Келесі/Алдыңғы)
+    const paginationControls = document.createElement('div');
+    paginationControls.classList.add('pagination-controls');
 
-            // INPUT ЭЛЕМЕНТ (radio или checkbox)
-            const input = document.createElement('input');
-            input.type = inputType;                    // 'radio' или 'checkbox'
-            input.name = `question_${key}`;            // Имя вопроса (для группировки)
-            input.value = variant;                     // Значение варианта ответа
-            input.classList.add('variant-input');
+    const prevBtn = document.createElement('button');
+    prevBtn.id = 'prev-q-btn';
+    prevBtn.textContent = 'Алдыңғы';
+    prevBtn.classList.add('btn-nav');
+    prevBtn.onclick = () => navigateQuestion(-1);
 
-            // ТЕКСТОВОЕ СОДЕРЖИМОЕ ВАРИАНТА
-            const span = document.createElement('span');
-            span.textContent = variant;
+    const nextBtn = document.createElement('button');
+    nextBtn.id = 'next-q-btn';
+    nextBtn.textContent = 'Келесі';
+    nextBtn.classList.add('btn-nav');
+    nextBtn.onclick = () => navigateQuestion(1);
 
-            // Добавляем input и текст в метку
-            label.appendChild(input);
-            label.appendChild(span);
-            
-            // Добавляем метку в контейнер вариантов
-            variantsContainer.appendChild(label);
-        });
+    const finishBtn = document.createElement('button');
+    finishBtn.id = 'finish-test-btn';
+    finishBtn.textContent = 'Тестті аяқтау';
+    finishBtn.classList.add('submit-btn');
+    finishBtn.style.display = 'none';
+    finishBtn.onclick = () => checkTest(currentTestName);
 
-        // Добавляем все варианты в карточку
-        card.appendChild(variantsContainer);
-        
-        // Добавляем карточку в форму
-        form.appendChild(card);
+    paginationControls.appendChild(prevBtn);
+    paginationControls.appendChild(nextBtn);
+    paginationControls.appendChild(finishBtn);
+    container.appendChild(paginationControls);
+
+    // Отрисовка первого вопроса
+    renderNavigator();
+    showQuestion(0);
+
+    initModal();
+    openTab('item-test', `nameTest=${testName}`);
+}
+
+/**
+ * ОТОБРАЖЕНИЕ КОНКРЕТНОГО ВОПРОСА
+ */
+function showQuestion(index) {
+    const testData = tests[currentTestName];
+    const questionKeys = Object.keys(testData);
+
+    if (index < 0 || index >= questionKeys.length) return;
+
+    currentQuestionIndex = index;
+    const key = questionKeys[index];
+    const qData = testData[key];
+
+    const container = document.getElementById('active-question-container');
+    container.innerHTML = '';
+
+    const card = document.createElement('div');
+    card.classList.add('question-card');
+
+    // Header
+    const header = document.createElement('div');
+    header.classList.add('question-header');
+
+    const numberIcon = document.createElement('div');
+    numberIcon.classList.add('question-number-icon');
+    numberIcon.textContent = key;
+
+    const textBlock = document.createElement('div');
+    const qText = document.createElement('p');
+    qText.classList.add('question-text');
+    qText.textContent = qData.question;
+
+    const isMultiple = qData.correct_variants.length > 1;
+    const hint = document.createElement('span');
+    hint.classList.add('question-hint');
+    hint.textContent = isMultiple ? `Бірнеше дұрыс жауап` : `Бір дұрыс жауап`;
+
+    textBlock.appendChild(qText);
+    textBlock.appendChild(hint);
+    header.appendChild(numberIcon);
+    header.appendChild(textBlock);
+    card.appendChild(header);
+
+    // Variants
+    const variantsContainer = document.createElement('div');
+    variantsContainer.classList.add('variants-list');
+
+    const inputType = isMultiple ? 'checkbox' : 'radio';
+
+    // Используем сохраненные или перемешиваем
+    if (!qData._shuffled) {
+        qData._shuffled = shuffleArray(qData.variants);
+    }
+
+    qData._shuffled.forEach(variant => {
+        const label = document.createElement('label');
+        label.classList.add('variant-label');
+
+        const input = document.createElement('input');
+        input.type = inputType;
+        input.name = `question_${key}`;
+        input.value = variant;
+        input.classList.add('variant-input');
+
+        // Восстанавливаем состояние
+        if (userAnswers[key] && userAnswers[key].includes(variant)) {
+            input.checked = true;
+        }
+
+        input.onchange = () => saveAnswer(key, variant, isMultiple);
+
+        const span = document.createElement('span');
+        span.textContent = variant;
+
+        label.appendChild(input);
+        label.appendChild(span);
+        variantsContainer.appendChild(label);
     });
 
-    // 6. СОЗДАНИЕ КНОПКИ ОТПРАВКИ
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    // Кнопка для завершения теста и проверки ответов
-    const btn = document.createElement('button');
-    btn.type = 'button';  // type='button' чтобы не отправлялась форма
-    btn.textContent = 'Аяқтау';  // "Завершить" на казахском
-    btn.classList.add('submit-btn');
-    
-    // Обработчик клика - вызывает функцию проверки из student_dashboard.html
-    btn.onclick = function() {
-        checkTest(testName);  // Внешняя функция для проверки ответов
-    };
+    card.appendChild(variantsContainer);
+    container.appendChild(card);
 
-    // Добавляем кнопку в конец формы
-    form.appendChild(btn);
-    
-    // Добавляем всю форму в контейнер
-    container.appendChild(form);
+    updateControls();
+    renderNavigator();
+}
 
-    // 7. ИНИЦИАЛИЗАЦИЯ И ПЕРЕКЛЮЧЕНИЕ
-    // ═══════════════════════════════════════════════════════════════════════════
-    
-    // Инициализируем модальное окно для отображения результатов
-    // (Функция из student_dashboard.html)
-    initModal();
-    
-    // Переключаемся на вкладку с тестом
-    // (Функция из student_dashboard.html)
-    openTab('item-test', `nameTest=${testName}`);
+/**
+ * СОХРАНЕНИЕ ОТВЕТА В СОСТОЯНИЕ
+ */
+function saveAnswer(questionKey, variant, isMultiple) {
+    if (!userAnswers[questionKey]) {
+        userAnswers[questionKey] = [];
+    }
+
+    if (isMultiple) {
+        const index = userAnswers[questionKey].indexOf(variant);
+        if (index > -1) {
+            userAnswers[questionKey].splice(index, 1);
+        } else {
+            userAnswers[questionKey].push(variant);
+        }
+    } else {
+        userAnswers[questionKey] = [variant];
+    }
+
+    renderNavigator();
+}
+
+/**
+ * ОБНОВЛЕНИЕ КНОПОК НАВИГАЦИИ
+ */
+function updateControls() {
+    const total = Object.keys(tests[currentTestName]).length;
+
+    document.getElementById('prev-q-btn').disabled = currentQuestionIndex === 0;
+
+    const nextBtn = document.getElementById('next-q-btn');
+    const finishBtn = document.getElementById('finish-test-btn');
+
+    if (currentQuestionIndex === total - 1) {
+        nextBtn.style.display = 'none';
+        finishBtn.style.display = 'block';
+    } else {
+        nextBtn.style.display = 'block';
+        finishBtn.style.display = 'none';
+    }
+}
+
+/**
+ * НАВИГАЦИЯ МЕЖДУ СВОРАКАМИ
+ */
+function navigateQuestion(step) {
+    showQuestion(currentQuestionIndex + step);
+}
+
+/**
+ * ОТРИСОВКА СЕТКИ ВОПРОСОВ
+ */
+function renderNavigator() {
+    const navigator = document.getElementById('test-navigator');
+    if (!navigator) return;
+
+    navigator.innerHTML = '';
+    const questionKeys = Object.keys(tests[currentTestName]);
+
+    questionKeys.forEach((key, index) => {
+        const item = document.createElement('div');
+        item.classList.add('nav-item');
+        if (index === currentQuestionIndex) item.classList.add('active');
+        if (userAnswers[key] && userAnswers[key].length > 0) item.classList.add('answered');
+
+        item.textContent = key;
+        item.onclick = () => showQuestion(index);
+        navigator.appendChild(item);
+    });
 }
 
 function initModal() {
@@ -671,12 +731,12 @@ function initModal() {
             </div>
         </div>
     `;
-    
+
     // Добавляем в конец body
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
+
     // Закрытие по клику на фон
-    document.getElementById('test-result-modal').addEventListener('click', function(e) {
+    document.getElementById('test-result-modal').addEventListener('click', function (e) {
         if (e.target === this) {
             closeTestModal();
         }
@@ -693,21 +753,21 @@ function closeTestModal() {
 
 function checkTest(testName) {
     const testData = tests[testName];
-    let totalPossibleCorrect = 0; 
-    let userScore = 0;            
+    let totalPossibleCorrect = 0;
+    let userScore = 0;
 
     Object.keys(testData).forEach(key => {
         const question = testData[key];
-        const correctAnswers = question.correct_variants; 
+        const correctAnswers = question.correct_variants;
         totalPossibleCorrect += correctAnswers.length;
 
-        const userInputs = document.querySelectorAll(`input[name="question_${key}"]:checked`);
-        
-        userInputs.forEach(input => {
-            if (correctAnswers.includes(input.value)) {
+        const selectedAnswers = userAnswers[key] || [];
+
+        selectedAnswers.forEach(value => {
+            if (correctAnswers.includes(value)) {
                 userScore++;
             } else {
-                userScore--; 
+                userScore--;
             }
         });
     });
@@ -719,7 +779,7 @@ function checkTest(testName) {
     if (percentage < 0) percentage = 0;
 
     // === ПОКАЗЫВАЕМ РЕЗУЛЬТАТ В МОДАЛКЕ ===
-    
+
     const scoreDisplay = document.getElementById('modal-score-display');
     const textDetail = document.getElementById('modal-text-detail');
     const modal = document.getElementById('test-result-modal');
@@ -727,13 +787,13 @@ function checkTest(testName) {
     // Установка цвета и комментария
     let colorClass = 'color-bad';
     let comment = 'Тақырыпты қайталап оқу керек.';
-    
+
     if (percentage >= 50) { colorClass = 'color-avg'; comment = 'Жақсы нәтиже!'; }
     if (percentage >= 85) { colorClass = 'color-good'; comment = 'Өте жақсы! Тамаша!'; }
 
     // Сброс классов цвета
     scoreDisplay.className = 'test-modal-score ' + colorClass;
-    
+
     // Заполнение текста
     scoreDisplay.textContent = `${percentage}%`;
     textDetail.innerHTML = `

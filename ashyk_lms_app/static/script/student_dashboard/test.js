@@ -78,15 +78,15 @@ function renderTests(semester, filterStatus = null) {
     // 2. Генерируем HTML
     const html = filteredArray.map(test => {
         const isCompleted = test.status === 'completed';
-        
-        const actionBtn = isCompleted 
+
+        const actionBtn = isCompleted
             ? `<button class="btn-test btn-retry">Қайта тапсыру</button>`
             : `<button class="btn-test btn-start" onclick="openTest('${test.title}')">
                 ${iconsTestList.play} Тестті бастау
                </button>`;
 
-        const gradeBadge = test.grade 
-            ? `<span class="grade-badge">${test.grade}</span>` 
+        const gradeBadge = test.grade
+            ? `<span class="grade-badge">${test.grade}</span>`
             : '';
 
         return `
@@ -97,7 +97,7 @@ function renderTests(semester, filterStatus = null) {
                     </div>
                     <div class="test-content">
                         <div class="test-header">
-                            <h3 class="test-title">${test.title}</h3>
+                            <h3 class="test-list-title">${test.title}</h3>
                             ${gradeBadge}
                         </div>
                         <div class="test-subject">${test.subject}</div>
@@ -124,36 +124,3 @@ function renderTests(semester, filterStatus = null) {
 
 renderTests("1 semester", "active");
 
-//Кастомный options
-document.querySelectorAll('.custom-select').forEach(select => {
-    const trigger = select.querySelector('.select-trigger');
-    const options = select.querySelectorAll('.option');
-
-    // Открыть/закрыть
-    trigger.addEventListener('click', (e) => {
-        e.stopPropagation();
-        // Закрываем другие, если открыты
-        document.querySelectorAll('.custom-select').forEach(s => {
-            if (s !== select) s.classList.remove('active');
-        });
-        select.classList.toggle('active');
-    });
-
-    // Выбор пункта
-    options.forEach(option => {
-        option.addEventListener('click', () => {
-            select.querySelector('span').innerText = option.innerText;
-            options.forEach(opt => opt.classList.remove('selected'));
-            option.classList.add('selected');
-            select.classList.remove('active');
-            
-            // Здесь можно вызвать функцию фильтрации, используя option.dataset.value
-            console.log("Выбранное значение:", option.dataset.value);
-        });
-    });
-});
-
-// Закрытие при клике в любое место экрана
-window.addEventListener('click', () => {
-    document.querySelectorAll('.custom-select').forEach(s => s.classList.remove('active'));
-});

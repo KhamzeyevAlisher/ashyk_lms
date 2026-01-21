@@ -16,7 +16,7 @@ function updateURLParameter(key, value, itemParam = '') {
   const pageRules = {
     'item-lesson': ['titleLesson', 'nameLesson'],
     'item-course': ['titleCourse'],
-    'item-test':   ['nameTest']
+    'item-test': ['nameTest']
   };
 
   // 4. Очистка: Удаляем все параметры, которые управляются правилами.
@@ -55,13 +55,13 @@ function updateURLParameter(key, value, itemParam = '') {
 }
 
 let hrefLinks = {
-    "schedule":".schedule-wrapper",
-    "curriculum":".curriculum-wrapper",
-    "diary":".stats-container-journal",
-    "homework":".container_homework",
-    "tests":"#tab-tests .dashboard-header",
-    "lectures":"#tab-lectures .card",
-    "home":"#tab-home .dashboard-header",
+  "schedule": ".schedule-wrapper",
+  "curriculum": ".curriculum-wrapper",
+  "diary": ".stats-container-journal",
+  "homework": ".container_homework",
+  "tests": "#tab-tests .dashboard-header",
+  "lectures": "#tab-lectures .card",
+  "home": "#tab-home .dashboard-header",
 }
 
 /**
@@ -112,86 +112,131 @@ let hrefLinks = {
  * ---
  */
 function openTab(tabName, itemParam = false) {
-    // 1. Получаем все элементы с классом 'tab-content' и скрываем их.
-    // Это гарантирует, что перед показом новой вкладки все остальные будут скрыты.
-    const contents = document.querySelectorAll('.tab-content');
-    
-    contents.forEach(el => el.classList.add('hidden'));
+  // 1. Получаем все элементы с классом 'tab-content' и скрываем их.
+  // Это гарантирует, что перед показом новой вкладки все остальные будут скрыты.
+  const contents = document.querySelectorAll('.tab-content');
 
-    if (tabName in hrefLinks) {
-        try {
-            document.querySelector(hrefLinks[tabName]).scrollIntoView({behavior: 'smooth'});
-        } catch (e) {
-            console.error("Error scrolling to element:", e);
-        }
-    }   
+  contents.forEach(el => el.classList.add('hidden'));
 
-    // 2. Находим и показываем нужный контейнер с контентом.
-    // Ищем элемент по id, который формируется как 'tab-' + имя вкладки (например, 'tab-home').
-    const activeContent = document.getElementById(`tab-${tabName}`);
-
-    if (activeContent) {
-        // Если элемент найден, удаляем класс 'hidden', чтобы сделать его видимым.
-        activeContent.classList.remove('hidden');
+  if (tabName in hrefLinks) {
+    try {
+      document.querySelector(hrefLinks[tabName]).scrollIntoView({ behavior: 'smooth' });
+    } catch (e) {
+      console.error("Error scrolling to element:", e);
     }
+  }
 
-    // 3. Обновляем активный класс для кнопок навигации.
-    // Сначала убираем класс 'active' со всех кнопок.
-    const buttons = document.querySelector('.sidebar').querySelectorAll('.nav-btn');
-    buttons.forEach(btn => btn.classList.remove('active'));
-    
-    // Затем ищем кнопку, которая вызвала эту функцию, сравнивая значение в атрибуте 'onclick'.
-    const activeBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(tabName));
-    if(activeBtn) {
-        // Если кнопка найдена, добавляем ей класс 'active' для визуального выделения.
-        activeBtn.classList.add('active');
-    }
+  // 2. Находим и показываем нужный контейнер с контентом.
+  // Ищем элемент по id, который формируется как 'tab-' + имя вкладки (например, 'tab-home').
+  const activeContent = document.getElementById(`tab-${tabName}`);
 
-    // 4. Обновляем заголовок страницы в элементе с id 'page-header-title'.
-    // Создаем объект-словарь, где ключи - это имена вкладок, а значения - соответствующие заголовки.
-    const titles = {
-        'home': 'Басты бет',
-        'lectures': 'Дәрістер',
-        'tests': 'Тесттер',
-        'schedule': 'Кесте',
-        'diary': 'Журнал',
-        'homework': 'Үй тапсырмалары',
-        'profile': 'Профиль',
-        'courses':'Курстар',
+  if (activeContent) {
+    // Если элемент найден, удаляем класс 'hidden', чтобы сделать его видимым.
+    activeContent.classList.remove('hidden');
+  }
 
-    };
-    // Устанавливаем текст заголовка в соответствии с открытой вкладкой.
-    // Если для tabName нет соответствующего заголовка в объекте titles, используется значение по умолчанию 'Ashyk LMS'.
-    document.getElementById('page-header-title').innerText = titles[tabName] || 'Ashyk LMS';
+  // 3. Обновляем активный класс для кнопок навигации.
+  // Сначала убираем класс 'active' со всех кнопок.
+  const buttons = document.querySelector('.sidebar').querySelectorAll('.nav-btn');
+  buttons.forEach(btn => btn.classList.remove('active'));
 
-    if (itemParam) {
-        updateURLParameter('page', tabName, itemParam);
-    } else {
-        updateURLParameter('page', tabName);
-    }
+  // Затем ищем кнопку, которая вызвала эту функцию, сравнивая значение в атрибуте 'onclick'.
+  const activeBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(tabName));
+  if (activeBtn) {
+    // Если кнопка найдена, добавляем ей класс 'active' для визуального выделения.
+    activeBtn.classList.add('active');
+  }
+
+  // 4. Обновляем заголовок страницы в элементе с id 'page-header-title'.
+  // Создаем объект-словарь, где ключи - это имена вкладок, а значения - соответствующие заголовки.
+  const titles = {
+    'home': 'Басты бет',
+    'lectures': 'Дәрістер',
+    'tests': 'Тесттер',
+    'schedule': 'Кесте',
+    'diary': 'Журнал',
+    'homework': 'Үй тапсырмалары',
+    'profile': 'Профиль',
+    'courses': 'Курстар',
+
+  };
+  // Устанавливаем текст заголовка в соответствии с открытой вкладкой.
+  // Если для tabName нет соответствующего заголовка в объекте titles, используется значение по умолчанию 'Ashyk LMS'.
+  document.getElementById('page-header-title').innerText = titles[tabName] || 'Ashyk LMS';
+
+  if (itemParam) {
+    updateURLParameter('page', tabName, itemParam);
+  } else {
+    updateURLParameter('page', tabName);
+  }
 }
 
 
 
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
 
-    const pageToOpen = urlParams.get('page');
-    
+/**
+ * Инициализация всех кастомных селектов на странице.
+ */
+function initCustomSelects() {
+  document.querySelectorAll('.custom-select').forEach(select => {
+    const trigger = select.querySelector('.select-trigger');
+    const options = select.querySelectorAll('.option');
 
-    if (pageToOpen === "item-lesson") {
-        const titleLesson = urlParams.get('titleLesson');
-        const itemLesson = urlParams.get('nameLesson');
-        openLesson(titleLesson, itemLesson);
-    } else if (pageToOpen === "item-test") {
-        const testName = urlParams.get('nameTest');
-        openTest(testName);
-    } else if (pageToOpen === "item-course") {
-        const courseTitle = urlParams.get('titleCourse');
-        renderCourseByTitle(courseTitle);
-    } else if (pageToOpen) {
-        openTab(pageToOpen);
-    } else {
-        openTab('home');
-    }
+    // Открыть/закрыть
+    trigger.addEventListener('click', (e) => {
+      e.stopPropagation();
+      // Закрываем другие, если открыты
+      document.querySelectorAll('.custom-select').forEach(s => {
+        if (s !== select) s.classList.remove('active');
+      });
+      select.classList.toggle('active');
+    });
+
+    // Выбор пункта
+    options.forEach(option => {
+      option.addEventListener('click', () => {
+        select.querySelector('span').innerText = option.innerText;
+        options.forEach(opt => opt.classList.remove('selected'));
+        option.classList.add('selected');
+        select.classList.remove('active');
+
+        // Триггерим событие изменения для кастомного селекта (если нужно вешать слушатели)
+        const event = new CustomEvent('change', { detail: { value: option.dataset.value } });
+        select.dispatchEvent(event);
+
+        // Здесь можно вызвать функцию фильтрации, используя option.dataset.value
+        console.log("Выбранное значение:", option.dataset.value);
+      });
+    });
+  });
+
+  // Закрытие при клике в любое место экрана
+  window.addEventListener('click', () => {
+    document.querySelectorAll('.custom-select').forEach(s => s.classList.remove('active'));
+  });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+  initCustomSelects();
+  // ... остальной код DOMContentLoaded ...
+  const urlParams = new URLSearchParams(window.location.search);
+
+  const pageToOpen = urlParams.get('page');
+
+
+  if (pageToOpen === "item-lesson") {
+    const titleLesson = urlParams.get('titleLesson');
+    const itemLesson = urlParams.get('nameLesson');
+    openLesson(titleLesson, itemLesson);
+  } else if (pageToOpen === "item-test") {
+    const testName = urlParams.get('nameTest');
+    openTest(testName);
+  } else if (pageToOpen === "item-course") {
+    const courseTitle = urlParams.get('titleCourse');
+    renderCourseByTitle(courseTitle);
+  } else if (pageToOpen) {
+    openTab(pageToOpen);
+  } else {
+    openTab('home');
+  }
 });

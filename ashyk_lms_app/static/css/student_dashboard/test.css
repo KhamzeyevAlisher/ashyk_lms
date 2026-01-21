@@ -6,100 +6,105 @@
 
 /* СТИЛИ ЗАГОЛОВОК И СТАТ ЭЛЕМЕНТОВ В home.css */
 
+
 /* Основной контейнер карточки теста */
 .test-card {
     background-color: #fff;
-    border-radius: 12px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 24px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    border: 1px solid var(--border-color);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #E2E8F0;
     display: flex;
-    justify-content: space-between; 
+    justify-content: space-between;
     align-items: center;
     gap: 20px;
+    transition: all 0.2s;
+}
+
+.test-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    border-color: #CBD5E0;
 }
 
 /* Левая часть: Иконка + Текст */
 .test-info-wrapper {
     display: flex;
-    align-items: flex-start;
-    gap: 15px;
+    align-items: center;
+    gap: 20px;
 }
 
 /* Блок иконки */
 .test-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 10px;
+    width: 60px;
+    height: 60px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
+    font-size: 24px;
 }
 
-/* Цвета для иконок */
 .icon-green {
-    background-color: #e6fcf5;
-    color: #20c997;
+    background-color: #ECFDF5;
+    color: #10B981;
 }
 
 .icon-purple {
-    background-color: #e5dbff;
-    color: #5f3dc4;
+    background-color: #F5F3FF;
+    color: #6D28D9;
 }
 
 /* Текстовый блок */
 .test-content {
     display: flex;
     flex-direction: column;
+    gap: 4px;
 }
 
-/* Заголовок и оценка в одну строку */
 .test-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 4px;
+    gap: 12px;
 }
 
-.test-title {
-    font-size: 16px;
-    font-weight: 600;
-    color: #333;
+.test-list-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1A202C;
     margin: 0;
 }
 
-/* Зеленый бейдж с оценкой */
 .grade-badge {
-    background-color: #e6fcf5;
-    color: #20c997;
+    background-color: #D1FAE5;
+    color: #065F46;
     font-size: 12px;
     font-weight: 700;
-    padding: 2px 6px;
-    border-radius: 4px;
+    padding: 2px 10px;
+    border-radius: 9999px;
 }
 
-/* Название предмета */
 .test-subject {
-    font-size: 13px;
-    color: #888;
-    margin-bottom: 8px;
+    font-size: 14px;
+    color: #718096;
+    font-weight: 500;
 }
 
-/* Мета-данные (вопросы, время, дата) */
 .test-meta {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 16px;
     font-size: 13px;
-    color: #666;
+    color: #A0AEC0;
+    margin-top: 4px;
 }
 
 .meta-item {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 6px;
 }
 
 /* Правая часть: Кнопки */
@@ -108,38 +113,39 @@
 }
 
 .btn-test {
-    padding: 10px 20px;
-    border-radius: 8px;
+    padding: 12px 24px;
+    border-radius: 12px;
     font-size: 14px;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     transition: all 0.2s;
 }
 
-/* Кнопка "Начать" (Фиолетовая заливка) */
 .btn-start {
-    background-color: #5f3dc4;
+    background-color: #6D28D9;
     color: white;
     border: none;
+    box-shadow: 0 4px 6px rgba(109, 40, 217, 0.2);
 }
 
 .btn-start:hover {
-    background-color: #4c329e;
+    background-color: #5B21B6;
+    transform: scale(1.02);
 }
 
-/* Кнопка "Пройти снова" (Прозрачная с рамкой) */
 .btn-retry {
-    background-color: transparent;
-    color: #5f3dc4;
-    border: 1px solid #5f3dc4;
+    background-color: #fff;
+    color: #6D28D9;
+    border: 2px solid #6D28D9;
 }
 
 .btn-retry:hover {
-    background-color: #f3f0ff;
+    background-color: #F5F3FF;
+    transform: scale(1.02);
 }
 
 /* Адаптив для телефонов */
@@ -148,10 +154,12 @@
         flex-direction: column;
         align-items: flex-start;
     }
+
     .test-action {
         width: 100%;
         margin-top: 10px;
     }
+
     .btn-test {
         width: 100%;
         justify-content: center;
@@ -173,7 +181,7 @@
     border: 1px solid var(--border-color);
     border-radius: 12px;
     margin-bottom: 20px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
     flex-wrap: wrap;
     gap: 15px;
 }
@@ -210,92 +218,4 @@
 .filter-controls {
     display: flex;
     gap: 15px;
-}
-
-.custom-select {
-    position: relative;
-    width: 220px;
-    user-select: none;
-    font-family: inherit;
-}
-
-/* Видимая часть селекта */
-.select-trigger {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 15px;
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 14px;
-    color: #4b5563;
-    font-weight: 500;
-    transition: all 0.3s ease;
-}
-
-.select-trigger:hover {
-    border-color: #d1d5db;
-}
-
-.select-trigger i {
-    font-size: 12px;
-    color: #9ca3af;
-    transition: transform 0.3s ease;
-}
-
-/* Состояние при открытии */
-.custom-select.active .select-trigger {
-    border-color: #8587ec;
-    box-shadow: 0 0 0 3px rgba(133, 135, 236, 0.1);
-}
-
-.custom-select.active i {
-    transform: rotate(180deg);
-}
-
-/* Выпадающее меню (дизайн как у карточек) */
-.select-options {
-    position: absolute;
-    top: calc(100% + 8px);
-    left: 0;
-    right: 0;
-    background: #ffffff;
-    border-radius: 12px;
-    border: 1px solid #f0f0f0;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
-    z-index: 100;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.2s ease;
-    padding: 5px;
-}
-
-.custom-select.active .select-options {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-}
-
-/* Элементы списка (Option) */
-.option {
-    padding: 10px 12px;
-    font-size: 14px;
-    color: #4b5563;
-    cursor: pointer;
-    border-radius: 8px; /* Закругляем пункты внутри */
-    transition: 0.2s;
-}
-
-.option:hover {
-    background-color: #f5f3ff;
-    color: #6366f1;
-}
-
-.option.selected {
-    background-color: #f5f3ff;
-    color: #6366f1;
-    font-weight: 600;
 }

@@ -6,7 +6,8 @@
     --sidebar-active: #ffffff;
     --body-bg: #f3f4f6;
     --card-bg: #ffffff;
-    --accent-color: #10b981; /* Изумрудный */
+    --accent-color: #10b981;
+    /* Изумрудный */
     --text-dark: #111827;
     --text-light: #6b7280;
     --border-color: #b5b6b9;
@@ -45,7 +46,7 @@ body {
     display: flex;
     align-items: center;
     padding: 0 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .brand {
@@ -97,7 +98,7 @@ body {
 }
 
 .nav-btn:hover {
-    background-color: rgba(255,255,255,0.05);
+    background-color: rgba(255, 255, 255, 0.05);
     color: white;
 }
 
@@ -107,11 +108,14 @@ body {
     border-left-color: var(--accent-color);
 }
 
-.nav-btn i { width: 20px; text-align: center; }
+.nav-btn i {
+    width: 20px;
+    text-align: center;
+}
 
 .sidebar-footer {
     padding: 20px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .logout-btn {
@@ -123,7 +127,10 @@ body {
     gap: 10px;
     transition: 0.2s;
 }
-.logout-btn:hover { opacity: 0.8; }
+
+.logout-btn:hover {
+    opacity: 0.8;
+}
 
 /* --- MAIN CONTENT AREA --- */
 .main-content {
@@ -205,6 +212,7 @@ body {
     align-items: center;
     gap: 20px;
 }
+
 .avatar-circle {
     width: 80px;
     height: 80px;
@@ -215,4 +223,93 @@ body {
     justify-content: center;
     font-size: 30px;
     color: var(--text-light);
+}
+
+/* --- CUSTOM SELECT --- */
+.custom-select {
+    position: relative;
+    width: 220px;
+    user-select: none;
+    font-family: inherit;
+}
+
+/* Видимая часть селекта */
+.select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #4b5563;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.select-trigger:hover {
+    border-color: #d1d5db;
+}
+
+.select-trigger i {
+    font-size: 12px;
+    color: #9ca3af;
+    transition: transform 0.3s ease;
+}
+
+/* Состояние при открытии */
+.custom-select.active .select-trigger {
+    border-color: #8587ec;
+    box-shadow: 0 0 0 3px rgba(133, 135, 236, 0.1);
+}
+
+.custom-select.active i {
+    transform: rotate(180deg);
+}
+
+/* Выпадающее меню */
+.select-options {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    background: #ffffff;
+    border-radius: 12px;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+    z-index: 100;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    padding: 5px;
+}
+
+.custom-select.active .select-options {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+/* Элементы списка (Option) */
+.option {
+    padding: 10px 12px;
+    font-size: 14px;
+    color: #4b5563;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: 0.2s;
+}
+
+.option:hover {
+    background-color: #f5f3ff;
+    color: #6366f1;
+}
+
+.option.selected {
+    background-color: #f5f3ff;
+    color: #6366f1;
+    font-weight: 600;
 }
