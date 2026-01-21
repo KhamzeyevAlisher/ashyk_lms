@@ -227,7 +227,70 @@ class Grade(models.Model):
     class Meta:
         verbose_name = "Оценка"
         verbose_name_plural = "Оценки"
-        ordering = ['created_at'] # Сортировка по дате (важно для трендов)
+        ordering = ['created_at']
 
     def __str__(self):
         return f"{self.subject.name} - {self.student.user.last_name}: {self.value}"
+
+
+# ==========================================
+# 4. Тестирование (Testing)
+# ==========================================
+
+class Test(models.Model):
+    title = models.CharField(max_length=255, verbose_name="Название теста")
+    subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='tests', verbose_name="Предмет")
+    duration_minutes = models.PositiveIntegerField(default=30, verbose_name="Длительность (мин)")
+    deadline = models.DateTimeField(verbose_name="Дедлайн")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+    is_active = models.BooleanField(default=True, verbose_name="Активен")
+
+    class Meta:
+        verbose_name = "Тест"
+        verbose_name_plural = "Тесты"
+
+    def __str__(self):
+        return f"{self.title} ({self.subject.name})"
+
+
+class Question(models.Model):
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='questions', verbose_name="Тест")
+    text = models.TextField(verbose_name="Текст вопроса")
+    points = models.PositiveIntegerField(default=1, verbose_name="Баллы")
+    is_multiple_choice = models.BooleanField(default=False, verbose_name="Множественный выбор")
+
+    class Meta:
+        verbose_name = "Вопрос"
+        verbose_name_plural = "Вопросы"
+
+    def __str__(self):
+        return self.text[:50]
+
+
+class Variant(models.Model):
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='variants', verbose_name="Вопрос")
+    text = models.CharField(max_length=255, verbose_name="Текст ответа")
+    is_correct = models.BooleanField(default=False, verbose_name="Правильный ответ")
+
+    class Meta:
+        verbose_name = "Вариант ответа"
+        verbose_name_plural = "Варианты ответов"
+
+    def __str__(self):
+        return self.text
+
+
+class TestResult(models.Model):
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='test_results', verbose_name="Студент")
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='results', verbose_name="Тест")
+    score = models.PositiveIntegerField(verbose_name="Набранный балл")
+    max_score = models.PositiveIntegerField(verbose_name="Максимальный балл")
+    percentage = models.FloatField(verbose_name="Процент")
+    finished_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата завершения")
+
+    class Meta:
+        verbose_name = "Результат теста"
+        verbose_name_plural = "Результаты тестов"
+
+    def __str__(self):
+        return f"{self.student.user.get_full_name_str()} - {self.test.title}: {self.score}/{self.max_score}"

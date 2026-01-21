@@ -12,7 +12,11 @@ from .models import (
     EducationalProgram, 
     Curriculum, 
     Subject, 
-    Grade
+    Grade,
+    Test,
+    Question,
+    Variant,
+    TestResult
 )
 
 # ========================================================
@@ -199,3 +203,29 @@ class GradeAdmin(admin.ModelAdmin):
     def get_group(self, obj):
         return obj.student.group.name if obj.student.group else "-"
     get_group.short_description = 'Группа'
+
+
+# ========================================================
+# 4. Тестирование (Testing)
+# ========================================================
+
+class VariantInline(admin.TabularInline):
+    model = Variant
+    extra = 4
+
+@admin.register(Question)
+class QuestionAdmin(admin.ModelAdmin):
+    list_display = ('text', 'test', 'points', 'is_multiple_choice')
+    list_filter = ('test',)
+    inlines = [VariantInline]
+
+@admin.register(Test)
+class TestAdmin(admin.ModelAdmin):
+    list_display = ('title', 'subject', 'deadline', 'is_active')
+    list_filter = ('subject', 'is_active')
+    search_fields = ('title', 'subject__name')
+
+@admin.register(TestResult)
+class TestResultAdmin(admin.ModelAdmin):
+    list_display = ('student', 'test', 'score', 'percentage', 'finished_at')
+    list_filter = ('test', 'finished_at')
