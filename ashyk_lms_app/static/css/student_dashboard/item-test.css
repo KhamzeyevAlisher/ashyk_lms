@@ -213,6 +213,13 @@
     box-shadow: 0 4px 12px rgba(109, 40, 217, 0.1);
 }
 
+/* Navigator answered hover */
+.nav-item.answered:hover {
+    background: #3182CE;
+    color: #fff;
+    transform: scale(1.1);
+}
+
 /* Pagination Controls */
 .pagination-controls {
     display: flex;

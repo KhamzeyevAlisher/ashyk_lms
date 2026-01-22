@@ -337,6 +337,9 @@ function showQuestion(index) {
     const card = document.createElement('div');
     card.classList.add('question-card');
 
+    const isAnswered = userAnswers[key] && userAnswers[key].length > 0;
+    if (isAnswered) card.classList.add('answered');
+
     // Header
     const header = document.createElement('div');
     header.classList.add('question-header');
@@ -346,6 +349,8 @@ function showQuestion(index) {
     numberIcon.textContent = key;
 
     const textBlock = document.createElement('div');
+    textBlock.style.flex = '1';
+
     const qText = document.createElement('p');
     qText.classList.add('question-text');
     qText.textContent = qData.question;
@@ -357,9 +362,12 @@ function showQuestion(index) {
 
     textBlock.appendChild(qText);
     textBlock.appendChild(hint);
+
     header.appendChild(numberIcon);
     header.appendChild(textBlock);
     card.appendChild(header);
+
+    // ... (rest same, skipping variants part for focus)
 
     // Variants
     const variantsContainer = document.createElement('div');
@@ -383,7 +391,7 @@ function showQuestion(index) {
         input.classList.add('variant-input');
 
         // Восстанавливаем состояние
-        if (userAnswers[key] && userAnswers[key].includes(vObj.id)) {
+        if (userAnswers[key] && userAnswers[key].includes(String(vObj.id))) {
             input.checked = true;
         }
 
@@ -414,14 +422,6 @@ async function saveAnswer(questionKey, questionId, variant, isMultiple) {
     }
 
     if (isMultiple) {
-        // ... (logic remains same)
-        const index = userAnswers[questionKey].indexOf(variant);
-        // variant comes from input value which is string usually?
-        // Let's ensure strictness or handle string/number. 
-        // In showQuestion: input.value = vObj.id (which comes from JSON, usually number but value is string in DOM)
-        // userAnswers stores strings from input.value usually.
-
-        // Let's ensure we are dealing with strings for consistency with input.value
         const vStr = String(variant);
         const indexStr = userAnswers[questionKey].indexOf(vStr);
 
@@ -435,10 +435,10 @@ async function saveAnswer(questionKey, questionId, variant, isMultiple) {
     }
 
     // 2. Autosave with Offline Support
-
     // Always save to Sync Queue (and Local Storage Backup) first
-    // This ensures that even if the next line fails, we have it stored.
     addToSyncQueue(currentTestId, questionId, userAnswers[questionKey]);
+
+    document.querySelector('.question-card')?.classList.add('answered');
 
     // Attempt direct send if online
     if (navigator.onLine) {
@@ -457,10 +457,6 @@ async function saveAnswer(questionKey, questionId, variant, isMultiple) {
             });
 
             if (response.ok) {
-                // Success! We can remove from sync queue (but keep in backup if desired, 
-                // though sync queue removal is main goal).
-                // Actually the `addToSyncQueue` also updates `test_backup_` which is good for page reload.
-                // `removeFromSyncQueue` only removes from the queue of items *to be sent*.
                 removeFromSyncQueue(currentTestId, questionId);
             } else {
                 console.warn('Autosave server error, will retry later.');
@@ -468,8 +464,6 @@ async function saveAnswer(questionKey, questionId, variant, isMultiple) {
         } catch (e) {
             console.warn('Autosave network error, will retry when online.');
         }
-    } else {
-        console.log('Offline. Saved to queue.');
     }
 
     renderNavigator();
