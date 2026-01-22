@@ -54,6 +54,96 @@ let currentTestId = null; // New global for API calls
 let currentQuestionIndex = 0;
 let userAnswers = {};
 
+const SYNC_QUEUE_KEY = 'test_sync_queue';
+// Sync Queue Structure: { [testId]: { [questionId]: { variants: [], timestamp: ... } } }
+
+function getSyncQueue() {
+    try {
+        return JSON.parse(localStorage.getItem(SYNC_QUEUE_KEY)) || {};
+    } catch (e) {
+        return {};
+    }
+}
+
+function saveSyncQueue(queue) {
+    localStorage.setItem(SYNC_QUEUE_KEY, JSON.stringify(queue));
+}
+
+function addToSyncQueue(testId, questionId, variants) {
+    const queue = getSyncQueue();
+    if (!queue[testId]) queue[testId] = {};
+
+    queue[testId][questionId] = {
+        variants: variants,
+        timestamp: Date.now() // For potential conflict resolution favoring newer
+    };
+    saveSyncQueue(queue);
+
+    // update specific answer local storage backup as well for restoration
+    const backupKey = `test_backup_${testId}`;
+    let backup = {};
+    try { backup = JSON.parse(localStorage.getItem(backupKey)) || {}; } catch (e) { }
+    backup[questionId] = variants;
+    localStorage.setItem(backupKey, JSON.stringify(backup));
+}
+
+function removeFromSyncQueue(testId, questionId) {
+    const queue = getSyncQueue();
+    if (queue[testId] && queue[testId][questionId]) {
+        delete queue[testId][questionId];
+        if (Object.keys(queue[testId]).length === 0) {
+            delete queue[testId];
+        }
+        saveSyncQueue(queue);
+    }
+}
+
+async function syncAnswers() {
+    if (!navigator.onLine) return;
+
+    const queue = getSyncQueue();
+    const testIds = Object.keys(queue);
+
+    if (testIds.length === 0) return;
+
+    console.log('Attempting to sync answers...');
+
+    for (const testId of testIds) {
+        const questions = queue[testId];
+        for (const qId in questions) {
+            const item = questions[qId];
+            try {
+                const response = await fetch('/api/tests/save_answer/', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken')
+                    },
+                    body: JSON.stringify({
+                        testId: testId,
+                        questionId: qId,
+                        variants: item.variants
+                    })
+                });
+
+                if (response.ok) {
+                    removeFromSyncQueue(testId, qId);
+                    console.log(`Synced: Test ${testId}, Q ${qId}`);
+                } else {
+                    console.warn(`Sync failed for Test ${testId}, Q ${qId}:`, await response.text());
+                }
+            } catch (e) {
+                console.error(`Sync error for Test ${testId}, Q ${qId}:`, e);
+                // Stop syncing this batch on network error to avoid spamming if connection flickers
+                return;
+            }
+        }
+    }
+}
+
+window.addEventListener('online', syncAnswers);
+setInterval(syncAnswers, 30000); // Periodic check every 30s
+
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -121,6 +211,56 @@ async function openTest(testId) {
         currentTestId = testId; // Store for autosave
         currentQuestionIndex = 0;
         userAnswers = {};
+
+        // === RESTORE SAVED ANSWERS ===
+        // 1. From Server
+        if (data.saved_answers) {
+            // Server format: { qId: [varIds] }
+            // userAnswers format: { questionKey ("1", "2"...): [varId-strings] }
+            // Tests data format: tests[title] = { "1": { id: qId, ... } }
+
+            const questions = tests[currentTestName];
+            for (const key in questions) {
+                const qId = questions[key].id;
+                if (data.saved_answers[qId]) {
+                    // Ensure strings for comparison consistency
+                    userAnswers[key] = data.saved_answers[qId].map(String);
+                }
+            }
+        }
+
+        // 2. From LocalStorage (Overrides server if newer/unsynced)
+        // We use the backup key we write to in saveAnswer
+        const backupKey = `test_backup_${testId}`;
+        try {
+            const localBackup = JSON.parse(localStorage.getItem(backupKey));
+            if (localBackup) {
+                // localBackup format: { question_ID (not key? wait, let's check saveAnswer): [variants] }
+                // Checking saveAnswer logic (to be updated):
+                // Currently saveAnswer uses KEY for userAnswers, but we need to verify what it will save to LS.
+                // My plan said "save to localStorage first".
+                // In addToSyncQueue I used questionId (DB ID).
+
+                // Let's assume localBackup is keyed by QUESTION ID for robustness across sessions?
+                // Or key? The key "1", "2" might change if questions are shuffled?
+                // Wait, backend `questions_data` uses "1", "2" keys. `get_test_details` shuffles variants but keys seem to be index-based logic?
+                // `enumerate(test.questions.all(), 1)` -> Yes, keys 1,2,3 depend on DB order (usually stable unless edited).
+                // However, using Database Question ID is safer for restoration.
+
+                const questions = tests[currentTestName];
+                for (const key in questions) {
+                    const qId = questions[key].id;
+                    if (localBackup[qId]) {
+                        userAnswers[key] = localBackup[qId].map(String);
+                    }
+                }
+            }
+        } catch (e) {
+            console.error("Error restoring from localStorage", e);
+        }
+
+        // Trigger sync of any pending offline answers immediately
+        syncAnswers();
 
         // Подготовка контейнера
         container.innerHTML = '';
@@ -274,53 +414,62 @@ async function saveAnswer(questionKey, questionId, variant, isMultiple) {
     }
 
     if (isMultiple) {
+        // ... (logic remains same)
         const index = userAnswers[questionKey].indexOf(variant);
-        if (index > -1) {
-            userAnswers[questionKey].splice(index, 1);
+        // variant comes from input value which is string usually?
+        // Let's ensure strictness or handle string/number. 
+        // In showQuestion: input.value = vObj.id (which comes from JSON, usually number but value is string in DOM)
+        // userAnswers stores strings from input.value usually.
+
+        // Let's ensure we are dealing with strings for consistency with input.value
+        const vStr = String(variant);
+        const indexStr = userAnswers[questionKey].indexOf(vStr);
+
+        if (indexStr > -1) {
+            userAnswers[questionKey].splice(indexStr, 1);
         } else {
-            userAnswers[questionKey].push(variant);
+            userAnswers[questionKey].push(vStr);
         }
     } else {
-        userAnswers[questionKey] = [variant];
+        userAnswers[questionKey] = [String(variant)];
     }
 
-    // 2. Autosave to Backend
-    // Using currentTestId global from openTest
-    // Getting currentTestId from tests data or we need to ensure we have it.
-    // In openTest(testId), we fetch data. We should store testId globally if not already.
-    // The previous code had 'currentTestName', but we need ID.
-    // Looking at openTest implementation (which I saw earlier in logs/read), it takes testId.
-    // Let's assume we have access to it. If not, I'll need to store it.
+    // 2. Autosave with Offline Support
 
-    // HACK: I need to ensure `currentTestId` is available.
-    // Let's use `currentTestId` which I should have set in openTest.
+    // Always save to Sync Queue (and Local Storage Backup) first
+    // This ensures that even if the next line fails, we have it stored.
+    addToSyncQueue(currentTestId, questionId, userAnswers[questionKey]);
 
-    // Note: I need to make sure `currentTestId` variable exists in the global scope of this file. 
-    // It seems `currentTestName` is used. I'll add `currentTestId` to the state variables at the top of file if needed, 
-    // but here I can just try to use the variable `currentOpenTestId` if I define it, 
-    // or passed `testId` from openTest.
+    // Attempt direct send if online
+    if (navigator.onLine) {
+        try {
+            const response = await fetch('/api/tests/save_answer/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    testId: currentTestId,
+                    questionId: questionId,
+                    variants: userAnswers[questionKey]
+                })
+            });
 
-    try {
-        const response = await fetch('/api/tests/save_answer/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                // 'X-CSRFToken': getCookie('csrftoken') // Add CSRF helper if needed or rely on session auth if exempt (api wasn't exempt though)
-                // Wait, save_student_answer IS NOT csrf_exempt in my previous step. I should probably use csrf token.
-                'X-CSRFToken': getCookie('csrftoken')
-            },
-            body: JSON.stringify({
-                testId: currentTestId,
-                questionId: questionId,
-                variants: userAnswers[questionKey]
-            })
-        });
-
-        if (!response.ok) {
-            console.error('Autosave failed:', await response.text());
+            if (response.ok) {
+                // Success! We can remove from sync queue (but keep in backup if desired, 
+                // though sync queue removal is main goal).
+                // Actually the `addToSyncQueue` also updates `test_backup_` which is good for page reload.
+                // `removeFromSyncQueue` only removes from the queue of items *to be sent*.
+                removeFromSyncQueue(currentTestId, questionId);
+            } else {
+                console.warn('Autosave server error, will retry later.');
+            }
+        } catch (e) {
+            console.warn('Autosave network error, will retry when online.');
         }
-    } catch (e) {
-        console.error('Autosave error:', e);
+    } else {
+        console.log('Offline. Saved to queue.');
     }
 
     renderNavigator();

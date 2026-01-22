@@ -66,10 +66,22 @@ def get_test_details(request, test_id):
                 'correct_variants': [v.id for v in variants if v.is_correct]
             }
 
+        # Fetch saved answers
+        saved_answers = {}
+        if hasattr(request.user, 'student_profile'):
+            student_answers = StudentAnswer.objects.filter(
+                student=request.user.student_profile,
+                test=test
+            )
+            for ans in student_answers:
+                # We need list of variant IDs
+                saved_answers[ans.question.id] = list(ans.selected_variants.values_list('id', flat=True))
+
         return JsonResponse({
             'id': test.id,
             'title': test.title,
             'questions': questions_data,
+            'saved_answers': saved_answers,
             'status': 'success'
         })
 
