@@ -358,7 +358,12 @@ function showQuestion(index) {
     const isMultiple = qData.correct_variants.length > 1;
     const hint = document.createElement('span');
     hint.classList.add('question-hint');
-    hint.textContent = isMultiple ? `Бірнеше дұрыс жауап` : `Бір дұрыс жауап`;
+
+    if (isMultiple) {
+        hint.innerHTML = `<i class="fa-solid fa-check-double"></i> ${qData.correct_variants.length} дұрыс жауап`;
+    } else {
+        hint.innerHTML = `<i class="fa-solid fa-check"></i> 1 дұрыс жауап`;
+    }
 
     textBlock.appendChild(qText);
     textBlock.appendChild(hint);

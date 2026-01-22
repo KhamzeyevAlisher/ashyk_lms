@@ -131,10 +131,16 @@
 }
 
 .question-hint {
-    display: block;
-    font-size: 0.9rem;
-    color: rgba(255, 255, 255, 0.8);
-    font-weight: 400;
+    display: inline-block;
+    font-size: 0.85rem;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 500;
+    margin-top: 8px;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .variants-list {
