@@ -16,6 +16,7 @@ from .models import (
     Test,
     Question,
     Variant,
+    StudentAnswer,
     TestResult
 )
 
@@ -217,6 +218,7 @@ class VariantInline(admin.TabularInline):
 class QuestionAdmin(admin.ModelAdmin):
     list_display = ('text', 'test', 'points', 'is_multiple_choice')
     list_filter = ('test',)
+    search_fields = ('text', 'test__title')
     inlines = [VariantInline]
 
 @admin.register(Test)
@@ -229,3 +231,29 @@ class TestAdmin(admin.ModelAdmin):
 class TestResultAdmin(admin.ModelAdmin):
     list_display = ('student', 'test', 'score', 'percentage', 'finished_at')
     list_filter = ('test', 'finished_at')
+
+@admin.register(StudentAnswer)
+class StudentAnswerAdmin(admin.ModelAdmin):
+    list_display = ('get_student_name', 'get_group', 'test', 'question_preview', 'get_selected_count', 'updated_at')
+    list_filter = ('test', 'student__group', 'created_at', 'updated_at')
+    search_fields = ('student__user__last_name', 'student__user__first_name', 'test__title', 'question__text')
+    autocomplete_fields = ['student', 'test', 'question']
+    readonly_fields = ('created_at', 'updated_at')
+    filter_horizontal = ('selected_variants',)
+    ordering = ('-updated_at',)
+    
+    def get_student_name(self, obj):
+        return obj.student.user.get_full_name_str()
+    get_student_name.short_description = 'Студент'
+    
+    def get_group(self, obj):
+        return obj.student.group.name if obj.student.group else "-"
+    get_group.short_description = 'Группа'
+    
+    def question_preview(self, obj):
+        return obj.question.text[:50] + '...' if len(obj.question.text) > 50 else obj.question.text
+    question_preview.short_description = 'Вопрос'
+    
+    def get_selected_count(self, obj):
+        return obj.selected_variants.count()
+    get_selected_count.short_description = 'Выбрано вариантов'

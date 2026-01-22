@@ -1,6 +1,7 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from ..models import Curriculum, Grade, Test, Question, Variant, TestResult
+from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer
+import json
 import random
 from django.db.models import Q
 
@@ -61,8 +62,8 @@ def get_test_details(request, test_id):
             questions_data[i] = {
                 'id': q.id,
                 'question': q.text,
-                'variants': [v.text for v in variants],
-                'correct_variants': [v.text for v in variants if v.is_correct]
+                'variants': [{'id': v.id, 'text': v.text} for v in variants],
+                'correct_variants': [v.id for v in variants if v.is_correct]
             }
 
         return JsonResponse({
@@ -156,6 +157,46 @@ def get_student_grades(request):
             }
 
         return JsonResponse(response_data, status=200)
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def save_student_answer(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
+    
+    try:
+        data = json.loads(request.body)
+        test_id = data.get('testId')
+        question_id = data.get('questionId')
+        variant_ids = data.get('variants', [])
+
+        print(variant_ids)
+
+        if not hasattr(request.user, 'student_profile'):
+            return JsonResponse({'error': 'Пользователь не является студентом'}, status=403)
+        
+        student = request.user.student_profile
+        
+        # Get or create the answer entry
+        answer, created = StudentAnswer.objects.get_or_create(
+            student=student,
+            test_id=test_id, 
+            question_id=question_id
+        )
+        
+        # Update selected variants
+        if variant_ids:
+            variants = Variant.objects.filter(id__in=variant_ids)
+            answer.selected_variants.set(variants)
+        else:
+            answer.selected_variants.clear()
+
+        # Explicitly save to update 'updated_at' timestamp
+        answer.save()
+        
+        return JsonResponse({'status': 'success'})
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

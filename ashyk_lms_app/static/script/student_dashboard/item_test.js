@@ -50,8 +50,24 @@ let tests = {};
 
 // Глобальное состояние теста
 let currentTestName = null;
+let currentTestId = null; // New global for API calls
 let currentQuestionIndex = 0;
 let userAnswers = {};
+
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
 
 /**
  * ПЕРЕМЕШИВАНИЕ МАССИВА (алгоритм Фишера-Йетса)
@@ -102,6 +118,7 @@ async function openTest(testId) {
 
         // Инициализация состояния
         currentTestName = data.title;
+        currentTestId = testId; // Store for autosave
         currentQuestionIndex = 0;
         userAnswers = {};
 
@@ -215,25 +232,25 @@ function showQuestion(index) {
         qData._shuffled = shuffleArray(qData.variants);
     }
 
-    qData._shuffled.forEach(variant => {
+    qData._shuffled.forEach(vObj => {
         const label = document.createElement('label');
         label.classList.add('variant-label');
 
         const input = document.createElement('input');
         input.type = inputType;
         input.name = `question_${key}`;
-        input.value = variant;
+        input.value = vObj.id;
         input.classList.add('variant-input');
 
         // Восстанавливаем состояние
-        if (userAnswers[key] && userAnswers[key].includes(variant)) {
+        if (userAnswers[key] && userAnswers[key].includes(vObj.id)) {
             input.checked = true;
         }
 
-        input.onchange = () => saveAnswer(key, variant, isMultiple);
+        input.onchange = () => saveAnswer(key, qData.id, vObj.id, isMultiple);
 
         const span = document.createElement('span');
-        span.textContent = variant;
+        span.textContent = vObj.text;
 
         label.appendChild(input);
         label.appendChild(span);
@@ -248,9 +265,10 @@ function showQuestion(index) {
 }
 
 /**
- * СОХРАНЕНИЕ ОТВЕТА В СОСТОЯНИЕ
+ * СОХРАНЕНИЕ ОТВЕТА В СОСТОЯНИЕ И БД (AUTOSAVE)
  */
-function saveAnswer(questionKey, variant, isMultiple) {
+async function saveAnswer(questionKey, questionId, variant, isMultiple) {
+    // 1. Local State Update
     if (!userAnswers[questionKey]) {
         userAnswers[questionKey] = [];
     }
@@ -264,6 +282,45 @@ function saveAnswer(questionKey, variant, isMultiple) {
         }
     } else {
         userAnswers[questionKey] = [variant];
+    }
+
+    // 2. Autosave to Backend
+    // Using currentTestId global from openTest
+    // Getting currentTestId from tests data or we need to ensure we have it.
+    // In openTest(testId), we fetch data. We should store testId globally if not already.
+    // The previous code had 'currentTestName', but we need ID.
+    // Looking at openTest implementation (which I saw earlier in logs/read), it takes testId.
+    // Let's assume we have access to it. If not, I'll need to store it.
+
+    // HACK: I need to ensure `currentTestId` is available.
+    // Let's use `currentTestId` which I should have set in openTest.
+
+    // Note: I need to make sure `currentTestId` variable exists in the global scope of this file. 
+    // It seems `currentTestName` is used. I'll add `currentTestId` to the state variables at the top of file if needed, 
+    // but here I can just try to use the variable `currentOpenTestId` if I define it, 
+    // or passed `testId` from openTest.
+
+    try {
+        const response = await fetch('/api/tests/save_answer/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                // 'X-CSRFToken': getCookie('csrftoken') // Add CSRF helper if needed or rely on session auth if exempt (api wasn't exempt though)
+                // Wait, save_student_answer IS NOT csrf_exempt in my previous step. I should probably use csrf token.
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                testId: currentTestId,
+                questionId: questionId,
+                variants: userAnswers[questionKey]
+            })
+        });
+
+        if (!response.ok) {
+            console.error('Autosave failed:', await response.text());
+        }
+    } catch (e) {
+        console.error('Autosave error:', e);
     }
 
     renderNavigator();
@@ -366,7 +423,8 @@ function checkTest(testName) {
         const selectedAnswers = userAnswers[key] || [];
 
         selectedAnswers.forEach(value => {
-            if (correctAnswers.includes(value)) {
+            // value is likely from input.value (string ID), correctAnswers are numbers from API
+            if (correctAnswers.includes(Number(value)) || correctAnswers.includes(value)) {
                 userScore++;
             } else {
                 userScore--;

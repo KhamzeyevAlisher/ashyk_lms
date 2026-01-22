@@ -313,6 +313,23 @@ class Variant(models.Model):
         return self.text
 
 
+class StudentAnswer(models.Model):
+    student = models.ForeignKey('Student', on_delete=models.CASCADE, related_name='answers', verbose_name="Студент")
+    test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='student_answers', verbose_name="Тест")
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='student_answers', verbose_name="Вопрос")
+    selected_variants = models.ManyToManyField(Variant, verbose_name="Выбранные варианты")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Время ответа")
+    updated_at = models.DateTimeField(auto_now=True, verbose_name="Время обновления")
+
+    class Meta:
+        verbose_name = "Ответ студента"
+        verbose_name_plural = "Ответы студентов"
+        unique_together = ('student', 'test', 'question')
+
+    def __str__(self):
+        return f"{self.student} - {self.question}"
+
+
 class TestResult(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='test_results', verbose_name="Студент")
     test = models.ForeignKey(Test, on_delete=models.CASCADE, related_name='results', verbose_name="Тест")
