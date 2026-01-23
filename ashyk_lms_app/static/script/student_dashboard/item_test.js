@@ -515,11 +515,35 @@ function renderNavigator() {
     navigator.innerHTML = '';
     const questionKeys = Object.keys(tests[currentTestName]);
 
+    // Find the first unanswered question index to mark as Active (Progress Frontier)
+    let firstUnansweredIndex = -1;
+    for (let i = 0; i < questionKeys.length; i++) {
+        const key = questionKeys[i];
+        if (!userAnswers[key] || userAnswers[key].length === 0) {
+            firstUnansweredIndex = i;
+            break;
+        }
+    }
+
     questionKeys.forEach((key, index) => {
         const item = document.createElement('div');
         item.classList.add('nav-item');
-        if (index === currentQuestionIndex) item.classList.add('active');
-        if (userAnswers[key] && userAnswers[key].length > 0) item.classList.add('answered');
+
+        const isAnswered = userAnswers[key] && userAnswers[key].length > 0;
+
+        if (isAnswered) {
+            item.classList.add('answered');
+        } else if (index === firstUnansweredIndex) {
+            // Apply active ONLY if not answered
+            item.classList.add('active');
+
+            setTimeout(() => {
+                // Only scroll if supported/needed
+                if (item.scrollIntoView) {
+                    item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+                }
+            }, 100);
+        }
 
         item.textContent = key;
         item.onclick = () => showQuestion(index);
