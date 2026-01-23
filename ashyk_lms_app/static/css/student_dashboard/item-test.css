@@ -35,12 +35,12 @@
 /* Navigator Grid */
 .test-navigator {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(40px, 1fr));
-    gap: 10px;
+    grid-template-columns: repeat(auto-fill, minmax(44px, 1fr));
+    gap: 12px;
     margin-bottom: 30px;
     background: #fff;
-    padding: 20px;
-    border-radius: 16px;
+    padding: 16px;
+    border-radius: 20px;
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
     border: 1px solid #E2E8F0;
 }
@@ -50,36 +50,48 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: #F7FAFC;
+    background: #fff;
+    /* Default White */
     border: 1px solid #E2E8F0;
-    border-radius: 10px;
+    /* Default Grey Border */
+    border-radius: 12px;
     cursor: pointer;
     font-weight: 600;
     transition: all 0.2s;
     font-size: 14px;
-    color: #718096;
+    color: #4A5568;
+    /* Default Dark Grey Text */
 }
 
 .nav-item:hover {
-    border-color: #6D28D9;
-    color: #6D28D9;
+    background-color: #F8FAFC;
+    border-color: #3B82F6;
+    color: #3B82F6;
 }
 
+/* ACTIVE STATE - Always Purple, Matches Card */
 .nav-item.active {
-    background: #6D28D9;
+    background: #7C3AED;
+    /* Purple */
     color: #fff;
-    border-color: #6D28D9;
+    border-color: #7C3AED;
+    box-shadow: 0 4px 10px rgba(124, 58, 237, 0.3);
 }
 
+/* ANSWERED STATE - Only if NOT Active */
 .nav-item.answered {
-    background: #EBF4FF;
-    border-color: #3182CE;
-    color: #3182CE;
+    background: #fff;
+    border-color: #60A5FA;
+    /* Blue Border */
+    color: #2563EB;
+    /* Blue Text */
 }
 
-.nav-item.answered.active {
-    background: #6D28D9;
+/* Ensure active overrides everything visually */
+.nav-item.active.answered {
+    background: #7C3AED;
     color: #fff;
+    border-color: #7C3AED;
 }
 
 /* Question Card */

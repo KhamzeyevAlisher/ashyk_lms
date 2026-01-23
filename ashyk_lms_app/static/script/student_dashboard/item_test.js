@@ -209,45 +209,27 @@ async function openTest(testId) {
         // Инициализация состояния
         currentTestName = data.title;
         currentTestId = testId; // Store for autosave
-        currentQuestionIndex = 0;
-        userAnswers = {};
 
         // === RESTORE SAVED ANSWERS ===
+        // ... (skipping logic for brevity in instruction, but keep existing restore logic)
         // 1. From Server
-        if (data.saved_answers) {
-            // Server format: { qId: [varIds] }
-            // userAnswers format: { questionKey ("1", "2"...): [varId-strings] }
-            // Tests data format: tests[title] = { "1": { id: qId, ... } }
+        const questions = data.questions;
+        const questionKeys = Object.keys(questions);
 
-            const questions = tests[currentTestName];
+        if (data.saved_answers) {
             for (const key in questions) {
                 const qId = questions[key].id;
                 if (data.saved_answers[qId]) {
-                    // Ensure strings for comparison consistency
                     userAnswers[key] = data.saved_answers[qId].map(String);
                 }
             }
         }
 
-        // 2. From LocalStorage (Overrides server if newer/unsynced)
-        // We use the backup key we write to in saveAnswer
+        // 2. From LocalStorage
         const backupKey = `test_backup_${testId}`;
         try {
             const localBackup = JSON.parse(localStorage.getItem(backupKey));
             if (localBackup) {
-                // localBackup format: { question_ID (not key? wait, let's check saveAnswer): [variants] }
-                // Checking saveAnswer logic (to be updated):
-                // Currently saveAnswer uses KEY for userAnswers, but we need to verify what it will save to LS.
-                // My plan said "save to localStorage first".
-                // In addToSyncQueue I used questionId (DB ID).
-
-                // Let's assume localBackup is keyed by QUESTION ID for robustness across sessions?
-                // Or key? The key "1", "2" might change if questions are shuffled?
-                // Wait, backend `questions_data` uses "1", "2" keys. `get_test_details` shuffles variants but keys seem to be index-based logic?
-                // `enumerate(test.questions.all(), 1)` -> Yes, keys 1,2,3 depend on DB order (usually stable unless edited).
-                // However, using Database Question ID is safer for restoration.
-
-                const questions = tests[currentTestName];
                 for (const key in questions) {
                     const qId = questions[key].id;
                     if (localBackup[qId]) {
@@ -255,9 +237,19 @@ async function openTest(testId) {
                     }
                 }
             }
-        } catch (e) {
-            console.error("Error restoring from localStorage", e);
+        } catch (e) { }
+
+        // === FIND STARTING QUESTION ===
+        // Start at the first unanswered question
+        let startIdx = 0;
+        for (let i = 0; i < questionKeys.length; i++) {
+            const key = questionKeys[i];
+            if (!userAnswers[key] || userAnswers[key].length === 0) {
+                startIdx = i;
+                break;
+            }
         }
+        currentQuestionIndex = startIdx;
 
         // Trigger sync of any pending offline answers immediately
         syncAnswers();
@@ -307,7 +299,7 @@ async function openTest(testId) {
 
         // Отрисовка первого вопроса
         renderNavigator();
-        showQuestion(0);
+        showQuestion(startIdx);
 
         initModal();
         openTab('item-test', `nameTest=${data.title}`);
@@ -505,9 +497,6 @@ function navigateQuestion(step) {
     showQuestion(currentQuestionIndex + step);
 }
 
-/**
- * ОТРИСОВКА СЕТКИ ВОПРОСОВ
- */
 function renderNavigator() {
     const navigator = document.getElementById('test-navigator');
     if (!navigator) return;
@@ -515,34 +504,24 @@ function renderNavigator() {
     navigator.innerHTML = '';
     const questionKeys = Object.keys(tests[currentTestName]);
 
-    // Find the first unanswered question index to mark as Active (Progress Frontier)
-    let firstUnansweredIndex = -1;
-    for (let i = 0; i < questionKeys.length; i++) {
-        const key = questionKeys[i];
-        if (!userAnswers[key] || userAnswers[key].length === 0) {
-            firstUnansweredIndex = i;
-            break;
-        }
-    }
-
     questionKeys.forEach((key, index) => {
         const item = document.createElement('div');
         item.classList.add('nav-item');
 
         const isAnswered = userAnswers[key] && userAnswers[key].length > 0;
 
-        if (isAnswered) {
-            item.classList.add('answered');
-        } else if (index === firstUnansweredIndex) {
-            // Apply active ONLY if not answered
+        if (index === currentQuestionIndex) {
+            // "Active" ALWAYS means "Currently shown on card"
             item.classList.add('active');
 
             setTimeout(() => {
-                // Only scroll if supported/needed
                 if (item.scrollIntoView) {
                     item.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
                 }
             }, 100);
+        } else if (isAnswered) {
+            // Only Answered if NOT Active
+            item.classList.add('answered');
         }
 
         item.textContent = key;
