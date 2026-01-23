@@ -356,20 +356,24 @@ function showQuestion(index) {
     qText.textContent = qData.question;
 
     const isMultiple = qData.correct_variants.length > 1;
-    const hint = document.createElement('span');
-    hint.classList.add('question-hint');
+    const flagsCount = qData.correct_variants.length;
 
-    if (isMultiple) {
-        hint.innerHTML = `<i class="fa-solid fa-check-double"></i> ${qData.correct_variants.length} дұрыс жауап`;
-    } else {
-        hint.innerHTML = `<i class="fa-solid fa-check"></i> 1 дұрыс жауап`;
+    // Flags container for the top right
+    const flagsContainer = document.createElement('div');
+    flagsContainer.classList.add('question-flags');
+
+    for (let i = 0; i < flagsCount; i++) {
+        const flag = document.createElement('div');
+        flag.classList.add('flag-icon');
+        flag.innerHTML = '<i class="fa-solid fa-star"></i>';
+        flagsContainer.appendChild(flag);
     }
 
     textBlock.appendChild(qText);
-    textBlock.appendChild(hint);
 
     header.appendChild(numberIcon);
     header.appendChild(textBlock);
+    header.appendChild(flagsContainer);
     card.appendChild(header);
 
     // ... (rest same, skipping variants part for focus)
