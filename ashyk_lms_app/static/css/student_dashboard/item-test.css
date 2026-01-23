@@ -101,7 +101,6 @@
 
 .question-header {
     padding: 32px;
-    padding-right: 80px;
     /* Make space for absolute flags */
     background: #6D28D9;
     color: #FFFFFF;
@@ -110,6 +109,8 @@
     align-items: flex-start;
     position: relative;
     /* Anchor for absolute flags */
+    min-height: 80px;
+    /* Ensure space for vertical stars */
 }
 
 .question-number-icon {
@@ -136,10 +137,12 @@
 
 .question-flags {
     display: flex;
+    flex-direction: column;
+    /* Vertical stack */
     gap: 6px;
     position: absolute;
-    top: 24px;
-    right: 24px;
+    top: 15px;
+    right: 15px;
 }
 
 .flag-icon {
