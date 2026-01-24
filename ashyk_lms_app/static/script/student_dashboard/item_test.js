@@ -191,6 +191,28 @@ function shuffleArray(array) {
 async function openTest(testId) {
     const container = document.getElementById('tab-item-test');
 
+    // Если передан не ID (число), а Имя (строка), ищем ID через API
+    if (isNaN(testId)) {
+        try {
+            const response = await fetch('/api/tests/');
+            const data = await response.json();
+            if (data.status === 'success') {
+                const foundTest = data.tests.find(t => t.title === testId);
+                if (foundTest) {
+                    openTest(foundTest.id); // Рекурсивно вызываем с ID
+                } else {
+                    container.innerHTML = `<div style="text-align: center; padding: 50px; color: red;">Тест табылмады: ${testId}</div>`;
+                }
+            } else {
+                container.innerHTML = `<p>${data.error || 'Қате орын алды'}</p>`;
+            }
+        } catch (e) {
+            console.error("Test lookup error:", e);
+            container.innerHTML = '<div style="text-align: center; padding: 50px; color: red;">Сервер қатесі</div>';
+        }
+        return; // Прерываем текущее выполнение, так как ушли в рекурсию или ошибку
+    }
+
     // Показываем лоадер если нужно
     container.innerHTML = '<div style="text-align: center; padding: 50px;">Жүктелуде...</div>';
 

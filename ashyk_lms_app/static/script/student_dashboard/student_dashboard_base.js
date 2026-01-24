@@ -230,6 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
     openLesson(titleLesson, itemLesson);
   } else if (pageToOpen === "item-test") {
     const testName = urlParams.get('nameTest');
+    openTab('item-test', 'nameTest=' + testName);
     openTest(testName);
   } else if (pageToOpen === "item-course") {
     const courseTitle = urlParams.get('titleCourse');
