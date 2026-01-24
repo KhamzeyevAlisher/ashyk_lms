@@ -37,7 +37,6 @@ def student_dashboard(request):
         plan_data = plan.plan_data
     except:
         plan_data = None
-    print(plan_data)
     return render(request, 'ashyk_lms_app/student_dashboard.html', {'curriculum': plan_data})
 
 @login_required

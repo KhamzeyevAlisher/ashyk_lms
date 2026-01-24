@@ -45,10 +45,10 @@ let homeworkDataHome = [
     }
 ];
 
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     //ДНЕВНОЕ РАСПИСАНИЕ (home)
     // 2. Находим контейнер, куда будем вставлять расписание
-    const scheduleContainer = document.getElementById('tab-home').querySelector('.column-schedule');
+    const scheduleContainer = document.getElementById('student-schedule-container');
 
     // 3. Перебираем каждый элемент в массиве данных и создаем для него HTML-разметку
     scheduleDataHome.forEach(item => {
@@ -82,7 +82,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     //ДОМАШКА (home)
     // 2. Находим контейнер, куда будем вставлять домашние задания
-    const homeworkContainer = document.getElementById('tab-home').querySelector('.column-homework');
+    const homeworkContainer = document.getElementById('student-homework-container');
 
     // 3. Перебираем каждый элемент в массиве и создаем для него HTML-разметку
     homeworkDataHome.forEach(hw => {
