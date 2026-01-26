@@ -6,11 +6,19 @@
 
 /* По умолчанию скрываем контейнер */
 .courses-grid {
-    display: grid; /* Скрыто */
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Адаптивная сетка */
-    gap: 20px;
+    display: grid;
+    /* auto-fill создает пустые колонки, предотвращая растягивание одной карточки */
+    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+    gap: 25px;
     padding-top: 10px;
     animation: fadeIn 0.5s ease;
+}
+
+/* Ограничиваем количество колонок до 3 на средних и больших экранах */
+@media (min-width: 1024px) {
+    .courses-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 /* Класс, который мы добавим через JS, чтобы показать блок */
@@ -20,16 +28,25 @@
 
 /* Анимация плавного появления */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
-/* Карточка мини-курса */
+/* Избегаем слишком широких карточек, если колонка стала большой */
 .mini-course-card {
+    max-width: 450px;
+    width: 100%;
     background: white;
     border-radius: 12px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
     transition: transform 0.2s;
     border: 2px solid #cccfd5;
     cursor: pointer;
@@ -37,7 +54,7 @@
 
 .mini-course-card:hover {
     transform: translateY(-5px);
-    box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
 /* Картинка курса */
@@ -87,7 +104,7 @@
 }
 
 .course-cover {
-    flex: 0 0 300px; 
+    flex: 0 0 300px;
     border-radius: 10px;
     overflow: hidden;
     height: 200px;
@@ -100,7 +117,7 @@
 }
 
 .course-details {
-    flex: 1; 
+    flex: 1;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -185,8 +202,8 @@
 
 /* СТИЛЬ ДЛЯ ПРОЙДЕННЫХ УРОКОВ (Зеленый бордер) */
 .lecture-row.completed {
-    border: 1px solid #10b981; 
-    background-color: #f0fdf4; 
+    border: 1px solid #10b981;
+    background-color: #f0fdf4;
 }
 
 /* Иконки статуса */
@@ -197,7 +214,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    color: #9ca3af; 
+    color: #9ca3af;
 }
 
 /* Зеленая галочка для пройденных */
@@ -230,7 +247,8 @@
 }
 
 /* Кнопки справа */
-.btn-review, .btn-start {
+.btn-review,
+.btn-start {
     padding: 6px 12px;
     border-radius: 6px;
     font-size: 13px;
@@ -306,7 +324,7 @@
 /* Контейнер для видео */
 .video-wrapper {
     position: relative;
-    padding-bottom: 56.25%; 
+    padding-bottom: 56.25%;
     height: 0;
     background: #000;
     border-radius: 12px;
@@ -437,8 +455,15 @@
 }
 
 @keyframes pulse {
-    0%, 100% { opacity: 1; }
-    50% { opacity: 0.5; }
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
 }
 
 /* Мета данные (время, дата) */
@@ -493,6 +518,7 @@
     font-weight: 600;
     margin-top: 10px;
 }
+
 .back-btn:hover {
     background: #4f46e5;
 }

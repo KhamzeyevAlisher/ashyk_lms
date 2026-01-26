@@ -1,217 +1,146 @@
-/**
- * ====================================
- * БАЗА ДАННЫХ УРОКОВ
- * ====================================
- * Содержит информацию о всех видео уроках
- * Структура: название урока => объект с данными урока
- */
-let item_lessons = {
-  "Кәсіпкерлік" : {
-    "Менеджмент мәні мен қағидалары": {
-      category: "Менеджмент негіздері",
-      description: "Менеджменттің негізгі түсініктері, мақсаттары және басқару қағидалары туралы кіріспе сабақ.",
-      duration: "45 мин",
-      date: "01.12.2025",
-      iframe: '<iframe width="560" height="315" src="https://www.youtube.com/embed/shZGLze2iwA?si=2atWKjpsh9AWtQOv&amp;controls=0&enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
-      files: [
-        { name: "slides.pdf", url: "#" },
-        { name: "glossary.docx", url: "#" }
-      ]
-    },
-    "Менеджменттің мәні мен қағидалары (Жалғасы)": {
-      category: "Менеджмент негіздері",
-      description: "Менеджменттің негізгі түсініктері, мақсаттары және басқару қағидалары туралы кіріспе сабақ.",
-      duration: "45 мин",
-      date: "01.12.2025",
-      iframe: '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/aqZ_qz7vkjk?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
-      files: [
-        { name: "slides.pdf", url: "#" },
-        { name: "glossary.docx", url: "#" }
-      ]
-    }
-  },
-  "JavaScript":{
-    "JavaScript-тегі ООП: Кластар және мұрагерлік": {
-        category: "javascript",
-        description: "Бұл сабақта JavaScript тіліндегі объектіге бағытталған бағдарламалаудың негізгі концепциялары қарастырылады, соның ішінде кластар мен мұрагерлік.",
-        duration: "50 мин",
-        date: "05.12.2025",
-        iframe: '<iframe width="100%" height="100%" src="https://www.youtube.com/embed/H-Uwil_2qH0?enablejsapi=1" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
-        files: [
-          { name: "oop_examples.zip", url: "#" }
-        ]
-      }
-    }
-};
-
+// item_lessons removed in favor of API
+// let item_lessons = { ... };
 
 /**
  * ====================================
  * ФУНКЦИЯ ОТКРЫТИЯ УРОКА
  * ====================================
  * Отвечает за отображение видео урока с информацией и файлами
- * 
- * @param {string} lessonName - Название урока (должно совпадать с ключом в item_lessons)
- * 
- * DOM элементы, с которыми взаимодействует:
- * - #tab-item-lesson (id) - контейнер для вывода урока
  */
-function openLesson(courseName, lessonName) {
+async function openLesson(courseName, lessonName) {
   const container = document.getElementById('tab-item-lesson');
   console.log(courseName, lessonName);
-  const lesson = item_lessons[courseName][lessonName];
 
-  // Проверка: найден ли урок в базе данных
-  if (!lesson) {
-    console.error("Сабақ табылмады / Урок не найден");
-    return;
-  }
+  container.innerHTML = '<h3>Жүктелуде...</h3>';
 
-  // ========== ОБРАБОТКА ВИДЕО IFRAME ==========
-  let videoEmbedHTML = "";
+  try {
+    const response = await fetch(`/api/lectures/get_by_name/?courseName=${encodeURIComponent(courseName)}&nameLesson=${encodeURIComponent(lessonName)}`);
+    const result = await response.json();
 
-  // Способ 1: готовый iframe код в объекте урока
-  if (lesson.iframe) {
-    videoEmbedHTML = lesson.iframe;
-    // Добавляем ID для работы YouTube API
-    videoEmbedHTML = videoEmbedHTML.replace('<iframe', '<iframe id="my-youtube-player" ');
-  } 
-  // Способ 2: ссылка на видео (если нужно извлечь ID)
-  else if (lesson.link) {
-    let videoId = "";
-    const link = lesson.link;
-
-    // Проверяем полную URL ссылку (с http/https)
-    if (link.includes("http")) {
-      try {
-        const urlObj = new URL(link);
-        if (urlObj.hostname.includes("youtu.be")) {
-          videoId = urlObj.pathname.slice(1);
-        } else {
-          videoId = urlObj.searchParams.get("v");
-        }
-      } catch (e) {
-        console.error("Ошибка парсинга URL", e);
-      }
-    } 
-    // Если просто ID или "ID?параметры"
-    else {
-      videoId = link.split('?')[0];
+    if (result.status !== 'success') {
+      console.error("Сабақ табылмады / Урок не найден", result.error);
+      container.innerHTML = `<h3>Сабақ табылмады</h3><p>${result.error || ''}</p>`;
+      return;
     }
 
-    // Генерируем iframe если ID найден
-    if (videoId) {
-      videoEmbedHTML = `
-        <iframe 
-          id="my-youtube-player"
-          src="https://www.youtube.com/embed/${videoId}" 
-          title="YouTube video player" 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-          referrerpolicy="strict-origin-when-cross-origin"
-          allowfullscreen>
-        </iframe>
+    const lesson = result.lecture;
+
+    // ========== ОБРАБОТКА ВИДЕО IFRAME ==========
+    let videoEmbedHTML = lesson.iframe || "";
+
+    // Если iframe пустой, но есть ссылка, пробуем сгенерировать (хотя API уже должен вернуть)
+    if (!videoEmbedHTML && lesson.link) {
+      // Fallback logic handled by API, but keeping client side fallback just in case
+      videoEmbedHTML = `<a href="${lesson.link}" target="_blank">Видеоны ашу</a>`;
+    }
+
+    // Inject ID into iframe if not present
+    if (videoEmbedHTML && !videoEmbedHTML.includes('id="my-youtube-player"')) {
+      videoEmbedHTML = videoEmbedHTML.replace('<iframe', '<iframe id="my-youtube-player" ');
+    }
+
+    // ========== ПОДГОТОВКА ДАННЫХ ==========
+    const category = lesson.category || "Жалпы курс";
+    const desc = lesson.description || "";
+    const date = lesson.date || "";
+    const duration = lesson.duration || "";
+
+    // Генерируем HTML для файлов
+    let filesHtml = '';
+    if (lesson.files && lesson.files.length > 0) {
+      filesHtml = lesson.files.map(f => `
+          <a href="${f.url}" class="file-btn" target="_blank">
+            <span>📥</span> ${f.name}
+          </a>
+        `).join('');
+    }
+
+    // ========== СБОРКА ФИНАЛЬНОГО HTML ==========
+    const contentHTML = `
+        <div class="lesson-card_item"> 
+          <span class="lesson-category">${category}</span>
+          <h1 class="lesson-title">${lessonName}</h1>
+          <p class="lesson-description">${desc}</p>
+
+          <!-- Мета информация (время, дата) -->
+          <div class="lesson-meta">
+            <div class="meta-item">
+              <span>🕒</span> ${duration}
+            </div>
+            <div class="meta-item">
+              <span>📅</span> ${date}
+            </div>
+          </div>
+
+          <!-- Контейнер для видео -->
+          <div class="video-wrapper">
+            ${videoEmbedHTML}
+          </div>
+
+          <!-- БЛОК ОТСЛЕЖИВАНИЯ ВРЕМЕНИ ПРОСМОТРА ВИДЕО -->
+          <div class="video-tracking-container">
+            <div class="tracking-title">📊 Қарау уақыты</div>
+            
+            <!-- Два основных показателя: время просмотра и прогресс -->
+            <div class="tracking-stats">
+              <div class="stat-item">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-content">
+                  <div class="stat-label">Қаралды</div>
+                  <div class="stat-value" id="video-watch-time">0:00</div>
+                </div>
+              </div>
+              <div class="stat-item">
+                <div class="stat-icon">📈</div>
+                <div class="stat-content">
+                  <div class="stat-label">Прогресс</div>
+                  <div class="stat-value" id="video-progress-percent">0%</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Прогресс бар с длительностью видео -->
+            <div class="progress-section">
+              <div class="progress-label">
+                <span>Жалпы қарау уақыты</span>
+                <span id="video-duration-display">--:--</span>
+              </div>
+              <div class="progress-bar-container">
+                <div class="progress-bar-fill" id="video-progress-bar" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Кнопки для скачивания файлов -->
+          <div class="files-container">
+            ${filesHtml}
+          </div>
+
+          <!-- Кнопка возврата в список уроков -->
+          // Исправлено: возвращаемся к курсу, а не к общему списку уроков (если пришли из курса)
+          <button class="back-btn" onclick="openTab('item-course', 'titleCourse=${courseName}')">← Курсқа қайту</button>
+        </div>
       `;
+
+    // Вставляем HTML в контейнер
+    container.innerHTML = contentHTML;
+
+    // Переключаемся на вкладку с уроком
+    if (typeof openTab === "function") {
+      openTab('item-lesson', `titleLesson=${encodeURIComponent(courseName)}&nameLesson=${encodeURIComponent(lessonName)}`);
     } else {
-      videoEmbedHTML = '<p>Видео жүктелмеді (ID қате)</p>';
+      container.classList.remove('hidden');
     }
+
+    // Инициализируем отслеживание видео после отрисовки DOM
+    setTimeout(() => {
+      initializeVideoTracking(lessonName);
+    }, 100);
+
+  } catch (e) {
+    console.error("Open lesson error", e);
+    container.innerHTML = '<p>Деректерді жүктеу қатесі.</p>';
   }
-
-  // ========== ПОДГОТОВКА ДАННЫХ ==========
-  const category = lesson.category || "Жалпы курс";
-  const desc = lesson.description || "";
-  const date = lesson.date || "";
-  const duration = lesson.duration || "";
-
-  // Генерируем HTML для файлов
-  let filesHtml = '';
-  if (lesson.files && lesson.files.length > 0) {
-    filesHtml = lesson.files.map(f => `
-      <a href="${f.url}" class="file-btn" target="_blank">
-        <span>📥</span> ${f.name}
-      </a>
-    `).join('');
-  }
-
-  // ========== СБОРКА ФИНАЛЬНОГО HTML ==========
-  const contentHTML = `
-    <div class="lesson-card_item"> 
-      <span class="lesson-category">${category}</span>
-      <h1 class="lesson-title">${lessonName}</h1>
-      <p class="lesson-description">${desc}</p>
-
-      <!-- Мета информация (время, дата) -->
-      <div class="lesson-meta">
-        <div class="meta-item">
-          <span>🕒</span> ${duration}
-        </div>
-        <div class="meta-item">
-          <span>📅</span> ${date}
-        </div>
-      </div>
-
-      <!-- Контейнер для видео -->
-      <div class="video-wrapper">
-        ${videoEmbedHTML}
-      </div>
-
-      <!-- БЛОК ОТСЛЕЖИВАНИЯ ВРЕМЕНИ ПРОСМОТРА ВИДЕО -->
-      <div class="video-tracking-container">
-        <div class="tracking-title">📊 Қарау уақыты</div>
-        
-        <!-- Два основных показателя: время просмотра и прогресс -->
-        <div class="tracking-stats">
-          <div class="stat-item">
-            <div class="stat-icon">⏱️</div>
-            <div class="stat-content">
-              <div class="stat-label">Қаралды</div>
-              <div class="stat-value" id="video-watch-time">0:00</div>
-            </div>
-          </div>
-          <div class="stat-item">
-            <div class="stat-icon">📈</div>
-            <div class="stat-content">
-              <div class="stat-label">Прогресс</div>
-              <div class="stat-value" id="video-progress-percent">0%</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Прогресс бар с длительностью видео -->
-        <div class="progress-section">
-          <div class="progress-label">
-            <span>Жалпы қарау уақыты</span>
-            <span id="video-duration-display">--:--</span>
-          </div>
-          <div class="progress-bar-container">
-            <div class="progress-bar-fill" id="video-progress-bar" style="width: 0%;"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Кнопки для скачивания файлов -->
-      <div class="files-container">
-        ${filesHtml}
-      </div>
-
-      <!-- Кнопка возврата в список уроков -->
-      <button class="back-btn" onclick="openTab('lessons-list')">← Артқа қайту</button>
-    </div>
-  `;
-
-  // Вставляем HTML в контейнер
-  container.innerHTML = contentHTML;
-
-  // Переключаемся на вкладку с уроком
-  if (typeof openTab === "function") {
-    openTab('item-lesson', `titleLesson=${courseName}&nameLesson=${lessonName}`);
-  } else {
-    container.classList.remove('hidden');
-  }
-
-  // Инициализируем отслеживание видео после отрисовки DOM
-  setTimeout(() => {
-    initializeVideoTracking(lessonName);
-  }, 100);
 }
 
 
@@ -281,7 +210,7 @@ function onYouTubeIframeAPIReady() {
  */
 function initializeVideoTracking(lessonName) {
   currentLesson = lessonName;
-  
+
   // Загружаем сохраненное время просмотра из localStorage
   const savedStats = localStorage.getItem(`video_${lessonName}`);
   if (savedStats) {
@@ -342,7 +271,7 @@ function onPlayerReady(event) {
     // Получаем длительность видео в секундах
     videoDuration = event.target.getDuration();
     console.log(`Длительность видео: ${formatTime(videoDuration)}`);
-    
+
     // Обновляем UI с новыми данными
     updateTrackingUI(currentLesson);
   } catch (e) {
@@ -368,7 +297,7 @@ function onPlayerStateChange(event) {
     '3': 'BUFFERING',
     '5': 'CUED'
   };
-  
+
   console.log(`Состояние плеера: ${playerStates[event.data]}`);
 
   if (event.data == YT.PlayerState.PLAYING) {
@@ -410,15 +339,15 @@ function onPlayerError(event) {
 function startTracking() {
   // Останавливаем предыдущий таймер, чтобы избежать дублирования
   stopTracking();
-  
+
   console.log(`Начало отслеживания видео: "${currentLesson}"`);
-  
-  timerInterval = setInterval(function() {
+
+  timerInterval = setInterval(function () {
     totalSecondsWatched++;
-    
+
     // Обновляем UI каждую секунду
     updateTrackingUI(currentLesson);
-    
+
     // Сохраняем прогресс в localStorage каждые 5 секунд
     if (totalSecondsWatched % 5 === 0) {
       saveWatchStats(currentLesson);
@@ -435,7 +364,7 @@ function startTracking() {
 function stopTracking() {
   clearInterval(timerInterval);
   timerInterval = null;
-  
+
   if (currentLesson) {
     console.log(`Остановка отслеживания видео: "${currentLesson}" (${totalSecondsWatched}сек)`);
     saveWatchStats(currentLesson);
@@ -453,18 +382,18 @@ function stopTracking() {
  */
 function saveWatchStats(lessonName) {
   if (!lessonName) return;
-  
+
   videoWatchStats[lessonName] = {
     totalSeconds: totalSecondsWatched,
     watchedAt: new Date().toISOString(),
     lessonName: lessonName
   };
-  
+
   localStorage.setItem(
     `video_${lessonName}`,
     JSON.stringify(videoWatchStats[lessonName])
   );
-  
+
   console.log(`💾 Сохранено: "${lessonName}" - ${totalSecondsWatched}сек`);
 }
 
@@ -516,7 +445,7 @@ function updateTrackingUI(lessonName) {
   if (videoDuration > 0) {
     // Вычисляем процент просмотра (не больше 100%)
     const percentage = Math.min((totalSecondsWatched / videoDuration) * 100, 100);
-    
+
     // Обновляем ширину прогресс-бара
     const progressBar = document.getElementById('video-progress-bar');
     if (progressBar) {
@@ -562,7 +491,7 @@ function updateStatusIndicator(isPlaying) {
  * ====================================
  * Автоматически сохраняет статистику перед уходом со страницы
  */
-window.addEventListener('beforeunload', function() {
+window.addEventListener('beforeunload', function () {
   if (currentLesson) {
     stopTracking();
     console.log(`📤 Итого просмотрено (${currentLesson}): ${totalSecondsWatched} сек`);
@@ -579,18 +508,18 @@ window.addEventListener('beforeunload', function() {
  */
 function getAllWatchStats() {
   const stats = {};
-  
+
   // Перебираем все ключи в localStorage
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    
+
     // Ищем только ключи видеостатистики (начинаются с "video_")
     if (key.startsWith('video_')) {
       const lessonName = key.replace('video_', '');
       stats[lessonName] = JSON.parse(localStorage.getItem(key));
     }
   }
-  
+
   return stats;
 }
 

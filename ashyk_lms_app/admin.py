@@ -17,7 +17,10 @@ from .models import (
     Question,
     Variant,
     StudentAnswer,
-    TestResult
+    TestResult,
+    Course,
+    Lecture,
+    LectureFile
 )
 
 # ========================================================
@@ -167,6 +170,33 @@ class StudentAdmin(admin.ModelAdmin):
     def get_program(self, obj):
         return obj.program
     get_program.short_description = 'Программа'
+
+
+# ========================================================
+# 2.1 Курсы и Лекции
+# ========================================================
+
+class LectureFileInline(admin.TabularInline):
+    model = LectureFile
+    extra = 1
+
+@admin.register(Course)
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ('title', 'display_cover', 'department', 'instructor_name', 'created_at')
+    search_fields = ('title', 'description')
+
+    def display_cover(self, obj):
+        if obj.cover_image:
+            return format_html('<img src="{}" style="width: 50px; height: 30px; object-fit: cover;" />', obj.cover_image.url)
+        return "-"
+    display_cover.short_description = 'Обложка'
+
+@admin.register(Lecture)
+class LectureAdmin(admin.ModelAdmin):
+    list_display = ('title', 'course', 'category', 'scheduled_date', 'order')
+    list_filter = ('course', 'category')
+    search_fields = ('title', 'description', 'course__title')
+    inlines = [LectureFileInline]
 
 
 # ========================================================

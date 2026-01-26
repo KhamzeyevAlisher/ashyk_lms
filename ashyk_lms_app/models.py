@@ -154,6 +154,78 @@ class Student(models.Model):
         if self.group:
             return self.group.program
         return None
+
+
+class Course(models.Model):
+    """
+    Модель: Курс (Дисциплина с контентом)
+    Пример: "Кәсіпкерлік", "Python негіздері"
+    """
+    title = models.CharField(max_length=255, unique=True, verbose_name="Название")
+    description = models.TextField(verbose_name="Описание", blank=True)
+    cover_image = models.ImageField(upload_to='course_covers/', blank=True, null=True, verbose_name="Обложка")
+    
+    # Мета-информация
+    department = models.CharField(max_length=100, blank=True, verbose_name="Кафедра")
+    instructor_name = models.CharField(max_length=150, blank=True, verbose_name="ФИО преподавателя")
+    duration_text = models.CharField(max_length=50, blank=True, verbose_name="Длительность (строка)")
+    
+    # Тэги (храним как строку через запятую или JSON)
+    tags = models.CharField(max_length=255, blank=True, verbose_name="Тэги (через запятую)")
+
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    class Meta:
+        verbose_name = "Курс"
+        verbose_name_plural = "Курсы"
+
+    def __str__(self):
+        return self.title
+
+
+class Lecture(models.Model):
+    """
+    Модель: Лекция внутри курса
+    """
+    course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name='lectures', verbose_name="Курс")
+    title = models.CharField(max_length=255, verbose_name="Тема лекции")
+    description = models.TextField(verbose_name="Описание", blank=True)
+    category = models.CharField(max_length=100, blank=True, verbose_name="Категория (н-р, Менеджмент)")
+    
+    duration = models.CharField(max_length=50, blank=True, verbose_name="Длительность")
+    scheduled_date = models.DateField(blank=True, null=True, verbose_name="Дата проведения")
+    
+    # Видео
+    video_url = models.URLField(blank=True, verbose_name="Ссылка на видео (YouTube/MP4)")
+    iframe_content = models.TextField(blank=True, verbose_name="Код для вставки (iframe)")
+    
+    order = models.PositiveIntegerField(default=0, verbose_name="Порядковый номер")
+    
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Лекция"
+        verbose_name_plural = "Лекции"
+        ordering = ['order', 'created_at']
+
+    def __str__(self):
+        return f"{self.course.title} - {self.title}"
+
+
+class LectureFile(models.Model):
+    """
+    Файлы к лекции (слайды, доп. материалы)
+    """
+    lecture = models.ForeignKey(Lecture, on_delete=models.CASCADE, related_name='files', verbose_name="Лекция")
+    file = models.FileField(upload_to='lecture_files/', verbose_name="Файл")
+    name = models.CharField(max_length=255, blank=True, verbose_name="Отображаемое имя")
+
+    class Meta:
+        verbose_name = "Файл лекции"
+        verbose_name_plural = "Файлы лекций"
+
+    def __str__(self):
+        return self.name or str(self.file)
     
 # ==========================================
 # 3. Журнал и Оценки
