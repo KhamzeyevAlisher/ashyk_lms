@@ -1,16 +1,17 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ashyk LMS Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <link rel="stylesheet" href="{% static 'css/student_dashboard_base.css' %}">
 
     <!-- home page студента -->
-    <link rel="stylesheet" href="{% static 'css/student_dashboard/home.css' %}">    
+    <link rel="stylesheet" href="{% static 'css/student_dashboard/home.css' %}">
 
     <!-- Вкладка лекции студента -->
     <link rel="stylesheet" href="{% static 'css/student_dashboard/lecture.css' %}">
@@ -29,7 +30,7 @@
 
     <!-- вкладка для сдачи теста -->
     <link rel="stylesheet" href="{% static 'css/student_dashboard/item-test.css' %}">
-    
+
     <!-- Вкладка для курсов -->
     <link rel="stylesheet" href="{% static 'css/student_dashboard/course.css' %}">
 
@@ -38,6 +39,7 @@
 
 
 </head>
+
 <body>
 
     {% include 'parties/student_dashboard/sidebar_student.html' %}
@@ -48,8 +50,9 @@
         <header class="top-header">
             <h2 id="page-header-title" class="page-title">Басты бет</h2>
             <div class="user-info">
-                <i class="fa-regular fa-bell" style="margin-right: 15px; cursor: pointer; color: var(--text-light);"></i>
-                <span style="font-weight: 500;">Бауыржан Айдынов</span>
+                <i class="fa-regular fa-bell"
+                    style="margin-right: 15px; cursor: pointer; color: var(--text-light);"></i>
+                <span style="font-weight: 500;">{{ user.get_full_name_str }}</span>
             </div>
         </header>
 
@@ -71,7 +74,7 @@
             </div>
 
             <div id="tab-item-course" class="tab-content hidden">
-                
+
             </div>
 
             <div id="tab-item-lesson" class="tab-content hidden">
@@ -82,7 +85,7 @@
             <!-- TAB 3: ТЕСТЫ -->
             <div id="tab-tests" class="tab-content hidden">
                 {% include 'parties/student_dashboard/student_test.html' %}
-            </div> 
+            </div>
 
             <div id="tab-item-test" class="tab-content hidden">
 
@@ -111,30 +114,36 @@
             <!-- TAB 8: ПРОФИЛЬ -->
             <div id="tab-profile" class="tab-content hidden">
                 <div class="card profile-header">
-                    <div class="avatar-circle">
+                    <div class="avatar-circle"
+                        style="overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                        {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
                         <i class="fa-solid fa-user"></i>
+                        {% endif %}
                     </div>
                     <div>
-                        <h2 style="font-size: 24px;">Бауыржан Айдынов</h2>
-                        <p>Ақпараттық технологиялар факультеті</p>
-                        <p style="color: var(--accent-color);">3-курс, IT-301 тобы</p>
+                        <h2 style="font-size: 24px;">{{ user.get_full_name_str }}</h2>
+                        <p>{{ user.student_profile.group.program.title|default:user.department }}</p>
+                        <p style="color: var(--accent-color);">{{ user.student_profile.group.name|default:"-" }} тобы
+                        </p>
                     </div>
                 </div>
                 <div class="card">
                     <h3>Жеке ақпарат</h3>
-                    <p><strong>Email:</strong> student@gmail.com</p>
-                    <p><strong>Телефон:</strong> +7 (777) 123 45 67</p>
-                    <p><strong>Туған күні:</strong> 15.05.2006</p>
+                    <p><strong>Email:</strong> {{ user.email|default:"-" }}</p>
+                    <p><strong>Телефон:</strong> {{ user.phone|default:"-" }}</p>
                     <br>
                     <button class="btn-primary">Профильді өңдеу</button>
-                    <button class="btn-primary" style="background-color: var(--sidebar-bg); margin-left: 10px;">Құпия сөзді өзгерту</button>
+                    <button class="btn-primary" style="background-color: var(--sidebar-bg); margin-left: 10px;">Құпия
+                        сөзді өзгерту</button>
                 </div>
             </div>
 
         </div>
     </main>
 
-    
+
     <!--Модальный окно для домашка-->
     <div id="homework-modal-overlay" class="modal-overlay">
         <div class="modal-content">
@@ -147,12 +156,18 @@
             <!-- Тело модального окна -->
             <div class="modal-body">
                 <p id="modal-subject" class="modal-subject"></p>
-                
+
                 <p class="modal-task-title"><strong>Тапсырма:</strong> <span id="modal-task-description"></span></p>
-                
+
                 <label class="modal-label">Файлдарды тіркеу</label>
                 <div class="file-drop-area">
-                    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+                    <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                        stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
                     <p class="file-drop-main-text">Мұнда файлды шертіңіз немесе сүйреңіз</p>
                     <span class="file-drop-sub-text">PDF, DOC, DOCX, суреттер (макс. 10 МБ)</span>
                     <input type="file" class="file-input" multiple>
@@ -184,32 +199,39 @@
             <div class="modal-body">
                 <!-- Сұраныс бойынша ID өзгертілді -->
                 <p id="modal-subject-grade" class="modal-subject">SUBJECT</p>
-                
+
                 <!-- Тапсырма атауы -->
                 <p class="modal-task-title" style="margin-bottom: 20px;">
                     <strong>Тапсырма:</strong> <span id="modal-grade-task-name">TASK NAME</span>
                 </p>
-                
+
                 <!-- Импровизация: Бағаны көрсету блогы -->
-                <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 25px; flex-direction: column;">
+                <div
+                    style="display: flex; align-items: center; justify-content: center; margin-bottom: 25px; flex-direction: column;">
                     <span class="modal-label" style="margin-bottom: 10px;">Сіздің бағаңыз:</span>
-                    
+
                     <!-- Дөңгелек баға көрсеткіші -->
-                    <div style="width: 100px; height: 100px; border-radius: 50%; background: #f0f9ff; border: 3px solid #007bff; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #007bff;">
+                    <div
+                        style="width: 100px; height: 100px; border-radius: 50%; background: #f0f9ff; border: 3px solid #007bff; display: flex; align-items: center; justify-content: center; flex-direction: column; color: #007bff;">
                         <span id="grade-value" style="font-size: 32px; font-weight: bold; line-height: 1;">95</span>
-                        <span style="font-size: 12px; color: #666; border-top: 1px solid #ccc; padding-top: 2px; margin-top: 2px;">max 100</span>
+                        <span
+                            style="font-size: 12px; color: #666; border-top: 1px solid #ccc; padding-top: 2px; margin-top: 2px;">max
+                            100</span>
                     </div>
                 </div>
 
                 <!-- Мұғалімнің пікірі -->
                 <label class="modal-label">Оқытушының пікірі:</label>
-                <div id="grade-comment-area" style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 15px; color: #333; min-height: 60px; margin-bottom: 15px;">
+                <div id="grade-comment-area"
+                    style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 6px; padding: 15px; color: #333; min-height: 60px; margin-bottom: 15px;">
                     <!-- Мұнда пікір динамикалық түрде шығады -->
-                    Өте жақсы жұмыс! Интерфейстер дұрыс жүзеге асырылған, бірақ айнымалылардың атауларына назар аударыңыз.
+                    Өте жақсы жұмыс! Интерфейстер дұрыс жүзеге асырылған, бірақ айнымалылардың атауларына назар
+                    аударыңыз.
                 </div>
-                
+
                 <!-- Қосымша ақпарат (Күні, тексеруші) -->
-                <div style="font-size: 12px; color: #888; display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 10px;">
+                <div
+                    style="font-size: 12px; color: #888; display: flex; justify-content: space-between; border-top: 1px solid #eee; padding-top: 10px;">
                     <span>Тексерген: <span id="grade-teacher">Оқытушы А.А.</span></span>
                     <span>Уақыты: <span id="grade-date">20.01.2026</span></span>
                 </div>
@@ -231,11 +253,12 @@
             </div>
             <div class="modal-body" style="text-align: center;">
                 <div id="teacher-photo-container" style="margin-bottom: 20px;">
-                    <img id="teacher-photo" src="" alt="Teacher Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #007bff;">
+                    <img id="teacher-photo" src="" alt="Teacher Photo"
+                        style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #007bff;">
                 </div>
                 <h3 id="teacher-name" style="margin-bottom: 5px;">-</h3>
                 <p id="teacher-position" style="color: #666; margin-bottom: 15px;">-</p>
-                
+
                 <div style="text-align: left; background: #f8f9fa; padding: 15px; border-radius: 8px;">
                     <p><strong>Кафедра:</strong> <span id="teacher-department">-</span></p>
                     <p><strong>Email:</strong> <span id="teacher-email">-</span></p>
@@ -245,7 +268,7 @@
         </div>
     </div>
 
-    
+
 
     <script src="{% static 'script/student_dashboard/student_dashboard_base.js' %}"></script>
     <script src="{% static 'script/student_dashboard/home.js' %}"></script>
@@ -260,6 +283,7 @@
     <script src="{% static 'script/student_dashboard/courses.js' %}"></script>
     <script src="{% static 'script/student_dashboard/course_item.js' %}"></script>
 
-    
+
 </body>
+
 </html>

@@ -1,81 +1,81 @@
-                <div class="dashboard-header">
-                    <h2>Қош келдіңіз, Айгүл!</h2>
-                    <p>Оқу белсенділігіңізге шолу</p>
+<div class="dashboard-header">
+    <h2>Қош келдіңіз, {{ user.first_name }}!</h2>
+    <p>Оқу белсенділігіңізге шолу</p>
+</div>
+
+<!-- Статистика студента -->
+<div class="stats-grid">
+    <div class="stat-card">
+        <div class="icon-box blue">
+            <i class="fa-solid fa-book-open"></i>
+        </div>
+        <span class="stat-title">Белсенді курстар</span>
+        <div class="stat-value">6</div>
+        <span class="stat-desc">Осы семестрде +2</span>
+    </div>
+
+    <div class="stat-card">
+        <div class="icon-box green">
+            <i class="fa-solid fa-circle-check"></i>
+        </div>
+        <span class="stat-title">Орындалған тапсырмалар</span>
+        <div class="stat-value">24/30</div>
+        <span class="stat-desc">80% аяқталды</span>
+    </div>
+
+    <div class="stat-card">
+        <div class="icon-box orange">
+            <i class="fa-solid fa-chart-line"></i>
+        </div>
+        <span class="stat-title">Орташа балл</span>
+        <div class="stat-value">4.5</div>
+        <span class="stat-desc">Айына +0.3</span>
+    </div>
+
+    <div class="stat-card">
+        <div class="icon-box purple">
+            <i class="fa-solid fa-clipboard-list"></i>
+        </div>
+        <span class="stat-title">Өткен тесттер</span>
+        <div class="stat-value">12/15</div>
+        <span class="stat-desc">3 күтуде</span>
+    </div>
+</div>
+
+<div class="dashboard-grid" style="padding: 0px;">
+
+    <!-- 1-Я КОЛОНКА: Расписание -->
+    <div class="column-schedule">
+        <!-- Общий белый контейнер (используем тот же стиль, что и у домашки) -->
+        <div class="paper-card">
+            <div class="paper-header">
+                <div class="header-title">
+                    <!-- Фиолетовая иконка календаря -->
+                    <i class="fa-solid fa-calendar-day header-icon-schedule"></i>
+                    <h3>Бүгінгі сабақ кестесі</h3>
                 </div>
+                <a href="#" onclick="openTab('schedule')" class="view-all-link">Барлығы</a>
+            </div>
 
-                <!-- Статистика студента -->
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="icon-box blue">
-                            <i class="fa-solid fa-book-open"></i>
-                        </div>
-                        <span class="stat-title">Белсенді курстар</span>
-                        <div class="stat-value">6</div>
-                        <span class="stat-desc">Осы семестрде +2</span>
-                    </div>
+            <!-- Сюда JS вставит уроки -->
+            <div id="schedule-list-container"></div>
+        </div>
+    </div>
 
-                    <div class="stat-card">
-                        <div class="icon-box green">
-                            <i class="fa-solid fa-circle-check"></i>
-                        </div>
-                        <span class="stat-title">Орындалған тапсырмалар</span>
-                        <div class="stat-value">24/30</div>
-                        <span class="stat-desc">80% аяқталды</span>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="icon-box orange">
-                            <i class="fa-solid fa-chart-line"></i>
-                        </div>
-                        <span class="stat-title">Орташа балл</span>
-                        <div class="stat-value">4.5</div>
-                        <span class="stat-desc">Айына +0.3</span>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="icon-box purple">
-                            <i class="fa-solid fa-clipboard-list"></i>
-                        </div>
-                        <span class="stat-title">Өткен тесттер</span>
-                        <div class="stat-value">12/15</div>
-                        <span class="stat-desc">3 күтуде</span>
-                    </div>
+    <!-- 2-Я КОЛОНКА: Домашние задания-->
+    <div class="column-homework">
+        <div class="homework-paper-card">
+            <div class="paper-header">
+                <div class="header-title">
+                    <!-- Оранжевая иконка как на фото -->
+                    <i class="fa-solid fa-clipboard-check header-icon-main"></i>
+                    <h3>Үй тапсырмалары</h3>
                 </div>
+                <a href="#" onclick="openTab('homework')" class="view-all-link">Барлығы</a>
+            </div>
 
-                <div class="dashboard-grid" style="padding: 0px;">
-                    
-                    <!-- 1-Я КОЛОНКА: Расписание -->
-                    <div class="column-schedule">
-                        <!-- Общий белый контейнер (используем тот же стиль, что и у домашки) -->
-                        <div class="paper-card">
-                            <div class="paper-header">
-                                <div class="header-title">
-                                    <!-- Фиолетовая иконка календаря -->
-                                    <i class="fa-solid fa-calendar-day header-icon-schedule"></i>
-                                    <h3>Бүгінгі сабақ кестесі</h3>
-                                </div>
-                                <a href="#" onclick="openTab('schedule')" class="view-all-link">Барлығы</a>
-                            </div>
-                            
-                            <!-- Сюда JS вставит уроки -->
-                            <div id="schedule-list-container"></div>
-                        </div>
-                    </div>
-
-                    <!-- 2-Я КОЛОНКА: Домашние задания-->
-                    <div class="column-homework">
-                        <div class="homework-paper-card">
-                            <div class="paper-header">
-                                <div class="header-title">
-                                    <!-- Оранжевая иконка как на фото -->
-                                    <i class="fa-solid fa-clipboard-check header-icon-main"></i>
-                                    <h3>Үй тапсырмалары</h3>
-                                </div>
-                                <a href="#" onclick="openTab('homework')" class="view-all-link">Барлығы</a>
-                            </div>
-                            
-                            <!-- Сюда JS вставит красивые блоки -->
-                            <div id="homework-list-container"></div>
-                        </div>
-                    </div>
-                </div>
+            <!-- Сюда JS вставит красивые блоки -->
+            <div id="homework-list-container"></div>
+        </div>
+    </div>
+</div>

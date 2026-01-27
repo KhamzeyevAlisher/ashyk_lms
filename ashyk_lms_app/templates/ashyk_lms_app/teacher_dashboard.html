@@ -1,23 +1,27 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="ru">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ashyk LMS Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+
     <link rel="stylesheet" href="{% static 'css/student_dashboard_base.css' %}">
 
     <!-- home page студента -->
-    <link rel="stylesheet" href="{% static 'css/student_dashboard/home.css' %}">   
+    <link rel="stylesheet" href="{% static 'css/student_dashboard/home.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/teacher_dashboard/home.css' %}">
 
     <link rel="stylesheet" href="{% static 'css/teacher_dashboard/content.css' %}">
 
+    <!-- Вкладка для курсов (используем стили студента для сетки) -->
+    <link rel="stylesheet" href="{% static 'css/student_dashboard/course.css' %}">
 
 </head>
+
 <body>
     {% include 'parties/teacher_dashboard/sidebar_teacher.html' %}
 
@@ -27,8 +31,9 @@
         <header class="top-header">
             <h2 id="page-header-title" class="page-title">Басты бет</h2>
             <div class="user-info">
-                <i class="fa-regular fa-bell" style="margin-right: 15px; cursor: pointer; color: var(--text-light);"></i>
-                <span style="font-weight: 500;">Айгүл Ержанова</span>
+                <i class="fa-regular fa-bell"
+                    style="margin-right: 15px; cursor: pointer; color: var(--text-light);"></i>
+                <span style="font-weight: 500;">{{ user.get_full_name_str }}</span>
             </div>
         </header>
 
@@ -40,14 +45,14 @@
             </div>
 
             <!-- TAB 2: ЛЕКЦИИ -->
-            <div id="tab-content" class="tab-content hidden">
+            <div id="tab-content" class="card courses-section tab-content hidden">
                 {% include 'parties/teacher_dashboard/teacher_content.html' %}
             </div>
 
             <!-- TAB 3: ТЕСТЫ -->
             <div id="tab-tests" class="tab-content hidden">
                 <p>Бұл мұғалімнің тесттер беті.</p>
-            </div> 
+            </div>
 
             <!-- TAB 4: РАСПИСАНИЕ -->
             <div id="tab-schedule" class="tab-content hidden">
@@ -72,23 +77,32 @@
             <!-- TAB 8: ПРОФИЛЬ -->
             <div id="tab-profile" class="tab-content hidden">
                 <div class="card profile-header">
-                    <div class="avatar-circle">
+                    <div class="avatar-circle"
+                        style="overflow: hidden; display: flex; align-items: center; justify-content: center;">
+                        {% if user.avatar %}
+                        <img src="{{ user.avatar.url }}" style="width: 100%; height: 100%; object-fit: cover;">
+                        {% elif user.teacher_profile.photo %}
+                        <img src="{{ user.teacher_profile.photo.url }}"
+                            style="width: 100%; height: 100%; object-fit: cover;">
+                        {% else %}
                         <i class="fa-solid fa-user"></i>
+                        {% endif %}
                     </div>
                     <div>
-                        <h2 style="font-size: 24px;">Бауыржан Айдынов</h2>
-                        <p>Ақпараттық технологиялар факультеті</p>
-                        <p style="color: var(--accent-color);">3-курс, IT-301 тобы</p>
+                        <h2 style="font-size: 24px;">{{ user.get_full_name_str }}</h2>
+                        <p>{{ user.teacher_profile.department.name|default:user.department }}</p>
+                        <p style="color: var(--accent-color);">
+                            {{ user.teacher_profile.position|default:user.teacher_profile.degree }}</p>
                     </div>
                 </div>
                 <div class="card">
                     <h3>Жеке ақпарат</h3>
-                    <p><strong>Email:</strong> student@gmail.com</p>
-                    <p><strong>Телефон:</strong> +7 (777) 123 45 67</p>
-                    <p><strong>Туған күні:</strong> 15.05.2006</p>
+                    <p><strong>Email:</strong> {{ user.email|default:"-" }}</p>
+                    <p><strong>Телефон:</strong> {{ user.phone|default:"-" }}</p>
                     <br>
                     <button class="btn-primary">Профильді өңдеу</button>
-                    <button class="btn-primary" style="background-color: var(--sidebar-bg); margin-left: 10px;">Құпия сөзді өзгерту</button>
+                    <button class="btn-primary" style="background-color: var(--sidebar-bg); margin-left: 10px;">Құпия
+                        сөзді өзгерту</button>
                 </div>
             </div>
 
@@ -99,4 +113,5 @@
     <script src="{% static 'script/teacher_dashboard/home.js' %}"></script>
     <script src="{% static 'script/teacher_dashboard/content.js' %}"></script>
 </body>
+
 </html>
