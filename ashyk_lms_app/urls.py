@@ -19,5 +19,6 @@ urlpatterns = [
     path('api/courses/<str:course_id>/', student_api.get_course_detail, name='api_course_detail'),
     path('api/lectures/get_by_name/', student_api.get_lecture_by_name, name='api_lecture_by_name'),
     path('api/lectures/<int:lecture_id>/', student_api.get_lecture_detail, name='api_lecture_detail'),
+    path('api/teacher/<int:teacher_id>/', student_api.get_teacher_detail, name='api_teacher_detail'),
     path('api/admin/upload_tests/', admin_api.upload_tests_json, name='api_upload_tests'),
 ]

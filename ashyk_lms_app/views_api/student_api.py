@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture
+from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture, Teacher
 import json
 import random
 from django.db.models import Q
@@ -217,14 +217,15 @@ def save_student_answer(request):
 @login_required
 def get_courses_list(request):
     try:
-        courses = Course.objects.all().order_by('-created_at')
+        courses = Course.objects.select_related('instructor__user', 'department').order_by('-created_at')
         data = []
         for c in courses:
+            instructor_name = c.instructor.user.get_full_name_str() if c.instructor else "-"
             data.append({
                 'id': c.id,
                 'title': c.title,
                 'description': c.description,
-                'instructor': c.instructor_name,
+                'instructor': instructor_name,
                 'image': c.cover_image.url if c.cover_image else "",
             })
         return JsonResponse({'courses': data, 'status': 'success'})
@@ -239,24 +240,25 @@ def get_course_detail(request, course_id):
     """
     try:
         if str(course_id).isdigit():
-            course = Course.objects.get(id=int(course_id))
+            course = Course.objects.select_related('instructor__user', 'department').get(id=int(course_id))
         else:
-            # Try to find by title (case insensitive? user sends titleCourse=Name)
-            # The JS sends title exactly.
-            course = Course.objects.get(title=course_id)
+            course = Course.objects.select_related('instructor__user', 'department').get(title=course_id)
 
         lectures = course.lectures.all().order_by('order')
         
         program_data = []
         for i, lec in enumerate(lectures, 1):
-            # Logic for state could be added here. For now default to active.
             state = "active" 
-            
             program_data.append({
                 'id': lec.id,
                 'topic': lec.title,
                 'state': state
             })
+
+        instructor_name = course.instructor.user.get_full_name_str() if course.instructor else "-"
+        # Pass instructor ID for fetching details
+        instructor_id = course.instructor.id if course.instructor else None
+        department_name = course.department.name if course.department else "-"
 
         data = {
             'id': course.id,
@@ -265,8 +267,9 @@ def get_course_detail(request, course_id):
             'coverImage': course.cover_image.url if course.cover_image else "",
             'tags': course.tags.split(',') if course.tags else [],
             'info': {
-                'department': course.department,
-                'instructor': course.instructor_name,
+                'department': department_name,
+                'instructor': instructor_name,
+                'instructorId': instructor_id, 
                 'duration': course.duration_text
             },
             'program': program_data
@@ -368,5 +371,27 @@ def get_lecture_by_name(request):
         
     except Lecture.DoesNotExist:
         return JsonResponse({'error': 'Лекция не найдена'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def get_teacher_detail(request, teacher_id):
+    try:
+        # Teacher is already imported at the top
+        teacher = Teacher.objects.select_related('user', 'department').get(id=teacher_id)
+        
+        data = {
+            'id': teacher.id,
+            'fullName': teacher.user.get_full_name_str(),
+            'position': teacher.position,
+            'degree': teacher.degree,
+            'department': teacher.department.name if teacher.department else "-",
+            'email': teacher.user.email,
+            'phone': teacher.user.phone,
+            'photo': teacher.photo.url if teacher.photo else "", 
+        }
+        return JsonResponse({'teacher': data, 'status': 'success'})
+    except Teacher.DoesNotExist:
+        return JsonResponse({'error': 'Преподаватель не найден'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

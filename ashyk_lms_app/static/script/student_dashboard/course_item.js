@@ -77,7 +77,12 @@ async function renderCourseByTitle(courseTitle) {
                         </div>
                         <div class="info-row">
                             <span class="label">Оқытушы:</span>
-                            <span class="value">${data.info.instructor || '-'}</span>
+                            <span class="value">
+                                ${data.info.instructorId
+                ? `<a href="#" onclick="openTeacherModal(${data.info.instructorId}); return false;" style="color: var(--accent-color); text-decoration: underline;">${data.info.instructor || '-'}</a>`
+                : (data.info.instructor || '-')
+            }
+                            </span>
                         </div>
                         <div class="info-row">
                             <span class="label">Ұзақтығы:</span>
@@ -104,5 +109,49 @@ async function renderCourseByTitle(courseTitle) {
     } catch (e) {
         console.error("Course load error", e);
         container.innerHTML = '<p>Деректерді жүктеу қатесі.</p>';
+    }
+}
+
+// Teacher Modal Logic
+async function openTeacherModal(teacherId) {
+    const modal = document.getElementById('teacher-modal-overlay');
+    if (!modal) return;
+
+    // Reset content
+    document.getElementById('teacher-name').textContent = 'Жүктелуде...';
+    document.getElementById('teacher-photo').src = '';
+
+    modal.classList.add('active');
+
+    try {
+        const response = await fetch(`/api/teacher/${teacherId}/`);
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            const t = result.teacher;
+            document.getElementById('teacher-name').textContent = t.fullName;
+            document.getElementById('teacher-position').textContent = t.position || t.degree;
+            document.getElementById('teacher-department').textContent = t.department;
+            document.getElementById('teacher-email').textContent = t.email || '-';
+            document.getElementById('teacher-phone').textContent = t.phone || '-';
+            document.getElementById('teacher-photo').src = t.photo || '/static/img/default-avatar.png';
+        } else {
+            console.error(result.error);
+        }
+    } catch (e) {
+        console.error(e);
+    }
+
+    // Close logic
+    const closeBtn = document.getElementById('modal-teacher-close-btn');
+    if (closeBtn) {
+        closeBtn.onclick = () => modal.classList.remove('active');
+    }
+
+    // Auto-close on outside click (if typical modal behavior)
+    window.onclick = (event) => {
+        if (event.target == modal) {
+            modal.classList.remove('active');
+        }
     }
 }

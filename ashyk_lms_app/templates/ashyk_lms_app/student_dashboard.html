@@ -222,6 +222,29 @@
         </div>
     </div>
 
+    <!-- Teacher Profile Modal -->
+    <div id="teacher-modal-overlay" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>Оқытушы туралы</h2>
+                <button id="modal-teacher-close-btn" class="modal-close-btn">&times;</button>
+            </div>
+            <div class="modal-body" style="text-align: center;">
+                <div id="teacher-photo-container" style="margin-bottom: 20px;">
+                    <img id="teacher-photo" src="" alt="Teacher Photo" style="width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 3px solid #007bff;">
+                </div>
+                <h3 id="teacher-name" style="margin-bottom: 5px;">-</h3>
+                <p id="teacher-position" style="color: #666; margin-bottom: 15px;">-</p>
+                
+                <div style="text-align: left; background: #f8f9fa; padding: 15px; border-radius: 8px;">
+                    <p><strong>Кафедра:</strong> <span id="teacher-department">-</span></p>
+                    <p><strong>Email:</strong> <span id="teacher-email">-</span></p>
+                    <p><strong>Телефон:</strong> <span id="teacher-phone">-</span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     
 
     <script src="{% static 'script/student_dashboard/student_dashboard_base.js' %}"></script>

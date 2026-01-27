@@ -156,6 +156,70 @@ class Student(models.Model):
         return None
 
 
+class Department(models.Model):
+    """
+    Модель: Кафедра / Факультет
+    """
+    name = models.CharField(
+        max_length=255, 
+        unique=True, 
+        verbose_name="Название кафедры"
+    )
+    description = models.TextField(
+        blank=True, 
+        verbose_name="Описание"
+    )
+
+    class Meta:
+        verbose_name = "Кафедра"
+        verbose_name_plural = "Кафедры"
+
+    def __str__(self):
+        return self.name
+
+
+class Teacher(models.Model):
+    """
+    Модель: Профиль Преподавателя
+    """
+    user = models.OneToOneField(
+        User, 
+        on_delete=models.CASCADE, 
+        related_name='teacher_profile',
+        verbose_name="Пользователь"
+    )
+    department = models.ForeignKey(
+        Department,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='teachers',
+        verbose_name="Кафедра"
+    )
+    degree = models.CharField(
+        max_length=150, 
+        verbose_name="Білімі / Гылыми дәрежесі (Степень)"
+    )
+    position = models.CharField(
+        max_length=150, 
+        blank=True, 
+        verbose_name="Лауазымы (Должность)"
+    )
+    photo = models.ImageField(
+        upload_to='teacher_photos/', 
+        blank=True, 
+        null=True, 
+        verbose_name="Фото"
+    )
+
+    class Meta:
+        verbose_name = "Профиль преподавателя"
+        verbose_name_plural = "Профили преподавателей"
+
+    def __str__(self):
+        return self.user.get_full_name_str()
+
+
 class Course(models.Model):
     """
     Модель: Курс (Дисциплина с контентом)
@@ -166,8 +230,26 @@ class Course(models.Model):
     cover_image = models.ImageField(upload_to='course_covers/', blank=True, null=True, verbose_name="Обложка")
     
     # Мета-информация
-    department = models.CharField(max_length=100, blank=True, verbose_name="Кафедра")
-    instructor_name = models.CharField(max_length=150, blank=True, verbose_name="ФИО преподавателя")
+    # department = models.CharField(max_length=100, blank=True, verbose_name="Кафедра")
+    # instructor_name = models.CharField(max_length=150, blank=True, verbose_name="ФИО преподавателя")
+    
+    department = models.ForeignKey(
+        'Department', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='courses',
+        verbose_name="Кафедра"
+    )
+    instructor = models.ForeignKey(
+        'Teacher', 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        blank=True, 
+        related_name='courses',
+        verbose_name="Преподаватель"
+    )
+
     duration_text = models.CharField(max_length=50, blank=True, verbose_name="Длительность (строка)")
     
     # Тэги (храним как строку через запятую или JSON)

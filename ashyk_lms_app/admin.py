@@ -16,11 +16,13 @@ from .models import (
     Test,
     Question,
     Variant,
-    StudentAnswer,
     TestResult,
+    StudentAnswer,
     Course,
     Lecture,
-    LectureFile
+    LectureFile,
+    Teacher,
+    Department
 )
 
 # ========================================================
@@ -38,9 +40,16 @@ class StudentInline(admin.StackedInline):
     fk_name = 'user'
     extra = 0 
 
+class TeacherInline(admin.StackedInline):
+    model = Teacher
+    can_delete = False
+    verbose_name_plural = 'Профиль преподавателя'
+    fk_name = 'user'
+    extra = 0
+
 @admin.register(User)
 class CustomUserAdmin(UserAdmin):
-    inlines = (StudentInline, )
+    inlines = (StudentInline, TeacherInline)
 
     # Поля в списке
     list_display = (
@@ -171,6 +180,28 @@ class StudentAdmin(admin.ModelAdmin):
         return obj.program
     get_program.short_description = 'Программа'
 
+@admin.register(Teacher)
+class TeacherAdmin(admin.ModelAdmin):
+    list_display = ('display_photo', 'get_full_name', 'position', 'department', 'degree', 'user')
+    list_filter = ('department', 'degree', 'position')
+    search_fields = ('user__last_name', 'user__first_name', 'user__username', 'department__name', 'position')
+
+    def get_full_name(self, obj):
+        return obj.user.get_full_name_str()
+    get_full_name.short_description = 'ФИО'
+
+    def display_photo(self, obj):
+        if obj.photo:
+            return format_html('<img src="{}" style="width: 35px; height: 35px; border-radius: 50%; object-fit: cover;" />', obj.photo.url)
+        return "-"
+    display_photo.short_description = 'Фото'
+
+
+@admin.register(Department)
+class DepartmentAdmin(admin.ModelAdmin):
+    list_display = ('name', 'description')
+    search_fields = ('name',)
+
 
 # ========================================================
 # 2.1 Курсы и Лекции
@@ -182,8 +213,17 @@ class LectureFileInline(admin.TabularInline):
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'display_cover', 'department', 'instructor_name', 'created_at')
-    search_fields = ('title', 'description')
+    list_display = ('title', 'display_cover', 'get_department', 'get_instructor', 'created_at')
+    search_fields = ('title', 'description', 'instructor__user__last_name')
+    autocomplete_fields = ['instructor', 'department']
+
+    def get_department(self, obj):
+        return obj.department.name if obj.department else "-"
+    get_department.short_description = 'Кафедра'
+
+    def get_instructor(self, obj):
+        return obj.instructor.user.get_full_name_str() if obj.instructor else "-"
+    get_instructor.short_description = 'Преподаватель'
 
     def display_cover(self, obj):
         if obj.cover_image:
@@ -253,9 +293,10 @@ class QuestionAdmin(admin.ModelAdmin):
 
 @admin.register(Test)
 class TestAdmin(admin.ModelAdmin):
-    list_display = ('title', 'subject', 'deadline', 'is_active')
-    list_filter = ('subject', 'is_active')
-    search_fields = ('title', 'subject__name')
+    list_display = ('title', 'subject', 'student_group', 'student', 'deadline', 'is_active', 'status')
+    list_filter = ('subject', 'is_active', 'status', 'student_group', 'deadline')
+    search_fields = ('title', 'subject__name', 'student_group__name', 'student__user__last_name')
+    autocomplete_fields = ['student_group', 'student', 'subject']
 
 @admin.register(TestResult)
 class TestResultAdmin(admin.ModelAdmin):
