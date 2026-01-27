@@ -76,3 +76,43 @@ def get_course_management_details(request, course_id):
         return JsonResponse({'error': 'Курс не найден или доступ ограничен'}, status=404)
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def create_lecture(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
+        
+    try:
+        if not hasattr(request.user, 'teacher_profile'):
+            return JsonResponse({'error': 'Доступ запрещен'}, status=403)
+            
+        data = json.loads(request.body)
+        course_id = data.get('course_id')
+        teacher = request.user.teacher_profile
+        
+        try:
+            course = Course.objects.get(id=course_id, instructor=teacher)
+        except Course.DoesNotExist:
+            return JsonResponse({'error': 'Курс не найден или у вас нет прав'}, status=404)
+            
+        lecture = Lecture.objects.create(
+            course=course,
+            title=data.get('title'),
+            description=data.get('description', ''),
+            category=data.get('category', ''),
+            duration=data.get('duration', ''),
+            video_url=data.get('video_url', ''),
+            iframe_content=data.get('iframe_content', ''),
+            order=data.get('order', 0)
+        )
+        
+        return JsonResponse({
+            'status': 'success', 
+            'message': 'Лекция успешно создана',
+            'lecture': {
+                'id': lecture.id,
+                'title': lecture.title
+            }
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

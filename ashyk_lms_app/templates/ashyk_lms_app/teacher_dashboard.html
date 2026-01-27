@@ -109,6 +109,66 @@
         </div>
     </main>
 
+    <!-- MODAL: Создание лекции -->
+    <div id="lectureModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Жаңа дәріс қосу</h3>
+                <span class="close-modal" onclick="closeModal('lectureModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="lectureForm">
+                    <input type="hidden" id="modal-course-id">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="lecture-title" style="display: block; margin-bottom: 5px; font-weight: 500;">Дәріс
+                            тақырыбы</label>
+                        <input type="text" id="lecture-title" required
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="lecture-desc"
+                            style="display: block; margin-bottom: 5px; font-weight: 500;">Сипаттамасы</label>
+                        <textarea id="lecture-desc" rows="3"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+                        <div class="form-group">
+                            <label for="lecture-cat"
+                                style="display: block; margin-bottom: 5px; font-weight: 500;">Санат</label>
+                            <input type="text" id="lecture-cat" placeholder="Мысалы: Менеджмент"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        </div>
+                        <div class="form-group">
+                            <label for="lecture-dur"
+                                style="display: block; margin-bottom: 5px; font-weight: 500;">Ұзақтығы</label>
+                            <input type="text" id="lecture-dur" placeholder="Мысалы: 45 мин"
+                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="lecture-video" style="display: block; margin-bottom: 5px; font-weight: 500;">Видео
+                            сілтемесі (YouTube)</label>
+                        <input type="url" id="lecture-video"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label for="lecture-iframe" style="display: block; margin-bottom: 5px; font-weight: 500;">Iframe
+                            коды (міндетті емес)</label>
+                        <textarea id="lecture-iframe" rows="2"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="lecture-order" style="display: block; margin-bottom: 5px; font-weight: 500;">Реттік
+                            нөмірі</label>
+                        <input type="number" id="lecture-order" value="0"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Сақтау</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="{% static 'script/teacher_dashboard/teacher_dashboard_base.js' %}"></script>
     <script src="{% static 'script/teacher_dashboard/home.js' %}"></script>
     <script src="{% static 'script/teacher_dashboard/content.js' %}"></script>

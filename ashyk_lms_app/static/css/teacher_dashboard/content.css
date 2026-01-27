@@ -5,8 +5,15 @@
 
 /* Анимация */
 @keyframes fadeIn {
-    from { opacity: 0; transform: translateY(-10px); }
-    to { opacity: 1; transform: translateY(0); }
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 /* =========================================
@@ -24,10 +31,11 @@
     align-items: center;
     background: #fff;
     padding: 15px 20px;
-    border: 1px solid #e5e7eb; /* var(--border-color) жоқ болса */
+    border: 1px solid #e5e7eb;
+    /* var(--border-color) жоқ болса */
     border-radius: 12px;
     margin-bottom: 25px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
     flex-wrap: wrap;
     gap: 15px;
 }
@@ -38,7 +46,8 @@
     align-items: center;
     gap: 15px;
     flex-wrap: wrap;
-    flex: 1; /* Бос орынды алады */
+    flex: 1;
+    /* Бос орынды алады */
 }
 
 /* =========================================
@@ -61,7 +70,8 @@
 
 .search-box input {
     width: 100%;
-    padding: 10px 15px 10px 38px; /* icon үшін орын */
+    padding: 10px 15px 10px 38px;
+    /* icon үшін орын */
     border: 1px solid #d1d5db;
     border-radius: 8px;
     outline: none;
@@ -72,7 +82,8 @@
 
 .search-box input:focus {
     background: #fff;
-    border-color: #6366f1; /* Негізгі түс */
+    border-color: #6366f1;
+    /* Негізгі түс */
     box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
 }
 
@@ -103,7 +114,8 @@
     font-size: 14px;
     color: #374151;
     transition: all 0.3s ease;
-    height: 42px; /* Search box-пен бірдей биіктік */
+    height: 42px;
+    /* Search box-пен бірдей биіктік */
     box-sizing: border-box;
 }
 
@@ -173,7 +185,8 @@
     6. КУРС ҚОСУ БАТЫРМАСЫ (NEW BUTTON)
     ========================================= */
 .add-course-btn {
-    background-color: #6366f1; /* Индиго түсі */
+    background-color: #6366f1;
+    /* Индиго түсі */
     color: white;
     border: none;
     padding: 0 20px;
@@ -187,7 +200,8 @@
     gap: 8px;
     transition: all 0.3s;
     box-shadow: 0 4px 6px rgba(99, 102, 241, 0.25);
-    height: 42px; /* Басқа элементтермен бірдей биіктік */
+    height: 42px;
+    /* Басқа элементтермен бірдей биіктік */
     white-space: nowrap;
 }
 
@@ -214,9 +228,10 @@
         width: 100%;
         justify-content: space-between;
     }
-    
+
     .add-course-btn {
-        width: 100%; /* Мобильдіде толық ені */
+        width: 100%;
+        /* Мобильдіде толық ені */
         margin-top: 10px;
     }
 }
@@ -228,7 +243,7 @@
         gap: 10px;
     }
 
-    .search-box, 
+    .search-box,
     .filter-controls,
     .custom-select {
         width: 100%;
@@ -238,4 +253,62 @@
     .filter-controls {
         flex-direction: column;
     }
+}
+
+/* =========================================
+    8. МОДАЛЬНЫЕ ОКНА (MODALS) - Duplicate from student_base
+    ========================================= */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal.hidden {
+    display: none !important;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 600px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    animation: modalFadeIn 0.3s ease;
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #111827;
+}
+
+.close-modal {
+    font-size: 24px;
+    cursor: pointer;
+    color: #999;
+    transition: 0.2s;
+}
+
+.close-modal:hover {
+    color: #333;
+}
+
+.modal-body {
+    padding: 20px;
 }

@@ -1,5 +1,6 @@
 // 1. "Менің курстарымды" рендерлеу функциясы
 let currentTeacherCourses = [];
+let activeCourseId = null;
 
 async function loadMyCourses() {
     const container = document.getElementById('my-courses-grid');
@@ -56,6 +57,7 @@ function renderMyCourses(data) {
 
 // 2. Курсты басқару (Course Management)
 async function openCourseManagement(courseId) {
+    activeCourseId = courseId;
     const grid = document.getElementById('my-courses-grid');
     const filters = document.querySelector('.filters-container');
     const panel = document.getElementById('course-manage-panel');
@@ -70,9 +72,13 @@ async function openCourseManagement(courseId) {
     if (header) header.classList.add('hidden');
 
     // Load data
-    document.getElementById('manage-course-title').textContent = 'Жүктелуде...';
-    document.getElementById('manage-lectures-list').innerHTML = '<p>Жүктелуде...</p>';
-    document.getElementById('manage-tests-list').innerHTML = '<p>Жүктелуде...</p>';
+    const titleEl = document.getElementById('manage-course-title');
+    const lecturesEl = document.getElementById('manage-lectures-list');
+    const testsEl = document.getElementById('manage-tests-list');
+
+    if (titleEl) titleEl.textContent = 'Жүктелуде...';
+    if (lecturesEl) lecturesEl.innerHTML = '<p>Жүктелуде...</p>';
+    if (testsEl) testsEl.innerHTML = '<p>Жүктелуде...</p>';
 
     try {
         const response = await fetch(`/api/teacher/course/${courseId}/`);
@@ -111,7 +117,7 @@ function renderManageLectures(lectures) {
                 <div class="status-icon" style="width: 30px; height: 30px; font-size: 12px;">${l.order}</div>
                 <div>
                     <h5 style="margin: 0;">${l.title}</h5>
-                    <small style="color: #777;">${l.category} • ${l.duration}</small>
+                    <small style="color: #777;">${l.category || ''} • ${l.duration || ''}</small>
                 </div>
             </div>
             <div class="actions">
@@ -145,6 +151,7 @@ function renderManageTests(tests) {
 }
 
 function closeCourseManagement() {
+    activeCourseId = null;
     const grid = document.getElementById('my-courses-grid');
     const filters = document.querySelector('.filters-container');
     const panel = document.getElementById('course-manage-panel');
@@ -158,7 +165,88 @@ function closeCourseManagement() {
     if (header) header.classList.remove('hidden');
 }
 
-// 3. Dropdown (Селект) логикасы
+// 3. Модальды терезе (Лекция қосу)
+function openAddLectureModal() {
+    if (!activeCourseId) return;
+    const courseIdInput = document.getElementById('modal-course-id');
+    const form = document.getElementById('lectureForm');
+
+    if (courseIdInput) courseIdInput.value = activeCourseId;
+    if (form) form.reset();
+
+    if (typeof openModal === 'function') {
+        openModal('lectureModal');
+    } else if (typeof window.openModal === 'function') {
+        window.openModal('lectureModal');
+    } else {
+        console.error('Neither openModal nor window.openModal is defined');
+        const modal = document.getElementById('lectureModal');
+        if (modal) modal.classList.remove('hidden');
+    }
+}
+
+document.getElementById('lectureForm')?.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    const courseIdInput = document.getElementById('modal-course-id');
+    const titleInput = document.getElementById('lecture-title');
+    // ...
+    const formData = {
+        course_id: courseIdInput?.value || activeCourseId,
+        title: titleInput?.value || '',
+        description: document.getElementById('lecture-desc')?.value || '',
+        category: document.getElementById('lecture-cat')?.value || '',
+        duration: document.getElementById('lecture-dur')?.value || '',
+        video_url: document.getElementById('lecture-video')?.value || '',
+        iframe_content: document.getElementById('lecture-iframe')?.value || '',
+        order: document.getElementById('lecture-order')?.value || 0
+    };
+
+    try {
+        const response = await fetch('/api/teacher/lecture/create/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify(formData)
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+            if (typeof window.closeModal === 'function') {
+                window.closeModal('lectureModal');
+            } else {
+                document.getElementById('lectureModal')?.classList.add('hidden');
+            }
+            // Обновляем список лекций в текущем курсе
+            openCourseManagement(activeCourseId);
+        } else {
+            alert(result.error);
+        }
+    } catch (e) {
+        console.error(e);
+        alert('Сақтау кезінде қате орын алды');
+    }
+});
+
+// CSRF Token helper
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
+// 4. Dropdown (Селект) логикасы
 function setupDropdowns() {
     const dropdowns = document.querySelectorAll('.custom-select');
 
@@ -194,11 +282,9 @@ function setupDropdowns() {
 
 function filterCourses() {
     const categoryValue = document.querySelector('#myCategorySelect .option.selected')?.getAttribute('data-value') || 'all';
-    const statusValue = document.querySelector('#myStatusSelect .option.selected')?.getAttribute('data-value') || 'all';
     const searchText = document.getElementById('myCourseSearch')?.value.toLowerCase() || '';
 
     const filtered = currentTeacherCourses.filter(course => {
-        // Since API doesn't have status/category yet in current response, just search by title
         const matchSearch = course.title.toLowerCase().includes(searchText);
         return matchSearch;
     });
@@ -206,7 +292,7 @@ function filterCourses() {
     renderMyCourses(filtered);
 }
 
-// 4. Іздеу өрісіне тыңдаушы қосу
+// Іздеу өрісіне тыңдаушы қосу
 const searchInput = document.getElementById('myCourseSearch');
 if (searchInput) {
     searchInput.addEventListener('input', filterCourses);
