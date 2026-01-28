@@ -130,13 +130,21 @@ async function openTeacherModal(teacherId) {
         if (result.status === 'success') {
             const t = result.teacher;
             document.getElementById('teacher-name').textContent = t.fullName;
-            document.getElementById('teacher-position').textContent = t.position || t.degree;
+            document.getElementById('teacher-position').textContent = t.position || "-";
+            document.getElementById('teacher-degree').textContent = t.degree || "-";
             document.getElementById('teacher-department').textContent = t.department;
-            document.getElementById('teacher-email').textContent = t.email || '-';
+
+            const emailEl = document.getElementById('teacher-email-link');
+            if (emailEl) {
+                emailEl.textContent = t.email || '-';
+                emailEl.href = t.email ? `mailto:${t.email}` : '#';
+            }
+
             document.getElementById('teacher-phone').textContent = t.phone || '-';
             document.getElementById('teacher-photo').src = t.photo || '/static/img/default-avatar.png';
         } else {
             console.error(result.error);
+            document.getElementById('teacher-name').textContent = 'Қате: Деректерді алу мүмкін болмады';
         }
     } catch (e) {
         console.error(e);
