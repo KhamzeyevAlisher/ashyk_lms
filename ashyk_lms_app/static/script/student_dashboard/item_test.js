@@ -54,7 +54,8 @@ let currentTestId = null; // New global for API calls
 let currentQuestionIndex = 0;
 let userAnswers = {};
 
-const SYNC_QUEUE_KEY = 'test_sync_queue';
+const USER_ID = document.querySelector('meta[name="user-id"]')?.content || 'guest';
+const SYNC_QUEUE_KEY = `test_sync_queue_${USER_ID}`;
 // Sync Queue Structure: { [testId]: { [questionId]: { variants: [], timestamp: ... } } }
 
 function getSyncQueue() {
@@ -80,7 +81,8 @@ function addToSyncQueue(testId, questionId, variants) {
     saveSyncQueue(queue);
 
     // update specific answer local storage backup as well for restoration
-    const backupKey = `test_backup_${testId}`;
+    // update specific answer local storage backup as well for restoration
+    const backupKey = `test_backup_${USER_ID}_${testId}`;
     let backup = {};
     try { backup = JSON.parse(localStorage.getItem(backupKey)) || {}; } catch (e) { }
     backup[questionId] = variants;
@@ -248,7 +250,7 @@ async function openTest(testId) {
         }
 
         // 2. From LocalStorage
-        const backupKey = `test_backup_${testId}`;
+        const backupKey = `test_backup_${USER_ID}_${testId}`;
         try {
             const localBackup = JSON.parse(localStorage.getItem(backupKey));
             if (localBackup) {
@@ -587,7 +589,7 @@ function closeTestModal() {
     openTab('tests');
 }
 
-function checkTest(testName) {
+async function checkTest(testName) {
     const testData = tests[testName];
     let totalPossibleCorrect = 0;
     let userScore = 0;
@@ -599,6 +601,7 @@ function checkTest(testName) {
 
         const selectedAnswers = userAnswers[key] || [];
 
+        // Note: selectedAnswers are strings (input values), correctAnswers are numbers
         selectedAnswers.forEach(value => {
             // value is likely from input.value (string ID), correctAnswers are numbers from API
             if (correctAnswers.includes(Number(value)) || correctAnswers.includes(value)) {
@@ -607,7 +610,7 @@ function checkTest(testName) {
                 userScore--;
             }
         });
-    });
+    }); // end Object.keys loop
 
     if (userScore < 0) userScore = 0;
 
@@ -615,7 +618,48 @@ function checkTest(testName) {
     if (isNaN(percentage)) percentage = 0;
     if (percentage < 0) percentage = 0;
 
-    // === ПОКАЗЫВАЕМ РЕЗУЛЬТАТ В МОДАЛКЕ ===
+    // === 1. ОТПРАВКА РЕЗУЛЬТАТА НА СЕРВЕР И ОЧИСТКА ===
+    try {
+        const response = await fetch('/api/tests/submit/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': getCookie('csrftoken')
+            },
+            body: JSON.stringify({
+                testId: currentTestId,
+                percentage: percentage
+            })
+        });
+
+        if (response.ok) {
+            console.log('Test result submitted successfully');
+            // CLEANUP LOCAL STORAGE
+            const backupKey = `test_backup_${USER_ID}_${currentTestId}`;
+            localStorage.removeItem(backupKey);
+
+            // Remove from sync queue
+            const queue = getSyncQueue();
+            if (queue[currentTestId]) {
+                delete queue[currentTestId];
+                saveSyncQueue(queue);
+            }
+
+            // CLEANUP MEMORY STATE
+            userAnswers = {};
+        } else {
+            console.error('Failed to submit test result');
+            alert('Нәтижені сақтау сәтсіз аяқталды (Ошибка сохранения), интернетті тексеріңіз');
+            return; // Don't show modal if save failed? Or show it anyway? Let's stop to force retry.
+        }
+    } catch (e) {
+        console.error('Error submitting test:', e);
+        alert('Қате орын алды (Ошибка), интернетті тексеріңіз');
+        return;
+    }
+
+
+    // === 2. ПОКАЗЫВАЕМ РЕЗУЛЬТАТ В МОДАЛКЕ ===
 
     const scoreDisplay = document.getElementById('modal-score-display');
     const textDetail = document.getElementById('modal-text-detail');

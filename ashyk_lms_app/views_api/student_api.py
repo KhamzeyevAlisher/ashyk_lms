@@ -215,6 +215,42 @@ def save_student_answer(request):
 
 
 @login_required
+def submit_test_result(request):
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
+    
+    try:
+        data = json.loads(request.body)
+        test_id = data.get('testId')
+        percentage = data.get('percentage') # Expecting percentage passed from frontend
+        
+        if test_id is None or percentage is None:
+             return JsonResponse({'error': 'Missing parameters'}, status=400)
+
+        if not hasattr(request.user, 'student_profile'):
+            return JsonResponse({'error': 'Пользователь не является студентом'}, status=403)
+        
+        student = request.user.student_profile
+        test = Test.objects.get(id=test_id)
+
+        # 1. Save Result
+        test_result, created = TestResult.objects.update_or_create(
+            student=student, 
+            test=test,
+            defaults={'percentage': float(percentage)}
+        )
+        
+        # 2. Cleanup Saved Answers from DB
+        StudentAnswer.objects.filter(student=student, test=test).delete()
+        
+        return JsonResponse({'status': 'success'})
+
+    except Test.DoesNotExist:
+         return JsonResponse({'error': 'Тест не найден'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
 def get_courses_list(request):
     try:
         courses = Course.objects.select_related('instructor__user', 'department').order_by('-created_at')
