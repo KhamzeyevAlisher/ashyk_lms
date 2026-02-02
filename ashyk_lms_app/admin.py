@@ -213,8 +213,8 @@ class LectureFileInline(admin.TabularInline):
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
-    list_display = ('title', 'display_cover', 'get_department', 'get_instructor', 'created_at')
-    search_fields = ('title', 'description', 'instructor__user__last_name')
+    list_display = ('code', 'title', 'display_cover', 'get_department', 'get_instructor', 'created_at')
+    search_fields = ('code', 'title', 'description', 'instructor__user__last_name')
     autocomplete_fields = ['instructor', 'department']
 
     def get_department(self, obj):

@@ -341,14 +341,6 @@ def get_lecture_detail(request, lecture_id):
                 'url': f.file.url
             })
             
-        # Determine iframe source
-        iframe_html = ""
-        if lecture.iframe_content:
-            iframe_html = lecture.iframe_content
-        elif lecture.video_url:
-            # Simple wrapper
-            iframe_html = f'<iframe width="100%" height="100%" src="{lecture.video_url}" frameborder="0" allowfullscreen></iframe>'
-
         data = {
             'id': lecture.id,
             'title': lecture.title,
@@ -356,8 +348,7 @@ def get_lecture_detail(request, lecture_id):
             'description': lecture.description,
             'duration': lecture.duration,
             'date': lecture.scheduled_date.strftime("%d.%m.%Y") if lecture.scheduled_date else "",
-            'iframe': iframe_html,
-            'link': lecture.video_url, # Fallback
+            'link': lecture.video_url, 
             'files': files_data
         }
         
@@ -392,12 +383,6 @@ def get_lecture_by_name(request):
                 'url': f.file.url
             })
             
-        iframe_html = ""
-        if lecture.iframe_content:
-            iframe_html = lecture.iframe_content
-        elif lecture.video_url:
-             iframe_html = f'<iframe width="100%" height="100%" src="{lecture.video_url}" frameborder="0" allowfullscreen></iframe>'
-
         data = {
             'id': lecture.id,
             'title': lecture.title,
@@ -405,7 +390,6 @@ def get_lecture_by_name(request):
             'description': lecture.description,
             'duration': lecture.duration,
             'date': lecture.scheduled_date.strftime("%d.%m.%Y") if lecture.scheduled_date else "",
-            'iframe': iframe_html,
             'link': lecture.video_url,
             'files': files_data
         }

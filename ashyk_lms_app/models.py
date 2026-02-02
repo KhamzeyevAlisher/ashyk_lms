@@ -226,6 +226,7 @@ class Course(models.Model):
     Пример: "Кәсіпкерлік", "Python негіздері"
     """
     title = models.CharField(max_length=255, unique=True, verbose_name="Название")
+    code = models.CharField(max_length=50, unique=True, null=True, blank=True, verbose_name="Код курса")
     description = models.TextField(verbose_name="Описание", blank=True)
     cover_image = models.ImageField(upload_to='course_covers/', blank=True, null=True, verbose_name="Обложка")
     
@@ -262,6 +263,8 @@ class Course(models.Model):
         verbose_name_plural = "Курсы"
 
     def __str__(self):
+        if self.code:
+            return f"[{self.code}] {self.title}"
         return self.title
 
 
@@ -279,7 +282,6 @@ class Lecture(models.Model):
     
     # Видео
     video_url = models.URLField(blank=True, verbose_name="Ссылка на видео (YouTube/MP4)")
-    iframe_content = models.TextField(blank=True, verbose_name="Код для вставки (iframe)")
     
     order = models.PositiveIntegerField(default=0, verbose_name="Порядковый номер")
     

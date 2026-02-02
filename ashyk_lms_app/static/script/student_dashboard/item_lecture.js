@@ -25,18 +25,38 @@ async function openLesson(courseName, lessonName) {
 
     const lesson = result.lecture;
 
-    // ========== ОБРАБОТКА ВИДЕО IFRAME ==========
-    let videoEmbedHTML = lesson.iframe || "";
+    console.log(lesson);
 
-    // Если iframe пустой, но есть ссылка, пробуем сгенерировать (хотя API уже должен вернуть)
-    if (!videoEmbedHTML && lesson.link) {
-      // Fallback logic handled by API, but keeping client side fallback just in case
-      videoEmbedHTML = `<a href="${lesson.link}" target="_blank">Видеоны ашу</a>`;
+    // Читаем последнее сохраненное время из localStorage для возобновления
+    const savedKey = `video_${lessonName}`;
+    const savedStats = localStorage.getItem(savedKey);
+    let startTime = 0;
+    if (savedStats) {
+      try {
+        const stats = JSON.parse(savedStats);
+        startTime = stats.totalSeconds || 0;
+      } catch (e) {
+        console.warn("Error parsing saved stats", e);
+      }
     }
 
-    // Inject ID into iframe if not present
-    if (videoEmbedHTML && !videoEmbedHTML.includes('id="my-youtube-player"')) {
-      videoEmbedHTML = videoEmbedHTML.replace('<iframe', '<iframe id="my-youtube-player" ');
+    // ========== ОБРАБОТКА ВИДЕО IFRAME ==========
+    let videoEmbedHTML = "";
+
+    if (lesson.link) {
+      // Генерация на основе ссылки с учетом времени старта
+      videoEmbedHTML = getYouTubeEmbedHTML(lesson.link, startTime);
+    }
+
+    if (!videoEmbedHTML && lesson.link) {
+      videoEmbedHTML = `<a href="${lesson.link}" target="_blank">Видеоны ашу (Ссылка)</a>`;
+    }
+
+    // Inject ID into iframe if not present (required for tracking)
+    if (videoEmbedHTML && videoEmbedHTML.includes('<iframe')) {
+      if (!videoEmbedHTML.includes('id="my-youtube-player"')) {
+        videoEmbedHTML = videoEmbedHTML.replace('<iframe', '<iframe id="my-youtube-player" ');
+      }
     }
 
     // ========== ПОДГОТОВКА ДАННЫХ ==========
@@ -143,6 +163,42 @@ async function openLesson(courseName, lessonName) {
   }
 }
 
+/**
+ * Генерирует HTML код iframe для YouTube на основе ссылки
+ * Поддерживает форматы: youtube.com/watch?v=..., youtu.be/..., youtube.com/embed/...
+ */
+function getYouTubeEmbedHTML(url, startTime = 0) {
+  if (!url) return "";
+
+  // Регулярное выражение для извлечения ID видео из разных типов ссылок
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+
+  if (match && match[2].length === 11) {
+    const videoId = match[2];
+
+    // Формируем параметры: enablejsapi для трекинга, rel=0 для скрытия похожих, start для резюме
+    let params = `enablejsapi=1&rel=0`;
+    if (startTime > 0) {
+      params += `&start=${Math.floor(startTime)}`;
+    }
+
+    return `
+      <iframe 
+        width="100%" 
+        height="100%" 
+        src="https://www.youtube.com/embed/${videoId}?${params}" 
+        title="YouTube video player" 
+        frameborder="0" 
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+        referrerpolicy="strict-origin-when-cross-origin" 
+        allowfullscreen>
+      </iframe>`.trim();
+  }
+
+  return "";
+}
+
 
 
 /**
@@ -168,6 +224,9 @@ let videoDuration = 0;
 
 // Название текущего урока
 let currentLesson = null;
+
+// Максимальное время, до которого студент досмотрел (для блокировки перемотки вперед)
+let maxTimeReached = 0;
 
 // Объект для хранения статистики просмотров по каждому видео
 // Структура: "lesson_name" => { totalSeconds, watchedAt, lessonName }
@@ -246,6 +305,15 @@ function initializeVideoTracking(lessonName) {
         }
       });
       console.log('YouTube плеер инициализирован');
+
+      // ЖЕСТКОЕ ОГРАНИЧЕНИЕ: Пауза при переключении вкладки
+      document.addEventListener('visibilitychange', () => {
+        if (document.hidden && currentPlayer && currentPlayer.getPlayerState() === YT.PlayerState.PLAYING) {
+          currentPlayer.pauseVideo();
+          console.log('Видео поставлено на паузу: вкладка не активна');
+        }
+      });
+
     } catch (e) {
       console.error('Ошибка инициализации плеера:', e);
       updateTrackingUI(lessonName);
@@ -271,6 +339,9 @@ function onPlayerReady(event) {
     // Получаем длительность видео в секундах
     videoDuration = event.target.getDuration();
     console.log(`Длительность видео: ${formatTime(videoDuration)}`);
+
+    // Устанавливаем maxTimeReached из сохраненной статистики, чтобы не блокировать досмотренное
+    maxTimeReached = totalSecondsWatched;
 
     // Обновляем UI с новыми данными
     updateTrackingUI(currentLesson);
@@ -343,15 +414,30 @@ function startTracking() {
   console.log(`Начало отслеживания видео: "${currentLesson}"`);
 
   timerInterval = setInterval(function () {
-    totalSecondsWatched++;
+    if (currentPlayer && typeof currentPlayer.getCurrentTime === 'function') {
+      const currentTime = currentPlayer.getCurrentTime();
+
+      // ЖЕСТКОЕ ОГРАНИЧЕНИЕ: Блокировка перемотки вперед
+      // Если текущее время больше того, до куда студент дошел (+ буфер 3 сек)
+      if (currentTime > maxTimeReached + 3) {
+        console.warn('Попытка перемотки вперед заблокирована!');
+        currentPlayer.seekTo(maxTimeReached);
+        return; // Пропускаем обновление в эту секунду
+      }
+
+      // Обновляем общий прогресс если смотрим то, что еще не видели
+      if (currentTime > maxTimeReached) {
+        maxTimeReached = currentTime;
+      }
+
+      totalSecondsWatched = Math.floor(maxTimeReached);
+    }
 
     // Обновляем UI каждую секунду
     updateTrackingUI(currentLesson);
 
-    // Сохраняем прогресс в localStorage каждые 5 секунд
-    if (totalSecondsWatched % 5 === 0) {
-      saveWatchStats(currentLesson);
-    }
+    // Сохраняем прогресс в localStorage каждую секунду для надежности при "жестких" правилах
+    saveWatchStats(currentLesson);
   }, 1000); // Интервал 1 секунда
 }
 
