@@ -1,5 +1,6 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
 from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture, Teacher
 import json
 import random
@@ -173,10 +174,9 @@ def get_student_grades(request):
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
 
+@require_POST
 @login_required
 def save_student_answer(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
     
     try:
         data = json.loads(request.body)
@@ -214,10 +214,9 @@ def save_student_answer(request):
         return JsonResponse({'error': str(e)}, status=500)
 
 
+@require_POST
 @login_required
 def submit_test_result(request):
-    if request.method != 'POST':
-        return JsonResponse({'error': 'Метод не поддерживается'}, status=405)
     
     try:
         data = json.loads(request.body)
@@ -234,10 +233,17 @@ def submit_test_result(request):
         test = Test.objects.get(id=test_id)
 
         # 1. Save Result
+        total_questions = test.questions.count()
+        score = round(float(percentage) / 100 * total_questions) if total_questions > 0 else 0
+
         test_result, created = TestResult.objects.update_or_create(
             student=student, 
             test=test,
-            defaults={'percentage': float(percentage)}
+            defaults={
+                'percentage': float(percentage),
+                'score': score,
+                'max_score': total_questions
+            }
         )
         
         # 2. Cleanup Saved Answers from DB
