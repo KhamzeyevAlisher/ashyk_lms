@@ -1,63 +1,67 @@
-    <!-- SIDEBAR -->
-    <aside class="sidebar">
-        <div class="sidebar-header">
-            <a href="#" class="brand">
-                <div class="brand-icon">
-                    <i class="fa-solid fa-graduation-cap"></i>
-                </div>
-                <div class="brand-text">
-                    <h1>ASHYK LMS</h1>
-                </div>
-            </a>
-        </div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <a href="#" class="brand">
+            <div class="brand-icon">
+                <i class="fa-solid fa-graduation-cap"></i>
+            </div>
+            <div class="brand-text">
+                <h1>ASHYK LMS</h1>
+            </div>
+        </a>
+    </div>
 
-        <nav class="sidebar-menu">
-            <!-- 1. ГЛАВНАЯ -->
-            <button class="nav-btn active" onclick="openTab('home')">
-                <i class="fa-solid fa-house"></i>
-                <span>Басты бет</span>
-            </button>
-            <!-- 2. ЛЕКЦИИ -->
-            <button class="nav-btn" onclick="openTab('content')">
-                <i class="fa-solid fa-book"></i>
-                <span>Контент</span>
-            </button>
-            <!-- 3. ТЕСТЫ -->
-            <button class="nav-btn" onclick="openTab('tests')">
-                <i class="fa-solid fa-file-circle-check"></i>
-                <span>Тесттер</span>
-            </button>
-            <!-- 4. РАСПИСАНИЕ -->
-            <button class="nav-btn" onclick="openTab('schedule')">
-                <i class="fa-solid fa-calendar-days"></i>
-                <span>Кесте</span>
-            </button>
-            <!-- 5. УЧЕБНЫЙ ПЛАН -->
-            <button class="nav-btn" onclick="openTab('silabus')">
-                <i class="fa-solid fa-list-check"></i>
-                <span>Оқу жоспары</span>
-            </button>
-            <!-- 6. ДНЕВНИК -->
-            <button class="nav-btn" onclick="openTab('diary')">
-                <i class="fa-solid fa-book-open"></i>
-                <span>Журнал</span>
-            </button>
-            <!-- 7. ДОМАШНИЕ ЗАДАНИЯ -->
-            <button class="nav-btn" onclick="openTab('homework')">
-                <i class="fa-solid fa-pen-to-square"></i>
-                <span>Үй тапсырмалары</span>
-            </button>
-            <!-- 8. ПРОФИЛЬ -->
-            <button class="nav-btn" onclick="openTab('profile')">
-                <i class="fa-solid fa-user"></i>
-                <span>Профиль</span>
-            </button>
-        </nav>
+    <nav class="sidebar-menu">
+        <!-- 1. ГЛАВНАЯ -->
+        <button class="nav-btn active" onclick="openTab('home')">
+            <i class="fa-solid fa-house"></i>
+            <span>Басты бет</span>
+        </button>
+        <!-- 2. ЛЕКЦИИ -->
+        <button class="nav-btn" onclick="openTab('content')">
+            <i class="fa-solid fa-book"></i>
+            <span>Контент</span>
+        </button>
+        <!-- 3. ТЕСТЫ -->
+        <button class="nav-btn" onclick="openTab('tests')">
+            <i class="fa-solid fa-file-circle-check"></i>
+            <span>Тесттер</span>
+        </button>
+        <!-- 4. РАСПИСАНИЕ -->
+        <button class="nav-btn" onclick="openTab('schedule')">
+            <i class="fa-solid fa-calendar-days"></i>
+            <span>Кесте</span>
+        </button>
+        <!-- 5. УЧЕБНЫЙ ПЛАН -->
+        <button class="nav-btn" onclick="openTab('silabus')">
+            <i class="fa-solid fa-list-check"></i>
+            <span>Оқу жоспары</span>
+        </button>
+        <!-- 6. ДНЕВНИК -->
+        <button class="nav-btn" onclick="openTab('diary')">
+            <i class="fa-solid fa-book-open"></i>
+            <span>Журнал</span>
+        </button>
+        <!-- 7. ДОМАШНИЕ ЗАДАНИЯ -->
+        <button class="nav-btn" onclick="openTab('homework')">
+            <i class="fa-solid fa-pen-to-square"></i>
+            <span>Үй тапсырмалары</span>
+        </button>
+        <!-- 8. ПРОФИЛЬ -->
+        <button class="nav-btn" onclick="openTab('profile')">
+            <i class="fa-solid fa-user"></i>
+            <span>Профиль</span>
+        </button>
+    </nav>
 
-        <div class="sidebar-footer">
-            <a href="#" class="logout-btn">
+    <div class="sidebar-footer">
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn" onclick="localStorage.clear()"
+                style="background: none; border: none; cursor: pointer; width: 100%; text-align: left;">
                 <i class="fa-solid fa-arrow-right-from-bracket"></i>
                 <span>Шығу</span>
-            </a>
-        </div>
-    </aside>
+            </button>
+        </form>
+    </div>
+</aside>

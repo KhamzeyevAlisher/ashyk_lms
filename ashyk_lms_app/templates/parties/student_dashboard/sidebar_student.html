@@ -55,9 +55,13 @@
     </nav>
 
     <div class="sidebar-footer">
-        <a href="{% url 'logout' %}" class="logout-btn" onclick="localStorage.clear()">
-            <i class="fa-solid fa-arrow-right-from-bracket"></i>
-            <span>Шығу</span>
-        </a>
+        <form action="{% url 'logout' %}" method="post">
+            {% csrf_token %}
+            <button type="submit" class="logout-btn" onclick="localStorage.clear()"
+                style="background: none; border: none; cursor: pointer; width: 100%; text-align: left;">
+                <i class="fa-solid fa-arrow-right-from-bracket"></i>
+                <span>Шығу</span>
+            </button>
+        </form>
     </div>
 </aside>
