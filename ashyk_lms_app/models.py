@@ -500,3 +500,97 @@ class TestResult(models.Model):
 
     def __str__(self):
         return f"{self.student.user.get_full_name_str()} - {self.test.title}: {self.score}/{self.max_score}"
+
+# ==========================================
+# 5. Домашние задания (Homework)
+# ==========================================
+
+class Homework(models.Model):
+    """
+    Модель: Домашнее задание
+    Создается преподавателем для конкретного курса.
+    """
+    course = models.ForeignKey(
+        Course, 
+        on_delete=models.CASCADE, 
+        related_name='homeworks',
+        verbose_name="Курс"
+    )
+    group = models.ForeignKey(
+        StudentGroup, 
+        on_delete=models.CASCADE, 
+        related_name='homeworks',
+        verbose_name="Группа",
+        null=True, 
+        blank=True
+    )
+    teacher = models.ForeignKey(
+        Teacher, 
+        on_delete=models.SET_NULL, 
+        null=True, 
+        related_name='created_homeworks',
+        verbose_name="Преподаватель"
+    )
+    title = models.CharField(max_length=255, verbose_name="Заголовок")
+    description = models.TextField(verbose_name="Описание")
+    file = models.FileField(upload_to='homework_tasks/', blank=True, null=True, verbose_name="Файл с заданием")
+    deadline = models.DateTimeField(verbose_name="Крайний срок (Дедлайн)")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
+
+    class Meta:
+        verbose_name = "Домашнее задание"
+        verbose_name_plural = "Домашние задания"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"{self.course.title} - {self.title}"
+
+
+class HomeworkSubmission(models.Model):
+    """
+    Модель: Сдача домашнего задания студентом
+    """
+    STATUS_CHOICES = [
+        ('draft', 'Черновик'),
+        ('submitted', 'Сдано'),
+        ('on_review', 'На проверке'),
+        ('graded', 'Оценено'),
+    ]
+
+    homework = models.ForeignKey(
+        Homework, 
+        on_delete=models.CASCADE, 
+        related_name='submissions',
+        verbose_name="Задание"
+    )
+    student = models.ForeignKey(
+        Student, 
+        on_delete=models.CASCADE, 
+        related_name='homework_submissions',
+        verbose_name="Студент"
+    )
+    content = models.TextField(blank=True, verbose_name="Текст ответа")
+    file = models.FileField(upload_to='homework_submissions/', blank=True, null=True, verbose_name="Файл с решением")
+    status = models.CharField(
+        max_length=20, 
+        choices=STATUS_CHOICES, 
+        default='submitted',
+        verbose_name="Статус"
+    )
+    grade = models.OneToOneField(
+        'Grade',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='homework_submission',
+        verbose_name="Оценка в журнале"
+    )
+    submitted_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата сдачи")
+
+    class Meta:
+        verbose_name = "Сдача задания"
+        verbose_name_plural = "Сдачи заданий"
+        unique_together = ('homework', 'student')
+
+    def __str__(self):
+        return f"{self.student.user.get_full_name_str()} - {self.homework.title}"

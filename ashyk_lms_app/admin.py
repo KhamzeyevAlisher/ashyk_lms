@@ -22,7 +22,9 @@ from .models import (
     Lecture,
     LectureFile,
     Teacher,
-    Department
+    Department,
+    Homework,
+    HomeworkSubmission
 )
 
 # ========================================================
@@ -328,3 +330,27 @@ class StudentAnswerAdmin(admin.ModelAdmin):
     def get_selected_count(self, obj):
         return obj.selected_variants.count()
     get_selected_count.short_description = 'Выбрано вариантов'
+
+
+# ========================================================
+# 5. Домашние задания (Homework)
+# ========================================================
+
+@admin.register(Homework)
+class HomeworkAdmin(admin.ModelAdmin):
+    list_display = ('title', 'course', 'group', 'teacher', 'deadline', 'created_at')
+    list_filter = ('course', 'group', 'teacher', 'deadline')
+    search_fields = ('title', 'description', 'course__title', 'group__name', 'teacher__user__last_name')
+    autocomplete_fields = ['course', 'group', 'teacher']
+
+@admin.register(HomeworkSubmission)
+class HomeworkSubmissionAdmin(admin.ModelAdmin):
+    list_display = ('homework', 'student', 'status', 'submitted_at', 'get_grade')
+    list_filter = ('status', 'submitted_at', 'homework__course')
+    search_fields = ('student__user__last_name', 'student__user__first_name', 'homework__title')
+    autocomplete_fields = ['homework', 'student', 'grade']
+    readonly_fields = ('submitted_at',)
+
+    def get_grade(self, obj):
+        return obj.grade.value if obj.grade else "-"
+    get_grade.short_description = 'Оценка'

@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture, Teacher
+from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture, Teacher, Homework, HomeworkSubmission
 import json
 import random
 from django.db.models import Q
@@ -419,5 +419,145 @@ def get_teacher_detail(request, teacher_id):
         return JsonResponse({'teacher': data, 'status': 'success'})
     except Teacher.DoesNotExist:
         return JsonResponse({'error': 'Преподаватель не найден'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def get_homeworks_list(request):
+    try:
+        if not hasattr(request.user, 'student_profile'):
+            return JsonResponse({'error': 'Пользователь не является студентом'}, status=403)
+        
+        student = request.user.student_profile
+        
+        # 1. Get homeworks assigned to student's group
+        #    Filtering by deadline descending is good for seeing upcoming tasks first, 
+        #    but typically we want "active" tasks at the top. Let's sort by deadline (closest first)
+        homeworks_qs = Homework.objects.filter(
+            group=student.group
+        ).select_related('course', 'teacher', 'teacher__user').order_by('deadline')
+        
+        # 2. Get existing submissions for these homeworks
+        submissions_map = {
+            sub.homework_id: sub 
+            for sub in HomeworkSubmission.objects.filter(student=student, homework__in=homeworks_qs)
+            .select_related('grade')
+        }
+
+        data = []
+        for hw in homeworks_qs:
+            submission = submissions_map.get(hw.id)
+            
+            # Determine status
+            # Default: 'missed' if deadline passed and no submission, else 'assigned' (or custom logic)
+            # Frontend expects: 'review', 'missed', 'done' (or we can introduce 'todo')
+            
+            # Basic Logic:
+            # - If graded -> 'done' (and show grade)
+            # - If submitted but not graded -> 'review'
+            # - If not submitted and deadline passed -> 'missed'
+            # - If not submitted and deadline future -> 'todo' (NEW status for frontend handling)
+            
+            from django.utils import timezone
+            now = timezone.now()
+            
+            status = 'todo' 
+            grade_value = None
+            days_left = None
+
+            if submission:
+                if submission.status == 'graded':
+                    status = 'done'
+                    if submission.grade:
+                        grade_value = f"{submission.grade.value}/100" # Assuming 100 max
+                elif submission.status in ['submitted', 'on_review']:
+                    status = 'review'
+                elif submission.status == 'draft':
+                    status = 'todo' # Draft is still to do essentially
+            else:
+                if hw.deadline < now:
+                     status = 'missed'
+            
+            # Calculate days left if future
+            if hw.deadline > now:
+                delta = hw.deadline - now
+                if delta.days > 0:
+                    days_left = delta.days
+                else:
+                    # Hours/minutes logic could be added, but frontend expects integer days
+                    days_left = 0 # "< 1 day" effectively
+            
+            teacher_name = hw.teacher.user.get_full_name_str() if hw.teacher else "Неизвестно"
+
+            data.append({
+                'id': hw.id,
+                'courseName': hw.course.title,
+                'title': hw.title,
+                'teacher': teacher_name,
+                'deadline': hw.deadline.strftime("%d.%m.%Y"),
+                'status': status,
+                'daysLeft': days_left,
+                'grade': grade_value,
+                'taskDescription': hw.description 
+            })
+
+        return JsonResponse({'homeworks': data, 'status': 'success'})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@require_POST
+@login_required
+def submit_homework(request):
+    try:
+        # Check authorization
+        if not hasattr(request.user, 'student_profile'):
+            return JsonResponse({'error': 'Пользователь не является студентом'}, status=403)
+        
+        student = request.user.student_profile
+        
+        # Get data from request.POST and request.FILES
+        homework_id = request.POST.get('homework_id')
+        comment = request.POST.get('comment', '')
+        uploaded_file = request.FILES.get('file')
+        
+        if not homework_id:
+            return JsonResponse({'error': 'Missing homework_id'}, status=400)
+
+        # Get the homework obect
+        try:
+            homework = Homework.objects.get(id=homework_id)
+        except Homework.DoesNotExist:
+             return JsonResponse({'error': 'Домашнее задание не найдено'}, status=404)
+
+        # Check deadline (Optional strict check, or just allow late submissions)
+        # For now, we allow late submissions but frontend might mark them.
+        
+        # Create or update submission
+        submission, created = HomeworkSubmission.objects.get_or_create(
+            homework=homework,
+            student=student
+        )
+        
+        # Update fields
+        submission.content = comment
+        if uploaded_file:
+            submission.file = uploaded_file
+        
+        # Determine status. If it was 'graded', we might reset to 'on_review' or keep 'graded'?
+        # Usually resubmission resets status to 'on_review' or 'submitted'.
+        # Let's set to 'on_review' if it's a resubmission or new submission.
+        # But per requirements/models: 'submitted' (Сдано) or 'on_review' (На проверке).
+        # Let's align with common logic: Student submits -> 'submitted'. Teacher opens -> 'on_review'.
+        submission.status = 'submitted'
+        
+        # Update submitted_at to now
+        from django.utils import timezone
+        submission.submitted_at = timezone.now()
+        
+        submission.save()
+
+        return JsonResponse({'status': 'success', 'message': 'Тапсырма сәтті жіберілді'})
+
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

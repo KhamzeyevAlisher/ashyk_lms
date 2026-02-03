@@ -71,10 +71,10 @@ function renderJournal(journalData, containerId) {
         return;
     }
 
-    const journalContainer = tabContainer.querySelector('.card-journal');
+    let journalContainer = tabContainer.querySelector('.journal-cards-scroll-area');
     if (!journalContainer) {
-        console.error(`.card-journal класы табылмады #${containerId} ішінде`);
-        return;
+        console.warn(`.journal-cards-scroll-area табылмады, .card-journal қолданылады`);
+        journalContainer = tabContainer.querySelector('.card-journal');
     }
 
     // const trendIcons = {
@@ -89,7 +89,7 @@ function renderJournal(journalData, containerId) {
 
     // Деректер жоқ болса хабарлама
     if (!journalData || Object.keys(journalData).length === 0) {
-        
+
         journalContainer.innerHTML = '<p class="text-center p-4">Бағалар әзірге қойылмаған.</p>';
         return;
     }
@@ -101,7 +101,7 @@ function renderJournal(journalData, containerId) {
 
         const gradesHtml = subjectDetails.grades.map(gradeItem => {
             let value, commentAttr = '', classAttr = '';
-            
+
             // Баға объект немесе жай сан екенін тексереміз
             if (typeof gradeItem === 'object' && gradeItem !== null) {
                 value = gradeItem.value;
@@ -113,7 +113,7 @@ function renderJournal(journalData, containerId) {
                 value = gradeItem;
             }
 
-            let color = value >= 90 ? 'green' : value >= 70 ? 'blue': value > 50 && value < 70 ? 'yellow' : 'gray';
+            let color = value >= 90 ? 'green' : value >= 70 ? 'blue' : value > 50 && value < 70 ? 'yellow' : 'gray';
 
             console.log("Grade value:", color);
 
@@ -168,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
         // Перебираем объект с данными
         for (const [month, data] of Object.entries(attendanceStats)) {
-            
+
             // Создаем карточку месяца
             const card = document.createElement('div');
             card.className = 'att-month-card';
@@ -200,101 +200,101 @@ document.addEventListener("DOMContentLoaded", () => {
     // const oldCards = journalContainer.querySelectorAll('.subject-card-journal');
     // oldCards.forEach(card => card.remove());
 
-/** 
-    // 2. Генерация HTML
-    Object.entries(journalData).forEach(([subjectName, subjectDetails]) => {
-        
-        const subjectCard = document.createElement('div');
-        subjectCard.className = 'subject-card-journal';
-
-        const gradesHtml = subjectDetails.grades.map(gradeItem => {
-            // Проверяем, является ли оценка объектом или числом
-            let value, commentAttr = '', classAttr = '';
+    /** 
+        // 2. Генерация HTML
+        Object.entries(journalData).forEach(([subjectName, subjectDetails]) => {
             
-            if (typeof gradeItem === 'object' && gradeItem !== null) {
-                value = gradeItem.value;
-                // Добавляем атрибут data-comment и класс has-comment-journal
-                if (gradeItem.comment) {
-                    commentAttr = `data-comment="${gradeItem.comment}"`;
-                    classAttr = 'has-comment-journal';
+            const subjectCard = document.createElement('div');
+            subjectCard.className = 'subject-card-journal';
+    
+            const gradesHtml = subjectDetails.grades.map(gradeItem => {
+                // Проверяем, является ли оценка объектом или числом
+                let value, commentAttr = '', classAttr = '';
+                
+                if (typeof gradeItem === 'object' && gradeItem !== null) {
+                    value = gradeItem.value;
+                    // Добавляем атрибут data-comment и класс has-comment-journal
+                    if (gradeItem.comment) {
+                        commentAttr = `data-comment="${gradeItem.comment}"`;
+                        classAttr = 'has-comment-journal';
+                    }
+                } else {
+                    value = gradeItem;
                 }
-            } else {
-                value = gradeItem;
-            }
-
-            return `<span class="grade-badge-journal grade-${value}-journal ${classAttr}" ${commentAttr}>${value}</span>`;
-        }).join('');
-
-        subjectCard.innerHTML = `
-            <div class="subject-header-journal">
-                <div class="subject-name-wrapper-journal">
-                    ${trendIcons[subjectDetails.trend]}
-                    <span class="subject-name-journal">${subjectName}</span>
-                </div>
-                <div class="subject-stats-journal">
-                    <div class="stat-box-journal">
-                        <span class="stat-label-journal">Орташа балл</span>
-                        <span class="stat-value-journal">${subjectDetails.averageScore}</span>
+    
+                return `<span class="grade-badge-journal grade-${value}-journal ${classAttr}" ${commentAttr}>${value}</span>`;
+            }).join('');
+    
+            subjectCard.innerHTML = `
+                <div class="subject-header-journal">
+                    <div class="subject-name-wrapper-journal">
+                        ${trendIcons[subjectDetails.trend]}
+                        <span class="subject-name-journal">${subjectName}</span>
                     </div>
-                    <div class="stat-box-journal">
-                        <span class="stat-label-journal">Қатысу</span>
-                        <span class="stat-value-journal">${subjectDetails.attendance}</span>
+                    <div class="subject-stats-journal">
+                        <div class="stat-box-journal">
+                            <span class="stat-label-journal">Орташа балл</span>
+                            <span class="stat-value-journal">${subjectDetails.averageScore}</span>
+                        </div>
+                        <div class="stat-box-journal">
+                            <span class="stat-label-journal">Қатысу</span>
+                            <span class="stat-value-journal">${subjectDetails.attendance}</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="grades-list-journal">
-                ${gradesHtml}
-            </div>
-        `;
-
-        journalContainer.appendChild(subjectCard);
-    });
-
-*/
+                <div class="grades-list-journal">
+                    ${gradesHtml}
+                </div>
+            `;
+    
+            journalContainer.appendChild(subjectCard);
+        });
+    
+    */
 
     // 3. Логика обработки клика (Делегирование событий)
     // Создаем один элемент тултипа, который будем перемещать
 
-/** 
-    let tooltip = document.createElement('div');
-    tooltip.className = 'comment-tooltip-journal';
-    document.body.appendChild(tooltip);
-
-    document.addEventListener('click', function(e) {
-        const target = e.target;
-
-        // Если кликнули на оценку с комментарием
-        if (target.classList.contains('has-comment-journal')) {
-            const commentText = target.getAttribute('data-comment');
-            
-            // Получаем координаты оценки
-            const rect = target.getBoundingClientRect();
-            
-            // Заполняем и позиционируем тултип
-            tooltip.textContent = commentText;
-            tooltip.classList.add('visible');
-            
-            // Позиционируем: Сверху по центру от элемента + скролл страницы
-            tooltip.style.left = (rect.left + rect.width / 2) + 'px';
-            tooltip.style.top = (rect.top + window.scrollY) + 'px';
-
-        } else {
-            // Если кликнули в любое другое место - скрываем тултип
-            tooltip.classList.remove('visible');
-        }
-    });
-    */
+    /** 
+        let tooltip = document.createElement('div');
+        tooltip.className = 'comment-tooltip-journal';
+        document.body.appendChild(tooltip);
+    
+        document.addEventListener('click', function(e) {
+            const target = e.target;
+    
+            // Если кликнули на оценку с комментарием
+            if (target.classList.contains('has-comment-journal')) {
+                const commentText = target.getAttribute('data-comment');
+                
+                // Получаем координаты оценки
+                const rect = target.getBoundingClientRect();
+                
+                // Заполняем и позиционируем тултип
+                tooltip.textContent = commentText;
+                tooltip.classList.add('visible');
+                
+                // Позиционируем: Сверху по центру от элемента + скролл страницы
+                tooltip.style.left = (rect.left + rect.width / 2) + 'px';
+                tooltip.style.top = (rect.top + window.scrollY) + 'px';
+    
+            } else {
+                // Если кликнули в любое другое место - скрываем тултип
+                tooltip.classList.remove('visible');
+            }
+        });
+        */
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
     // API URL (Django urls.py-да көрсетілген жол)
-    const JOURNAL_API_URL = '/api/journal/'; 
+    const JOURNAL_API_URL = '/api/journal/';
     const CONTAINER_ID = 'tab-diary'; // HTML-дегі контейнер ID-і
     let dataGrade = null;
 
     try {
         const response = await fetch(JOURNAL_API_URL);
-        
+
         // Егер пайдаланушы авторизациядан өтпеген болса (401/403)
         if (response.status === 401 || response.status === 403) {
             console.warn("Авторизация қажет");
@@ -309,7 +309,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (response.ok) {
             // 1. Журналды саламыз
             renderJournal(data, CONTAINER_ID);
-            
+
             // 2. Тултиптерді іске қосамыз (тек бір рет)
             // initJournalTooltips();
         } else {
@@ -327,7 +327,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const gradeModal = document.getElementById('grade-modal-overlay');
     const closeBtn = document.getElementById('modal-grade-close-btn');
     const cancelBtn = document.getElementById('modal-grade-cancel-btn');
-    
+
     // Өрістер
     const subjectField = document.getElementById('modal-subject-grade');
     const taskNameField = document.getElementById('modal-grade-task-name');
@@ -343,7 +343,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     // Әр батырмаға click event қосу
     gradeBadges.forEach(badge => {
-        badge.addEventListener('click', function() {
+        badge.addEventListener('click', function () {
 
             // 1. Деректерді HTML атрибуттардан (dataset) алу
             // renderJournal функциясында біз оларды data-subject, data-comment деп сақтағанбыз
@@ -359,7 +359,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             taskNameField.textContent = `${type} (${date})`; // Мысалы: Лекция (13.01.2026)
             gradeValueField.textContent = grade;
             dateGrade.textContent = date;
-            
+
             // Пікірді тексеру
             if (comment && comment.trim() !== "") {
                 commentField.textContent = comment;
@@ -374,19 +374,19 @@ document.addEventListener('DOMContentLoaded', async () => {
             // Бағасына қарай түсін өзгерту
             const gradeCircle = gradeValueField.parentElement;
             const numericGrade = parseInt(grade);
-            
+
             // Ескі стильдерді тазарту (қате кетпес үшін)
             gradeCircle.style.borderColor = '';
             gradeCircle.style.color = '';
 
             if (numericGrade >= 90) {
-                gradeCircle.style.borderColor = '#28a745'; 
+                gradeCircle.style.borderColor = '#28a745';
                 gradeCircle.style.color = '#28a745';
             } else if (numericGrade >= 70) {
-                gradeCircle.style.borderColor = '#007bff'; 
+                gradeCircle.style.borderColor = '#007bff';
                 gradeCircle.style.color = '#007bff';
             } else if (numericGrade < 70 && numericGrade > 50) {
-                gradeCircle.style.borderColor = '#ebb112'; 
+                gradeCircle.style.borderColor = '#ebb112';
                 gradeCircle.style.color = '#ebb112';
             } else {
                 gradeCircle.style.borderColor = '#dc3545';

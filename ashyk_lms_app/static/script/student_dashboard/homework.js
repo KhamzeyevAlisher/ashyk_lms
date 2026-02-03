@@ -1,63 +1,119 @@
 
-// 1. Новая структура данных: объект объектов
-let homeworkData = {
-    "Объектіге бағытталған бағдарламалау (Java)": {
-        title: "Зертханалық жұмыс №3: Полиморфизм және интерфейстер",
-        teacher: "Оспанов А.С.",
-        deadline: "29.11.2025",
-        status: "review",
-        daysLeft: null,
-        grade: null,
-        task: "Полиморфизм и интерфейсы в Java" 
-    },
-    "Алгоритмдер және деректер құрылымы": {
-        title: "Аралық бақылау: Графтар және тереңдік бойынша іздеу (DFS)",
-        teacher: "Сапаров Е.Қ.",
-        deadline: "30.11.2025",
-        status: "missed",
-        daysLeft: 4,
-        grade: null,
-        task: "Реализовать поиск в глубину для графа" 
-    },
-    "Web-технологиялар": {
-        title: "Жоба: React.js негізінде SPA әзірлеу",
-        teacher: "Әлиева Г.М.",
-        deadline: "02.12.2025",
-        status: "missed",
-        daysLeft: 6,
-        grade: null,
-        task: "Создать одностраничное приложение на React" 
-    },
-    "Дерекқорлар жүйесі (PostgreSQL)": {
-        title: "Практикалық жұмыс: Күрделі SQL-сұраныстар (JOIN, Group By)",
-        teacher: "Нұрланова А.К.",
-        deadline: "05.12.2025",
-        status: "done",
-        daysLeft: null,
-        grade: "95/100",
-        task: "Написать сложные SQL-запросы с JOIN и Group By" 
-    }
-};
+// 1. Глобальная переменная для хранения данных (чтобы модалка имела к ним доступ)
+let homeworksDataList = [];
 
 /**
  * Функция для открытия и заполнения модального окна.
  * Она вызывается через атрибут onclick="openHomeworkModalOverley(this)"
  * @param {HTMLElement} buttonElement - Элемент кнопки, на которую нажали.
  */
+
+
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetchHomeworks();
+
+    const submitBtn = document.getElementById('modal-submit-btn');
+    if (submitBtn) {
+        submitBtn.addEventListener('click', handleSubmission);
+    }
+});
+
+let selectedHomeworkId = null;
+
+// Re-write open function to store ID
 function openHomeworkModalOverley(buttonElement) {
-    const subjectName = buttonElement.dataset.name;
-    const taskDetails = homeworkData[subjectName];
+    selectedHomeworkId = parseInt(buttonElement.dataset.id);
+    const taskDetails = homeworksDataList.find(h => h.id === selectedHomeworkId);
 
     if (taskDetails) {
-        // Заполняем модальное окно данными
-        document.getElementById('modal-subject').textContent = subjectName;
+        document.getElementById('modal-subject').textContent = taskDetails.courseName;
         document.getElementById('modal-task-description').textContent = taskDetails.title;
 
-        // Показываем модальное окно
+        // Clear previous inputs
+        const fileInput = document.getElementById('modal-file-input');
+        if (fileInput) fileInput.value = '';
+        document.getElementById('comment').value = '';
+
         const modalOverlay = document.getElementById('homework-modal-overlay');
         modalOverlay.classList.add('active');
     } else {
-        console.error("Не найдены данные для предмета:", subjectName);
+        console.error("Не найдены данные для ID:", selectedHomeworkId);
+    }
+}
+
+async function handleSubmission() {
+    if (!selectedHomeworkId) {
+        alert("Ошибка: задание не выбрано");
+        return;
+    }
+
+    const fileInput = document.getElementById('modal-file-input');
+    const commentInput = document.getElementById('comment');
+
+    const file = fileInput.files[0];
+    const comment = commentInput.value;
+
+    if (!file && !comment) {
+        alert("Файл немесе пікір енгізіңіз");
+        return;
+    }
+
+    const formData = new FormData();
+    formData.append('homework_id', selectedHomeworkId);
+    formData.append('comment', comment);
+    if (file) {
+        formData.append('file', file);
+    }
+
+    // CSRF Token
+    // We need to get it from cookie or DOM. Django typically sets csrftoken cookie.
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+    const csrftoken = getCookie('csrftoken');
+
+    try {
+        const submitBtn = document.getElementById('modal-submit-btn');
+        const originalText = submitBtn.textContent;
+        submitBtn.disabled = true;
+        submitBtn.textContent = "Жіберілуде...";
+
+        const response = await fetch('/api/homeworks/submit/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.status === 'success') {
+            alert(result.message || "Сәтті жіберілді!");
+            closeModal();
+            fetchHomeworks(); // Refresh list/stats
+        } else {
+            alert("Қате: " + (result.error || "Белгісіз қате"));
+        }
+    } catch (error) {
+        console.error("Submission error:", error);
+        alert("Жіберу кезінде қате орын алды");
+    } finally {
+        const submitBtn = document.getElementById('modal-submit-btn');
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Жіберу";
     }
 }
 
@@ -72,20 +128,22 @@ function closeModal() {
 }
 
 // Закрыть по клику на "крестик", кнопку "Болдырмау" или на темный фон
-closeBtn.addEventListener('click', closeModal);
-cancelBtn.addEventListener('click', closeModal);
-modalOverlay.addEventListener('click', function(event) {
-    // Закрываем, только если клик был на самом оверлее, а не на его содержимом
-    if (event.target === modalOverlay) {
-        closeModal();
-    }
-});
+if (closeBtn) closeBtn.addEventListener('click', closeModal);
+if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+if (modalOverlay) {
+    modalOverlay.addEventListener('click', function (event) {
+        // Закрываем, только если клик был на самом оверлее, а не на его содержимом
+        if (event.target === modalOverlay) {
+            closeModal();
+        }
+    });
+}
 
 // 3. Функция для создания HTML одной карточки
-// Принимает название предмета (ключ) и объект с деталями (значение)
-function createHomeworkCard(subject, details) {
+function createHomeworkCard(details) {
     // --- Логика для определения статуса ---
     let statusBadgeHtml = '';
+    // Statuses from API: 'todo', 'review', 'missed', 'done'
     switch (details.status) {
         case 'review':
             statusBadgeHtml = `
@@ -108,19 +166,29 @@ function createHomeworkCard(subject, details) {
                     Тексерілді
                 </div>`;
             break;
+        default: // 'todo' or unknown
+            statusBadgeHtml = `
+                <div class="status_badge_homework" style="background: #eef2ff; color: #4f46e5;">
+                    <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    Орындау керек
+                </div>`;
+            break;
     }
 
     // --- Логика для отображения дней или оценки ---
     let metaExtraHtml = '';
-    if (details.daysLeft !== null) {
-        metaExtraHtml = `
+    // Days left - only relevant if NOT done/review/missed (i.e. if todo) ?? 
+    // Or always show if present? Let's show if present.
+    if (details.daysLeft !== null && details.daysLeft !== undefined) {
+        metaExtraHtml += `
             <div class="meta_item_homework">
                 <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                 <span>${details.daysLeft} күн қалды</span>
             </div>`;
     }
-    if (details.grade !== null) {
-        metaExtraHtml = `
+
+    if (details.grade) {
+        metaExtraHtml += `
             <div class="meta_item_homework grade_text_homework">
                 <svg class="icon_svg_homework" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
                 <span>Баға: ${details.grade}</span>
@@ -132,7 +200,7 @@ function createHomeworkCard(subject, details) {
     card.className = 'task_card_homework';
     card.innerHTML = `
         <div class="card_left_homework">
-            <div class="subject_name_homework">${subject}</div>
+            <div class="subject_name_homework">${details.courseName}</div>
             <h4 class="task_title_homework">${details.title}</h4>
             <div class="teacher_name_homework">${details.teacher}</div>
             <div class="meta_row_homework">
@@ -145,65 +213,125 @@ function createHomeworkCard(subject, details) {
         </div>
         <div class="card_right_homework">
             ${statusBadgeHtml}
-            <button class="btn_details_homework" data-name='${subject}'>Толығырақ</button>
+            <button class="btn_details_homework" data-id='${details.id}'>Толығырақ</button>
         </div>
     `;
     return card;
 }
 
-function filterHomeworkCards(status) {
-    container.innerHTML = ''; // Очищаем контейнер перед фильтрацией
-    for (const [subject, details] of Object.entries(homeworkData)) {
-        if (status === 'all' || details.status === status) {
-            const cardElement = createHomeworkCard(subject, details);
+function renderCards(list) {
+    container.innerHTML = '';
 
-            container.appendChild(cardElement);
-        }
+    if (list.length === 0) {
+        container.innerHTML = '<p style="text-align:center; color:#666; margin-top:20px;">Тапсырмалар жоқ</p>';
+        return;
     }
 
-    const detailsButtons = document.querySelectorAll('.btn_details_homework');
+    list.forEach(details => {
+        const cardElement = createHomeworkCard(details);
+        container.appendChild(cardElement);
+    });
 
-    // Перебираем каждую найденную кнопку и добавляем ей обработчик клика
+    // Re-attach listeners
+    const detailsButtons = document.querySelectorAll('.btn_details_homework');
     detailsButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Внутри этой функции 'this' будет ссылаться именно на ту кнопку,
-            // по которой кликнули.
+        button.addEventListener('click', function () {
             openHomeworkModalOverley(this);
         });
     });
+}
+
+function filterHomeworkCards(status) {
+    if (status === 'all') {
+        renderCards(homeworksDataList);
+    } else {
+        const filtered = homeworksDataList.filter(item => item.status === status);
+        renderCards(filtered);
+    }
 }
 
 function setActiveTab(clickedButton) {
-    // 1. '.tab_btn_homework' класы бар барлық батырмаларды табамыз.
     const allTabs = document.querySelectorAll('.tab_btn_homework');
-
-    // 2. Барлық батырмалардан 'active_homework' класын алып тастаймыз.
     allTabs.forEach(tab => {
         tab.classList.remove('active_homework');
     });
-
-    // 3. Тек басылған батырмаға 'active_homework' класын қосамыз.
     clickedButton.classList.add('active_homework');
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    // 4. Перебираем объект и генерируем карточки
-    // Object.entries() превращает объект в массив пар [ключ, значение]
-    for (const [subject, details] of Object.entries(homeworkData)) {
-        const cardElement = createHomeworkCard(subject, details);
-        container.appendChild(cardElement);
+// FETCH DATA from API
+async function fetchHomeworks() {
+    try {
+        const response = await fetch('/api/homeworks/');
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            homeworksDataList = data.homeworks;
+            updateStatistics(homeworksDataList);
+            renderCards(homeworksDataList);
+        } else {
+            console.error('API Error:', data.error);
+        }
+    } catch (error) {
+        console.error('Fetch error:', error);
+        container.innerHTML = '<p style="text-align:center; color:red;">Деректерді жүктеу қатесі</p>';
+    }
+}
+
+function updateStatistics(list) {
+    // Update tab counts
+    const allCount = list.length;
+    const missedCount = list.filter(i => i.status === 'missed').length;
+    const reviewCount = list.filter(i => i.status === 'review').length;
+    const doneCount = list.filter(i => i.status === 'done').length;
+
+    // Assuming tabs are in specific order or have IDs. 
+    // Here we'll stick to the existing onclick handlers logic but update text content if possible.
+    // Ideally, tabs should have IDs. Let's try to update by text analysis or querySelectorOrder.
+
+    const tabs = document.querySelectorAll('.tab_btn_homework');
+    if (tabs.length >= 4) {
+        tabs[0].textContent = `Барлығы (${allCount})`;
+        tabs[1].textContent = `Тапсырылмаған (${missedCount})`;
+        tabs[2].textContent = `Тексерілуде (${reviewCount})`;
+        tabs[3].textContent = `Тексерілді (${doneCount})`;
     }
 
+    // Update status cards (Yellow/Blue/Green)
+    const warningCardValue = document.querySelector('.card_warning_homework .card_value_homework');
+    if (warningCardValue) warningCardValue.textContent = missedCount;
 
-    const detailsButtons = document.querySelectorAll('.btn_details_homework');
+    const reviewCardValue = document.querySelector('.card_review_homework .card_value_homework');
+    if (reviewCardValue) reviewCardValue.textContent = reviewCount;
 
-    // Перебираем каждую найденную кнопку и добавляем ей обработчик клика
-    detailsButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Внутри этой функции 'this' будет ссылаться именно на ту кнопку,
-            // по которой кликнули.
-            openHomeworkModalOverley(this);
+    // Average score calculation (optional improvement)
+    // There is a success card "Орташа балл", we could calculate it from done tasks
+    const gradedTasks = list.filter(i => i.status === 'done' && i.grade);
+    let avg = 0;
+    if (gradedTasks.length > 0) {
+        let sum = 0;
+        let count = 0;
+        gradedTasks.forEach(t => {
+            // grade is "95/100" string
+            const parts = t.grade.split('/');
+            if (parts.length > 0) {
+                const val = parseFloat(parts[0]);
+                if (!isNaN(val)) {
+                    sum += val;
+                    count++;
+                }
+            }
         });
-    });
+        if (count > 0) avg = Math.round(sum / count);
+    }
 
+    const successCardValue = document.querySelector('.card_success_homework .card_value_homework');
+    // If we want real average:
+    // if (successCardValue) successCardValue.textContent = avg + "%";
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    fetchHomeworks();
 });
