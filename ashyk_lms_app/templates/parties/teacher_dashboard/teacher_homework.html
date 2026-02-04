@@ -1,33 +1,23 @@
-<!-- Переключение между списком и деталями (скрытие/показ через JS) -->
+<!-- ПЕРЕКЛЮЧЕНИЕ МЕЖДУ СПИСКОМ И ДЕТАЛЯМИ -->
 <div id="homework-main-view">
     <div class="container_homework">
-
-        <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
             <div>
                 <h1 class="title_homework">Үй тапсырмалары</h1>
                 <p class="subtitle_homework">Жаңа тапсырмалар жасаңыз және студенттердің жұмыстарын тексеріңіз</p>
             </div>
-            <button class="btn-primary" onclick="openCreateHomeworkModal()"
-                style="background-color: #563eea; padding: 10px 20px; border-radius: 8px;">+ Жаңа тапсырма</button>
+            <button class="btn_details_homework" onclick="openCreateHomeworkModal()"
+                style="width: auto; padding: 12px 24px; border-radius: 12px;">
+                <i class="fa-solid fa-plus" style="margin-right: 8px;"></i> Жаңа тапсырма
+            </button>
         </div>
 
-        <!-- Вкладки -->
-        <div class="tabs_container_homework">
-            <button class="tab_btn_homework active_homework" onclick="filterHomeworks('all', this)">Барлығы (<span
-                    id="count-all">0</span>)</button>
-            <button class="tab_btn_homework" onclick="filterHomeworks('unchecked', this)">Тексерілмеген (<span
-                    id="count-unchecked">0</span>)</button>
-            <button class="tab_btn_homework" onclick="filterHomeworks('checked', this)">Тексерілген (<span
-                    id="count-checked">0</span>)</button>
-        </div>
-
-        <!-- Статистика (примерная) -->
-        <div class="cards_grid_homework">
-
+        <!-- Статистика -->
+        <div class="cards_grid_homework" style="margin-bottom: 30px;">
             <div class="status_card_homework card_warning_homework">
                 <div class="card_info_homework">
                     <span class="card_label_homework">Тексеру қажет</span>
-                    <span class="card_value_homework" id="stats-review-count">0</span>
+                    <span class="card_value_homework" id="stats-review-count">--</span>
                 </div>
                 <div class="card_icon_homework">!</div>
             </div>
@@ -35,63 +25,77 @@
             <div class="status_card_homework card_review_homework">
                 <div class="card_info_homework">
                     <span class="card_label_homework">Барлық тапсырма</span>
-                    <span class="card_value_homework" id="stats-total-count">0</span>
+                    <span class="card_value_homework" id="stats-total-count">--</span>
                 </div>
-                <div class="card_icon_homework" style="border:none;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                        stroke-linecap="round" stroke-linejoin="round">
+                <div class="card_icon_homework">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
                         <circle cx="12" cy="12" r="10"></circle>
                         <polyline points="12 6 12 12 16 14"></polyline>
                     </svg>
                 </div>
             </div>
 
-            <!-- <div class="status_card_homework card_success_homework">
+            <div class="status_card_homework card_success_homework">
                 <div class="card_info_homework">
-                    <span class="card_label_homework">Тексерілді</span>
-                    <span class="card_value_homework">0</span>
+                    <span class="card_label_homework">Орташа үлгерім</span>
+                    <span class="card_value_homework">84%</span>
                 </div>
-                <div class="card_icon_homework" style="border:none;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <div class="card_icon_homework">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                        stroke-width="2.5">
                         <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
                         <polyline points="22 4 12 14.01 9 11.01"></polyline>
                     </svg>
                 </div>
-            </div> -->
+            </div>
+        </div>
 
+        <!-- Вкладки фильтрации -->
+        <div class="tabs_container_homework">
+            <button class="tab_btn_homework active_homework" onclick="filterHomeworks('all', this)">
+                Барлығы (<span id="count-all">0</span>)
+            </button>
+            <button class="tab_btn_homework" onclick="filterHomeworks('unchecked', this)">
+                Тексерілмеген (<span id="count-unchecked">0</span>)
+            </button>
+            <button class="tab_btn_homework" onclick="filterHomeworks('checked', this)">
+                Тексерілген (<span id="count-checked">0</span>)
+            </button>
         </div>
     </div>
 
-    <!-- Container for list -->
-    <div class="list_container_homework" id="homework-list-container">
-        <!-- JS will populate cards here -->
-        <p style="text-align: center; color: #666; margin-top: 20px;">Жүктелуде...</p>
+    <!-- Контейнер для списка карточек -->
+    <div class="list_container_homework" id="teacher-all-homeworks-list">
+        <p style="text-align: center; color: #718096; padding: 40px;">Жүктелуде...</p>
     </div>
 </div>
 
-<!-- SUBMISSIONS VIEW (Updated style to match) -->
-<div id="homework-submissions-view" class="container_homework hidden" style="margin-top: 20px; border-top: none;">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+<!-- ПРОСМОТР ОТВЕТОВ СТУДЕНТОВ -->
+<div id="homework-submissions-view" class="container_homework hidden" style="margin-top: 20px;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <div>
-            <h3 class="title_homework" id="submissions-title" style="font-size: 20px;">Тапсырмалар</h3>
-            <p class="subtitle_homework" style="margin-bottom: 0;">Студенттердің жауаптары</p>
+            <h3 class="title_homework" id="submissions-title" style="font-size: 22px;">Тапсырмалар</h3>
+            <p class="subtitle_homework" style="margin-bottom: 0;">Студенттердің жіберілген жұмыстары мен жауаптары</p>
         </div>
-        <button class="btn-secondary" onclick="closeSubmissionsView()"
-            style="border: 1px solid #dce1e6; background: white;">Артқа</button>
+        <button class="tab_btn_homework" onclick="closeSubmissionsView()" style="background: #f7fafc;">
+            <i class="fa-solid fa-arrow-left" style="margin-right: 8px;"></i> Артқа
+        </button>
     </div>
-    <div style="overflow-x: auto;">
-        <table style="width: 100%; border-collapse: collapse;">
+
+    <div style="overflow-x: auto; border-radius: 12px; border: 1px solid #edf2f7;">
+        <table class="submissions-table">
             <thead>
-                <tr style="background: #f8f9fa; border-bottom: 2px solid #eee;">
-                    <th style="padding: 12px; text-align: left;">Студент</th>
-                    <th style="padding: 12px; text-align: left;">Статус</th>
-                    <th style="padding: 12px; text-align: left;">Уақыты</th>
-                    <th style="padding: 12px; text-align: left;">Баға</th>
-                    <th style="padding: 12px; text-align: center;">Әрекет</th>
+                <tr>
+                    <th>Студент</th>
+                    <th>Статус</th>
+                    <th>Жіберілген уақыты</th>
+                    <th>Баға</th>
+                    <th style="text-align: center;">Әрекет</th>
                 </tr>
             </thead>
             <tbody id="submissions-table-body">
-                <!-- Rows -->
+                <!-- Заполняется через JS -->
             </tbody>
         </table>
     </div>
