@@ -404,3 +404,5 @@ window.openSubmissions = openSubmissions;
 window.closeSubmissionsView = closeSubmissionsView;
 window.openCreateHomeworkModal = () => openModal('createHomeworkModal');
 window.openGradingModal = openGradingModal;
+
+//cscs
