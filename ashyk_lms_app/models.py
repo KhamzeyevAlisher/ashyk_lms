@@ -594,3 +594,28 @@ class HomeworkSubmission(models.Model):
 
     def __str__(self):
         return f"{self.student.user.get_full_name_str()} - {self.homework.title}"
+
+    def set_grade(self, value, comment=""):
+        """
+        Устанавливает оценку за задание и сохраняет её в журнал (Grade).
+        """
+        # Находим или создаем предмет (Subject) по названию курса
+        # Т.к. Homework привязана к Course, а Grade требует Subject
+        subject, created = Subject.objects.get_or_create(name=self.homework.course.title)
+
+        if self.grade:
+            self.grade.subject = subject  # Принудительно синхронизируем предмет
+            self.grade.value = value
+            self.grade.comment = comment
+            self.grade.save()
+        else:
+            self.grade = Grade.objects.create(
+                student=self.student,
+                subject=subject,
+                value=value,
+                grade_type='homework',
+                comment=comment
+            )
+        
+        self.status = 'graded'
+        self.save()

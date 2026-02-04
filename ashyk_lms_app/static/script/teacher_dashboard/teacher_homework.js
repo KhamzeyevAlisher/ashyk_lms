@@ -1,225 +1,297 @@
 // ============================================
-// Teacher Homework: FRONTEND "DATABASE" & LOGIC
+// Teacher Homework: FRONTEND LOGIC (API INTEGRATION)
 // ============================================
-
-/**
- * ПРЕДПОЛАГАЕМАЯ АРХИТЕКТУРА БД (для бэкенда):
- * 
- * 1. Homework Model:
- *    - id (INT)
- *    - title (STR)
- *    - description (TEXT)
- *    - course_id (FK -> Course)
- *    - group_id (FK -> Group, optional)
- *    - teacher_id (FK -> User/Teacher)
- *    - deadline (DATETIME)
- *    - max_score (INT, default 100)
- *    - file_attachment (FILE, optional)
- *    - created_at (DATETIME)
- * 
- * 2. Submission Model:
- *    - id (INT)
- *    - homework_id (FK -> Homework)
- *    - student_id (FK -> User/Student)
- *    - content (TEXT)
- *    - file_attachment (FILE, optional)
- *    - status (ENUM: 'submitted', 'on_review', 'graded', 'overdue')
- *    - grade (INT, optional)
- *    - teacher_feedback (TEXT, optional)
- *    - submitted_at (DATETIME)
- */
-
-// --- 1. MOCK DATA (Имитация содержимого БД) ---
-
-const DB_HOMEWORKS = [
-    {
-        id: 201,
-        course_name: "Алгоритмдер",
-        group_name: "IT-2101",
-        title: "Сұрыптау алгоритмдері: Тез сұрыптау (QuickSort)",
-        description: "QuickSort алгоритмін іске асыру және оның уақыттық күрделілігін талдау.",
-        deadline: "2024-02-15T23:59:59",
-        max_score: 100,
-        teacher: "Проф. Иванов",
-        status: "active", // Для фильтрации: active/closed
-        // Статистика высчитывается на бэкенде или через агрегацию
-        submissions_count: 22,
-        total_students: 25,
-        unchecked_count: 5
-    },
-    {
-        id: 202,
-        course_name: "JavaScript негіздері",
-        group_name: "WEB-2204",
-        title: "DOM манипуляциясы және Оқиғалар (Events)",
-        description: "Интерактивті тізім жасау (To-Do List) және localStorage қолдану.",
-        deadline: "2024-02-10T23:59:59",
-        max_score: 100,
-        teacher: "Е. Смайылов",
-        status: "active",
-        submissions_count: 15,
-        total_students: 20,
-        unchecked_count: 15
-    },
-    {
-        id: 203,
-        course_name: "Мәліметтер қоры",
-        group_name: "IT-2103",
-        title: "SQL Join: Күрделі сұраныстар",
-        description: "3-тен астам кестені біріктіретін SQL сұраныстарын жазыңыз.",
-        deadline: "2024-02-01T23:59:59",
-        max_score: 100,
-        teacher: "А. Ахметова",
-        status: "closed",
-        submissions_count: 30,
-        total_students: 30,
-        unchecked_count: 0
-    }
-];
-
-const DB_SUBMISSIONS = [
-    {
-        id: 5001,
-        homework_id: 201,
-        student_name: "Арман Серік",
-        student_id: 10,
-        status: "submitted",
-        status_label: "Тексерілмеген",
-        submitted_at: "2024-02-09 14:30",
-        content: "Мен QuickSort-ты Python-да орындадым. Кодты тіркедім.",
-        file_url: "/media/homeworks/qsort_arman.zip",
-        grade: null,
-        feedback: ""
-    },
-    {
-        id: 5002,
-        homework_id: 201,
-        student_name: "Айша Мұрат",
-        student_id: 11,
-        status: "graded",
-        status_label: "Тексерілді",
-        submitted_at: "2024-02-08 10:15",
-        content: "Тапсырма дайын. Оптимизация жасалды.",
-        file_url: "/media/homeworks/qsort_aisha.pdf",
-        grade: 95,
-        feedback: "Жақсы жұмыс!"
-    },
-    {
-        id: 5003,
-        homework_id: 202,
-        student_name: "Бекарыс Омар",
-        student_id: 15,
-        status: "submitted",
-        status_label: "Тексерілмеген",
-        submitted_at: "2024-02-10 09:00",
-        content: "To-Do List дайын. Мұнда оқиғаларды тыңдаушылар қосылған.",
-        file_url: null,
-        grade: null,
-        feedback: ""
-    }
-];
-
-// --- 2. ИНИЦИАЛИЗАЦИЯ И РЕНДЕРИНГ ---
 
 document.addEventListener('DOMContentLoaded', () => {
     initApp();
 });
 
-function initApp() {
-    // Если на бэкенде мы загружаем страницу сразу с данными, 
-    // то здесь будет просто рендер. Но для SPA-подхода — fetch.
-    renderDashboard();
+let currentHomeworks = []; // Store fetched homeworks locally for filtering
+let currentSubmissions = []; // Store fetched submissions
+let filterState = {
+    search: '',
+    courseId: 'all',
+    groupId: 'all',
+    status: 'all' // 'all', 'unchecked', 'checked'
+};
 
-    // Делегирование событий или прямые привязки
+function initApp() {
+    // Initial Data Load
+    loadHomeworks();
+    loadCoursesAndGroups();
+    setupDropdowns(); // Setup filter dropdowns
+
+    // Event Listeners
     const createForm = document.getElementById('createHomeworkForm');
     if (createForm) createForm.addEventListener('submit', handleAddHomework);
 
     const gradeForm = document.getElementById('gradeForm');
     if (gradeForm) gradeForm.addEventListener('submit', handleSaveGrade);
+
+    // Search Listener
+    const searchInput = document.getElementById('homework-search');
+    if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+            filterState.search = e.target.value.toLowerCase();
+            applyFilters();
+        });
+    }
 }
 
-/**
- * Основная функция рендеринга списка ДЗ
- * @param {string} filter - 'all', 'unchecked', 'checked'
- */
-function renderDashboard(filter = 'all') {
-    // ВАЖНО: ID изменен, чтобы не конфликтовать с виджетом на главной странице (teacher_home.html)
-    const listContainer = document.getElementById('teacher-all-homeworks-list');
+// --- API CALLS ---
 
-    if (!listContainer) {
-        console.warn('Teacher Homework List container not found!');
-        return;
+async function loadHomeworks() {
+    const listContainer = document.getElementById('teacher-all-homeworks-list');
+    if (!listContainer) return;
+
+    listContainer.innerHTML = '<p style="text-align: center; color: #718096; padding: 40px;">Жүктелуде...</p>';
+
+    try {
+        const response = await fetch('/api/teacher/homeworks/');
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            currentHomeworks = data.homeworks;
+            applyFilters(); // Render with initial filters
+        } else {
+            console.error('Error fetching homeworks:', data.error);
+            listContainer.innerHTML = `<p style="text-align: center; color: #e53e3e;">Қате: ${data.error}</p>`;
+        }
+    } catch (error) {
+        console.error('Network error:', error);
+        listContainer.innerHTML = `<p style="text-align: center; color: #e53e3e;">Байланыс қатесі</p>`;
     }
+}
+
+async function loadCoursesAndGroups() {
+    try {
+        // Load Courses
+        const coursesResponse = await fetch('/api/teacher/my-courses/');
+        const coursesData = await coursesResponse.json();
+
+        const courseSelect = document.getElementById('hw-course-select'); // Modal select
+        const filterCourseSelect = document.getElementById('filter-course-options'); // Filter select
+
+        if (coursesData.status === 'success') {
+            // Populate Modal Select
+            if (courseSelect) {
+                courseSelect.innerHTML = '<option value="" disabled selected>Курсты таңдаңыз</option>';
+                coursesData.courses.forEach(course => {
+                    const option = document.createElement('option');
+                    option.value = course.id;
+                    option.textContent = course.title;
+                    courseSelect.appendChild(option);
+                });
+            }
+
+            // Populate Filter Select
+            if (filterCourseSelect) {
+                // Keep the first "All" option
+                let html = '<div class="option-homework selected" data-value="all">Барлық курстар</div>';
+                coursesData.courses.forEach(course => {
+                    html += `<div class="option-homework" data-value="${course.id}">${course.title}</div>`;
+                });
+                filterCourseSelect.innerHTML = html;
+                setupDropdownOptions(document.getElementById('filter-course-select')); // Re-bind events
+            }
+        }
+
+        // Load Groups
+        const groupsResponse = await fetch('/api/teacher/groups/');
+        const groupsData = await groupsResponse.json();
+
+        const groupSelect = document.getElementById('hw-group-select'); // Modal select
+        const filterGroupSelect = document.getElementById('filter-group-options'); // Filter select
+
+        if (groupsData.status === 'success') {
+            // Populate Modal Select
+            if (groupSelect) {
+                groupSelect.innerHTML = '<option value="">Барлық группалар</option>';
+                groupsData.groups.forEach(group => {
+                    const option = document.createElement('option');
+                    option.value = group.id;
+                    option.textContent = group.name;
+                    groupSelect.appendChild(option);
+                });
+            }
+
+            // Populate Filter Select
+            if (filterGroupSelect) {
+                let html = '<div class="option-homework selected" data-value="all">Барлық топтар</div>';
+                groupsData.groups.forEach(group => {
+                    html += `<div class="option-homework" data-value="${group.id}">${group.name}</div>`;
+                });
+                filterGroupSelect.innerHTML = html;
+                setupDropdownOptions(document.getElementById('filter-group-select'));
+            }
+        }
+
+    } catch (error) {
+        console.error('Error loading courses or groups:', error);
+    }
+}
+
+function setupDropdowns() {
+    // Only add global listener once
+    if (window.homeworkDropdownsInitialized) return;
+
+    document.addEventListener('click', (e) => {
+        // 1. Trigger Click
+        const trigger = e.target.closest('.select-trigger-homework');
+        if (trigger) {
+            const dropdown = trigger.closest('.custom-select-homework');
+            // Close other dropdowns
+            document.querySelectorAll('.custom-select-homework').forEach(d => {
+                if (d !== dropdown) d.classList.remove('active');
+            });
+            dropdown.classList.toggle('active');
+            return;
+        }
+
+        // 2. Option Click
+        const option = e.target.closest('.option-homework');
+        if (option) {
+            const dropdown = option.closest('.custom-select-homework');
+            const triggerSpan = dropdown.querySelector('.select-trigger-homework span');
+            const value = option.getAttribute('data-value');
+            const text = option.textContent;
+
+            // UI Update
+            triggerSpan.textContent = text;
+            dropdown.querySelector('.option-homework.selected')?.classList.remove('selected');
+            option.classList.add('selected');
+            dropdown.classList.remove('active');
+
+            // Logic Update
+            if (dropdown.id === 'filter-course-select') {
+                filterState.courseId = value;
+            } else if (dropdown.id === 'filter-group-select') {
+                filterState.groupId = value;
+            }
+            applyFilters();
+            return;
+        }
+
+        // 3. Click Outside
+        if (!e.target.closest('.custom-select-homework')) {
+            document.querySelectorAll('.custom-select-homework').forEach(d => {
+                d.classList.remove('active');
+            });
+        }
+    });
+
+    window.homeworkDropdownsInitialized = true;
+}
+
+// No longer needed to setup individual options as delegation handles it
+function setupDropdownOptions(dropdown) {
+    // Left empty for compatibility with existing calls
+}
+
+function setFilterStatus(status, btn) {
+    if (btn) {
+        document.querySelectorAll('.tab_btn_homework').forEach(b => b.classList.remove('active_homework'));
+        btn.classList.add('active_homework');
+    }
+    filterState.status = status;
+    applyFilters();
+}
+
+function applyFilters() {
+    const listContainer = document.getElementById('teacher-all-homeworks-list');
+    if (!listContainer) return;
+
+    let results = currentHomeworks.filter(hw => {
+        // 1. Search (Title)
+        if (filterState.search && !hw.title.toLowerCase().includes(filterState.search)) {
+            return false;
+        }
+
+        // 2. Course
+        if (filterState.courseId !== 'all') {
+            if (hw.course_id != filterState.courseId) {
+                return false;
+            }
+        }
+
+        // 3. Group
+        if (filterState.groupId !== 'all') {
+            if (hw.group_id != filterState.groupId) {
+                return false;
+            }
+        }
+
+        return true;
+    });
+
+    // Post-processing stats
+    const countAll = results.length;
+    document.getElementById('count-all').textContent = countAll;
+
+    updateStatsUI({
+        all: countAll,
+        unchecked: '-',
+        checked: '-'
+    });
+
+    // 4. Status Filter
+    if (filterState.status === 'unchecked') {
+        results = results.filter(h => {
+            const [submitted, total] = h.stats.split('/').map(s => parseInt(s) || 0);
+            return submitted > 0;
+        });
+    } else if (filterState.status === 'checked') {
+        // Placeholder
+    }
+
+    renderDashboard(results);
+}
+
+function renderDashboard(data) {
+    const listContainer = document.getElementById('teacher-all-homeworks-list');
+    if (!listContainer) return;
 
     listContainer.innerHTML = '';
 
-    // Подсчет статистики для бейджей (имитация серверного ответа)
-    const stats = {
-        all: DB_HOMEWORKS.length,
-        unchecked: DB_HOMEWORKS.filter(h => h.unchecked_count > 0).length,
-        checked: DB_HOMEWORKS.filter(h => h.unchecked_count === 0).length,
-        total_unchecked: DB_HOMEWORKS.reduce((sum, h) => sum + h.unchecked_count, 0)
-    };
-
-    updateStatsUI(stats);
-
-    // Фильтрация данных
-    let filteredData = DB_HOMEWORKS;
-    if (filter === 'unchecked') filteredData = DB_HOMEWORKS.filter(h => h.unchecked_count > 0);
-    if (filter === 'checked') filteredData = DB_HOMEWORKS.filter(h => h.unchecked_count === 0);
-
-    if (filteredData.length === 0) {
-        listContainer.innerHTML = `<div class="empty-state">Тапсырмалар табылған жоқ</div>`;
+    if (data.length === 0) {
+        listContainer.innerHTML = `<div class="empty-state" style="text-align:center; padding: 40px; color: #718096;">Тапсырмалар табылған жоқ</div>`;
         return;
     }
 
-    filteredData.forEach(hw => {
+    data.forEach(hw => {
         const card = createHomeworkCard(hw);
         listContainer.appendChild(card);
     });
 }
 
-/**
- * Создание HTML карточки на основе объекта данных
- * Это "шаблон", который вы будете использовать в бэкенде (например, через Jinja или DRF)
- */
 function createHomeworkCard(data) {
     const div = document.createElement('div');
     div.className = 'task_card_homework';
 
-    const isDone = data.unchecked_count === 0;
-    const statusBadge = isDone
-        ? `<div class="status_badge_homework status_done_homework">
-            <i class="fa-solid fa-check-double"></i> Тексерілді
-           </div>`
-        : `<div class="status_badge_homework status_review_homework">
-            <i class="fa-solid fa-clock"></i> Тексеру қажет: ${data.unchecked_count}
-           </div>`;
-
-    // Вычисляем прогресс для визуала (опционально)
-    const progressPercent = Math.round((data.submissions_count / data.total_students) * 100);
+    // Parse 'stats' string like "5 / 25"
+    const [submitted, total] = data.stats.split('/').map(s => s.trim());
+    const progressPercent = total > 0 ? Math.round((submitted / total) * 100) : 0;
 
     div.innerHTML = `
         <div class="card_left_homework">
-            <div class="subject_name_homework">${data.course_name} • ${data.group_name}</div>
+            <div class="subject_name_homework">${data.course} • ${data.group}</div>
             <h4 class="task_title_homework">${data.title}</h4>
             <div class="meta_row_homework">
                 <div class="meta_item_homework">
                     <i class="fa-regular fa-calendar"></i>
-                    <span>Мерзімі: <strong>${formatDateTime(data.deadline)}</strong></span>
+                    <span>Мерзімі: <strong>${data.deadline}</strong></span>
                 </div>
                 <div class="meta_item_homework" title="Жіберілген жұмыстар">
                     <i class="fa-solid fa-users"></i>
-                    <span>${data.submissions_count} / ${data.total_students} студент</span>
+                    <span>${data.stats} студент</span>
                 </div>
             </div>
-            <!-- Мини прогресс-бар -->
+            <!-- Progress Bar -->
             <div style="width: 100%; height: 4px; background: #edf2f7; border-radius: 2px; margin-top: 12px;">
                 <div style="width: ${progressPercent}%; height: 100%; background: #563eea; border-radius: 2px;"></div>
             </div>
         </div>
         <div class="card_right_homework">
-            ${statusBadge}
             <button class="btn_details_homework" onclick="openSubmissions(${data.id})">
                 Жұмыстарды көру
             </button>
@@ -228,83 +300,166 @@ function createHomeworkCard(data) {
     return div;
 }
 
-// --- 3. УПРАВЛЕНИЕ ПОД-ВИДАМИ (Submissions) ---
+function updateStatsUI(stats) {
+    const elAll = document.getElementById('count-all');
+    if (elAll) elAll.textContent = stats.all;
 
-function openSubmissions(homeworkId) {
-    const homework = DB_HOMEWORKS.find(h => h.id === homeworkId);
-    if (!homework) return;
+    const elTotal = document.getElementById('stats-total-count');
+    if (elTotal) elTotal.textContent = stats.all;
 
-    // Установка данных заголовка
-    document.getElementById('submissions-title').textContent = homework.title;
+    // Placeholders for other stats as API doesn't fully support them yet
+    document.getElementById('count-unchecked').textContent = stats.unchecked;
+    document.getElementById('count-checked').textContent = stats.checked;
+    document.getElementById('stats-review-count').textContent = stats.unchecked;
+}
+
+// --- ACTIONS: CREATE HOMEWORK ---
+
+async function handleAddHomework(e) {
+    e.preventDefault();
+
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    const originalBtnText = submitBtn.textContent;
+    submitBtn.textContent = 'Жіберілуде...';
+    submitBtn.disabled = true;
+
+    try {
+        const formData = new FormData();
+        formData.append('course_id', document.getElementById('hw-course-select').value);
+
+        const groupVal = document.getElementById('hw-group-select').value;
+        if (groupVal) formData.append('group_id', groupVal);
+
+        formData.append('title', document.getElementById('hw-title').value);
+        formData.append('description', document.getElementById('hw-description').value);
+
+        const fileInput = document.getElementById('hw-file');
+        if (fileInput.files[0]) {
+            formData.append('file', fileInput.files[0]);
+        }
+
+        formData.append('deadline', document.getElementById('hw-deadline').value);
+
+        // Get CSRF token
+        const csrftoken = getCookie('csrftoken');
+
+        const response = await fetch('/api/teacher/homework/create/', {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': csrftoken
+            },
+            body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            alert('Үй тапсырмасы сәтті құрылды!');
+            closeModal('createHomeworkModal');
+            e.target.reset();
+            loadHomeworks(); // Refresh list
+        } else {
+            alert('Қате: ' + (result.error || 'Белгісіз қате'));
+        }
+
+    } catch (error) {
+        console.error('Error creating homework:', error);
+        alert('Байланыс қатесі орын алды.');
+    } finally {
+        submitBtn.textContent = originalBtnText;
+        submitBtn.disabled = false;
+    }
+}
+
+// --- ACTIONS: SUBMISSIONS ---
+
+async function openSubmissions(homeworkId) {
+    const homework = currentHomeworks.find(h => h.id === homeworkId);
+    if (homework) {
+        document.getElementById('submissions-title').textContent = homework.title;
+    }
 
     const tableBody = document.getElementById('submissions-table-body');
-    tableBody.innerHTML = '';
-
-    const submissions = DB_SUBMISSIONS.filter(s => s.homework_id === homeworkId);
-
-    if (submissions.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Бұл тапсырмаға әлі жауаптар келген жоқ.</td></tr>';
-    } else {
-        submissions.forEach(sub => {
-            const row = createSubmissionRow(sub);
-            tableBody.appendChild(row);
-        });
-    }
+    tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Жүктелуде...</td></tr>';
 
     document.getElementById('homework-main-view').classList.add('hidden');
     document.getElementById('homework-submissions-view').classList.remove('hidden');
+
+    try {
+        const response = await fetch(`/api/teacher/homeworks/${homeworkId}/submissions/`);
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            currentSubmissions = data.submissions;
+            renderSubmissions(currentSubmissions);
+        } else {
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">${data.error}</td></tr>`;
+        }
+    } catch (error) {
+        console.error('Error fetching submissions:', error);
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Байланыс қатесі</td></tr>`;
+    }
 }
 
-function createSubmissionRow(sub) {
-    const tr = document.createElement('tr');
+function renderSubmissions(submissions) {
+    const tableBody = document.getElementById('submissions-table-body');
+    tableBody.innerHTML = '';
 
-    // Логика цвета статуса
-    const statusColor = sub.status === 'graded' ? '#38a169' : '#e53e3e';
-    const actionBtn = sub.status === 'graded'
-        ? `<button class="tab_btn_homework" style="font-size: 12px; padding: 6px 14px;" onclick="openGradingModal(${sub.id})">Өңдеу</button>`
-        : `<button class="btn_details_homework" style="font-size: 12px; padding: 6px 14px; width: auto;" onclick="openGradingModal(${sub.id})">Бағалау</button>`;
+    if (submissions.length === 0) {
+        tableBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:20px;">Бұл тапсырмаға әлі жауаптар келген жоқ.</td></tr>';
+        return;
+    }
 
-    tr.innerHTML = `
-        <td>
-            <div style="font-weight: 600; color: #2d3748;">${sub.student_name}</div>
-            <div style="font-size: 11px; color: #a0aec0;">ID: ${sub.student_id}</div>
-        </td>
-        <td>
-            <span style="color: ${statusColor}; font-weight: 600; font-size: 13px;">
-                ${sub.status_label}
-            </span>
-        </td>
-        <td style="color: #718096; font-size: 13px;">${sub.submitted_at}</td>
-        <td>
-            <div style="font-weight: 700; font-size: 16px;">${sub.grade || '-'}</div>
-        </td>
-        <td style="text-align: center;">
-            ${actionBtn}
-        </td>
-    `;
-    return tr;
+    submissions.forEach(sub => {
+        const tr = document.createElement('tr');
+
+        const isGraded = sub.status_code === 'graded';
+        const statusColor = isGraded ? '#38a169' : '#e53e3e';
+        const btnText = isGraded ? 'Өңдеу' : 'Бағалау';
+
+        tr.innerHTML = `
+            <td>
+                <div style="font-weight: 600; color: #2d3748;">${sub.student_name}</div>
+            </td>
+            <td>
+                <span style="color: ${statusColor}; font-weight: 600; font-size: 13px;">
+                    ${sub.status}
+                </span>
+            </td>
+            <td style="color: #718096; font-size: 13px;">${sub.submitted_at}</td>
+            <td>
+                <div style="font-weight: 700; font-size: 16px;">${sub.grade || '-'}</div>
+            </td>
+            <td style="text-align: center;">
+                <button class="btn_details_homework" style="font-size: 12px; padding: 6px 14px; width: auto;" onclick="openGradingModal(${sub.id})">
+                    ${btnText}
+                </button>
+            </td>
+        `;
+        tableBody.appendChild(tr);
+    });
 }
 
-// --- 4. МОДАЛКИ И ДЕЙСТВИЯ (CRUD имитация) ---
+// --- ACTIONS: GRADING ---
 
 function openGradingModal(submissionId) {
-    const sub = DB_SUBMISSIONS.find(s => s.id === submissionId);
+    const sub = currentSubmissions.find(s => s.id === submissionId);
     if (!sub) return;
 
-    // Заполнение полей модалки
+    // Fill data
     document.getElementById('grade-student-name').textContent = sub.student_name;
     document.getElementById('grade-content').textContent = sub.content || 'Жауап мәтіні жоқ.';
     document.getElementById('grade-submission-id').value = sub.id;
     document.getElementById('grade-value').value = sub.grade || '';
-    document.getElementById('grade-comment').value = sub.feedback || '';
+    document.getElementById('grade-comment').value = ''; // API doesn't return comment yet, leaving blank
 
-    // Работа с файлом
+    // File
     const fileContainer = document.getElementById('grade-file-container');
     const fileLink = document.getElementById('grade-file-link');
     if (sub.file_url) {
         fileContainer.style.display = 'block';
         fileLink.href = sub.file_url;
-        fileLink.textContent = sub.file_url.split('/').pop();
+        fileLink.textContent = sub.file_name || 'Файлды жүктеу';
     } else {
         fileContainer.style.display = 'none';
     }
@@ -312,73 +467,80 @@ function openGradingModal(submissionId) {
     openModal('gradeModal');
 }
 
-function handleSaveGrade(e) {
+async function handleSaveGrade(e) {
     e.preventDefault();
-    const subId = parseInt(document.getElementById('grade-submission-id').value);
-    const score = parseInt(document.getElementById('grade-value').value);
-    const feedback = document.getElementById('grade-comment').value;
 
-    // Update LOCAL DB
-    const subIndex = DB_SUBMISSIONS.findIndex(s => s.id === subId);
-    if (subIndex !== -1) {
-        DB_SUBMISSIONS[subIndex].grade = score;
-        DB_SUBMISSIONS[subIndex].feedback = feedback;
-        DB_SUBMISSIONS[subIndex].status = 'graded';
-        DB_SUBMISSIONS[subIndex].status_label = 'Тексерілді';
+    const subId = document.getElementById('grade-submission-id').value;
+    const score = document.getElementById('grade-value').value;
+    const comment = document.getElementById('grade-comment').value;
 
-        // Обновляем счетчик в основном ДЗ (имитация логики бэкенда)
-        const hwId = DB_SUBMISSIONS[subIndex].homework_id;
-        const hwIndex = DB_HOMEWORKS.findIndex(h => h.id === hwId);
-        if (hwIndex !== -1 && DB_HOMEWORKS[hwIndex].unchecked_count > 0) {
-            DB_HOMEWORKS[hwIndex].unchecked_count -= 1;
+    const submitBtn = e.target.querySelector('button[type="submit"]');
+    submitBtn.textContent = 'Сақталуда...';
+    submitBtn.disabled = true;
+
+    try {
+        const csrftoken = getCookie('csrftoken');
+        const response = await fetch('/api/teacher/grade/submit/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrftoken
+            },
+            body: JSON.stringify({
+                submission_id: subId,
+                grade: score,
+                comment: comment
+            })
+        });
+
+        const result = await response.json();
+
+        if (result.status === 'success') {
+            alert('Баға сақталды!');
+            closeModal('gradeModal');
+            // Refresh submissions list manually for speed
+            const sub = currentSubmissions.find(s => s.id == subId);
+            if (sub) {
+                sub.grade = score;
+                sub.status = 'Оценено';
+                sub.status_code = 'graded';
+                renderSubmissions(currentSubmissions);
+            }
+        } else {
+            alert('Қате: ' + result.error);
         }
+
+    } catch (error) {
+        console.error('Error grading:', error);
+        alert('Байланыс қатесі');
+    } finally {
+        submitBtn.textContent = 'Сақтау';
+        submitBtn.disabled = false;
     }
-
-    closeModal('gradeModal');
-    alert('Баға сақталды!');
-
-    // Ре-рендер для обновления данных в таблице и в списке
-    const currentHwId = DB_SUBMISSIONS[subIndex].homework_id;
-    openSubmissions(currentHwId); // Refresh table
-    renderDashboard(); // Refresh background list
 }
 
-function handleAddHomework(e) {
-    e.preventDefault();
-    // Сбор данных из формы
-    const newHw = {
-        id: Date.now(),
-        title: document.getElementById('hw-title').value,
-        course_name: document.getElementById('hw-course-select').options[document.getElementById('hw-course-select').selectedIndex].text,
-        group_name: document.getElementById('hw-group-select').options[document.getElementById('hw-group-select').selectedIndex].text || "Жалпы",
-        description: document.getElementById('hw-description').value,
-        deadline: document.getElementById('hw-deadline').value,
-        status: "active",
-        submissions_count: 0,
-        total_students: 25,
-        unchecked_count: 0
-    };
 
-    DB_HOMEWORKS.unshift(newHw);
-    renderDashboard();
-    closeModal('createHomeworkModal');
-    e.target.reset();
+// --- UTILITIES ---
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('visible');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300); // Wait for transition
+    }
 }
 
-// --- 5. ХЕЛПЕРЫ ---
-
-function updateStatsUI(stats) {
-    if (document.getElementById('stats-total-count')) document.getElementById('stats-total-count').textContent = stats.all;
-    if (document.getElementById('stats-review-count')) document.getElementById('stats-review-count').textContent = stats.total_unchecked;
-
-    if (document.getElementById('count-all')) document.getElementById('count-all').textContent = stats.all;
-    if (document.getElementById('count-unchecked')) document.getElementById('count-unchecked').textContent = stats.unchecked;
-    if (document.getElementById('count-checked')) document.getElementById('count-checked').textContent = stats.checked;
-}
-
-function formatDateTime(isoString) {
-    const date = new Date(isoString);
-    return date.toLocaleString('ru', { day: '2-digit', month: '2-digit', year: 'numeric' });
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.remove('hidden');
+        // Small delay to allow display:flex to apply before adding opacity class
+        setTimeout(() => {
+            modal.classList.add('visible');
+        }, 10);
+    }
 }
 
 function closeSubmissionsView() {
@@ -386,21 +548,26 @@ function closeSubmissionsView() {
     document.getElementById('homework-main-view').classList.remove('hidden');
 }
 
-function filterHomeworks(type, btn) {
-    if (btn) {
-        document.querySelectorAll('.tab_btn_homework').forEach(b => b.classList.remove('active_homework'));
-        btn.classList.add('active_homework');
+// CSRF Helper
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
     }
-
-    const container = document.getElementById('teacher-all-homeworks-list');
-    if (!container) return;
-
-    renderDashboard(type); // Assuming this line should be kept from the original function
+    return cookieValue;
 }
 
-// Глобальное экспозиционирование для onclick в HTML
-window.filterHomeworks = filterHomeworks;
+// Global Exports
+window.setFilterStatus = setFilterStatus;
 window.openSubmissions = openSubmissions;
 window.closeSubmissionsView = closeSubmissionsView;
 window.openCreateHomeworkModal = () => openModal('createHomeworkModal');
 window.openGradingModal = openGradingModal;
+window.closeModal = closeModal;

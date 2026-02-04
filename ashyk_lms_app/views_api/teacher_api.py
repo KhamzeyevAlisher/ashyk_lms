@@ -210,7 +210,9 @@ def get_teacher_homeworks(request):
             data.append({
                 'id': hw.id,
                 'course': hw.course.title,
-                'group': hw.group.name if hw.group else 'Все',
+                'course_id': hw.course.id,
+                'group': hw.group.name if hw.group else '',
+                'group_id': hw.group.id if hw.group else None,
                 'title': hw.title,
                 'deadline': hw.deadline.strftime('%d.%m.%Y'),
                 'stats': f"{submitted_count} / {total_students}"
@@ -281,34 +283,8 @@ def grade_submission(request):
 
         submission = HomeworkSubmission.objects.select_related('homework__course').get(id=submission_id)
         
-        # Update or Create Grade
-        # We need a Subject object for the Grade model. 
-        # Homework -> Course. Does Course map to Subject?
-        # In models.py: Test connects to Subject. Homework connects to Course. Grade connects to Subject.
-        # Issue: We need to map Course -> Subject.
-        # Assumption: Subject name matches Course title (common in this legacy-ish DB).
-        # Or we check if Course has a link to Subject? No, Course has department.
-        # Let's try to find Subject by name == Course.title
-        from ..models import Subject
-        subject, _ = Subject.objects.get_or_create(name=submission.homework.course.title)
-        
-        if submission.grade:
-            grade_obj = submission.grade
-            grade_obj.value = int(grade_value)
-            grade_obj.comment = comment
-            grade_obj.save()
-        else:
-            grade_obj = Grade.objects.create(
-                student=submission.student,
-                subject=subject,
-                value=int(grade_value),
-                grade_type='homework',
-                comment=comment
-            )
-            submission.grade = grade_obj
-            
-        submission.status = 'graded'
-        submission.save()
+        # Use the model method to handle Grade creation/update
+        submission.set_grade(int(grade_value), comment)
         
         return JsonResponse({'status': 'success', 'message': 'Оценка сохранена'})
 

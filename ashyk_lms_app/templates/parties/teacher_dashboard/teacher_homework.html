@@ -51,16 +51,50 @@
             </div>
         </div>
 
-        <!-- Вкладки фильтрации -->
+        <!-- Фильтрация -->
+        <div class="filters-container-homework">
+            <div class="search-box-homework">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="homework-search" placeholder="Тақырып бойынша іздеу...">
+            </div>
+
+            <div class="filters-controls-homework">
+                <!-- Кастомный селект: Курс -->
+                <div class="custom-select-homework" id="filter-course-select">
+                    <div class="select-trigger-homework">
+                        <span>Барлық курстар</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="select-options-homework" id="filter-course-options">
+                        <div class="option-homework selected" data-value="all">Барлық курстар</div>
+                        <!-- JS fills this -->
+                    </div>
+                </div>
+
+                <!-- Кастомный селект: Группа -->
+                <div class="custom-select-homework" id="filter-group-select">
+                    <div class="select-trigger-homework">
+                        <span>Барлық топтар</span>
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </div>
+                    <div class="select-options-homework" id="filter-group-options">
+                        <div class="option-homework selected" data-value="all">Барлық топтар</div>
+                        <!-- JS fills this -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Вкладки фильтрации (Status) -->
         <div class="tabs_container_homework">
-            <button class="tab_btn_homework active_homework" onclick="filterHomeworks('all', this)">
+            <button class="tab_btn_homework active_homework" onclick="setFilterStatus('all', this)">
                 Барлығы (<span id="count-all">0</span>)
             </button>
-            <button class="tab_btn_homework" onclick="filterHomeworks('unchecked', this)">
-                Тексерілмеген (<span id="count-unchecked">0</span>)
+            <button class="tab_btn_homework" onclick="setFilterStatus('unchecked', this)">
+                Тексерілмеген (<span id="count-unchecked">--</span>)
             </button>
-            <button class="tab_btn_homework" onclick="filterHomeworks('checked', this)">
-                Тексерілген (<span id="count-checked">0</span>)
+            <button class="tab_btn_homework" onclick="setFilterStatus('checked', this)">
+                Тексерілген (<span id="count-checked">--</span>)
             </button>
         </div>
     </div>
@@ -98,5 +132,89 @@
                 <!-- Заполняется через JS -->
             </tbody>
         </table>
+    </div>
+</div>
+
+<!-- MODAL: CREATE HOMEWORK -->
+<div id="createHomeworkModal" class="modal_homework hidden">
+    <div class="modal_content_homework">
+        <div class="modal_header_homework">
+            <h2>Жаңа үй тапсырмасы</h2>
+            <button class="close_modal_btn" onclick="closeModal('createHomeworkModal')">&times;</button>
+        </div>
+        <form id="createHomeworkForm">
+            <div class="form_group_homework">
+                <label>Курс</label>
+                <select id="hw-course-select" required>
+                    <option value="" disabled selected>Курсты таңдаңыз</option>
+                </select>
+            </div>
+            <div class="form_group_homework">
+                <label>Группа (опционально)</label>
+                <select id="hw-group-select">
+                    <option value="">Барлық группалар</option>
+                </select>
+            </div>
+            <div class="form_group_homework">
+                <label>Тақырып</label>
+                <input type="text" id="hw-title" placeholder="Мысалы: Сұрыптау алгоритмдері" required>
+            </div>
+            <div class="form_group_homework">
+                <label>Сипаттама</label>
+                <textarea id="hw-description" rows="4" placeholder="Тапсырманың сипаттамасы..."></textarea>
+            </div>
+            <div class="form_group_homework">
+                <label>Файл тіркеу</label>
+                <input type="file" id="hw-file">
+            </div>
+            <div class="form_group_homework">
+                <label>Дедлайн</label>
+                <input type="datetime-local" id="hw-deadline" required>
+            </div>
+            <div class="modal_footer_homework">
+                <button type="button" class="btn_cancel_homework"
+                    onclick="closeModal('createHomeworkModal')">Болдырмау</button>
+                <button type="submit" class="btn_submit_homework">Жариялау</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- MODAL: GRADE SUBMISSION -->
+<div id="gradeModal" class="modal_homework hidden">
+    <div class="modal_content_homework">
+        <div class="modal_header_homework">
+            <h2>Бағалау</h2>
+            <button class="close_modal_btn" onclick="closeModal('gradeModal')">&times;</button>
+        </div>
+        <form id="gradeForm">
+            <input type="hidden" id="grade-submission-id">
+
+            <div class="student_info_block_homework">
+                <h3 id="grade-student-name">Студент аты</h3>
+                <div id="grade-file-container" style="margin-top: 10px; display: none;">
+                    <a id="grade-file-link" href="#" target="_blank" class="file_link_homework">
+                        <i class="fa-solid fa-paperclip"></i> Файлды жүктеу
+                    </a>
+                </div>
+                <div class="student_answer_homework" id="grade-content">
+                    Жауап мәтіні...
+                </div>
+            </div>
+
+            <div class="form_group_homework">
+                <label>Баға (0-100)</label>
+                <input type="number" id="grade-value" min="0" max="100" required>
+            </div>
+            <div class="form_group_homework">
+                <label>Пікір (Комментарий)</label>
+                <textarea id="grade-comment" rows="3" placeholder="Студентке пікір жазыңыз..."></textarea>
+            </div>
+
+            <div class="modal_footer_homework">
+                <button type="button" class="btn_cancel_homework" onclick="closeModal('gradeModal')">Болдырмау</button>
+                <button type="submit" class="btn_submit_homework">Сақтау</button>
+            </div>
+        </form>
     </div>
 </div>
