@@ -104,6 +104,7 @@ async function syncAnswers() {
     if (!navigator.onLine) return;
 
     const queue = getSyncQueue();
+    console.log(queue);
     const testIds = Object.keys(queue);
 
     if (testIds.length === 0) return;
@@ -253,10 +254,12 @@ async function openTest(testId) {
         const backupKey = `test_backup_${USER_ID}_${testId}`;
         try {
             const localBackup = JSON.parse(localStorage.getItem(backupKey));
+
             if (localBackup) {
                 for (const key in questions) {
                     const qId = questions[key].id;
                     if (localBackup[qId]) {
+                        console.log(questions, localBackup[qId]);
                         userAnswers[key] = localBackup[qId].map(String);
                     }
                 }

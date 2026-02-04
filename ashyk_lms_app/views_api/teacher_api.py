@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
-from ..models import Course, Lecture, Test, Teacher
+from ..models import Course, Lecture, Test, Teacher, Homework, HomeworkSubmission, StudentGroup, Grade, Student
 import json
 
 @login_required
@@ -114,5 +114,203 @@ def create_lecture(request):
                 'title': lecture.title
             }
         })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def get_groups_list(request):
+    """
+    Get list of student groups for dropdown
+    """
+    try:
+        # Permission check
+        if not hasattr(request.user, 'teacher_profile'):
+             return JsonResponse({'error': 'Доступ запрещен'}, status=403)
+             
+        groups = StudentGroup.objects.all().order_by('name')
+        data = [{'id': g.id, 'name': g.name} for g in groups]
+        
+        return JsonResponse({'groups': data, 'status': 'success'})
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def create_homework(request):
+    """
+    Create a new homework assignment
+    """
+    try:
+        if not hasattr(request.user, 'teacher_profile'):
+            return JsonResponse({'error': 'Доступ запрещен'}, status=403)
+        
+        teacher = request.user.teacher_profile
+        
+        # Determine if it's Multipart (file upload) or JSON
+        # Usually file uploads come as POST form data
+        if request.method == 'POST':
+            course_id = request.POST.get('course_id')
+            group_id = request.POST.get('group_id') # Optional, if empty -> for all groups or specific logic?
+            title = request.POST.get('title')
+            description = request.POST.get('description')
+            deadline_str = request.POST.get('deadline') # Format: YYYY-MM-DD or similar
+            uploaded_file = request.FILES.get('file')
+
+            if not course_id or not title or not deadline_str:
+                 return JsonResponse({'error': 'Заполните обязательные поля'}, status=400)
+
+            course = Course.objects.get(id=course_id)
+            
+            # Helper for group
+            group = None
+            if group_id:
+                group = StudentGroup.objects.get(id=group_id)
+
+            hw = Homework.objects.create(
+                course=course,
+                group=group,
+                teacher=teacher,
+                title=title,
+                description=description,
+                deadline=deadline_str,
+                file=uploaded_file
+            )
+
+            return JsonResponse({'status': 'success', 'message': 'Домашнее задание создано'})
+            
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def get_teacher_homeworks(request):
+    """
+    List of homeworks created by this teacher
+    """
+    try:
+        if not hasattr(request.user, 'teacher_profile'):
+            return JsonResponse({'error': 'Доступ запрещен'}, status=403)
+        
+        teacher = request.user.teacher_profile
+        
+        # Filter homeworks by this teacher
+        homeworks = Homework.objects.filter(teacher=teacher).select_related('course', 'group').order_by('-created_at')
+        
+        data = []
+        for hw in homeworks:
+            # Stats: total students in group vs submissions
+            # If group is None, maybe it's for all students in course? 
+            # For simplicity let's assume if group is set, count students in group.
+            total_students = 0
+            if hw.group:
+                total_students = hw.group.students.count()
+            
+            submitted_count = HomeworkSubmission.objects.filter(homework=hw).exclude(status='draft').count()
+            
+            data.append({
+                'id': hw.id,
+                'course': hw.course.title,
+                'group': hw.group.name if hw.group else 'Все',
+                'title': hw.title,
+                'deadline': hw.deadline.strftime('%d.%m.%Y'),
+                'stats': f"{submitted_count} / {total_students}"
+            })
+
+        return JsonResponse({'homeworks': data, 'status': 'success'})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def get_homework_submissions(request, homework_id):
+    """
+    Get list of submissions for a specific homework
+    """
+    try:
+        if not hasattr(request.user, 'teacher_profile'):
+            return JsonResponse({'error': 'Доступ запрещен'}, status=403)
+            
+        homework = Homework.objects.get(id=homework_id)
+        
+        # Check permissions (did this teacher create it?)
+        if homework.teacher != request.user.teacher_profile:
+             return JsonResponse({'error': 'Нет доступа к этому заданию'}, status=403)
+
+        submissions = HomeworkSubmission.objects.filter(homework=homework).select_related('student__user', 'grade').order_by('submitted_at')
+        
+        # Also need list of students who did NOT submit? 
+        # For MVP let's return submissions only.
+        
+        data = []
+        for sub in submissions:
+            data.append({
+                'id': sub.id,
+                'student_name': sub.student.user.get_full_name_str(),
+                'status': sub.get_status_display(), # 'Сдано', 'На проверке' etc
+                'status_code': sub.status,
+                'submitted_at': sub.submitted_at.strftime('%d.%m.%Y %H:%M'),
+                'grade': sub.grade.value if sub.grade else None,
+                'content': sub.content,
+                'file_url': sub.file.url if sub.file else None,
+                'file_name': sub.file.name.split('/')[-1] if sub.file else None
+            })
+            
+        return JsonResponse({'submissions': data, 'status': 'success', 'homework_title': homework.title})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def grade_submission(request):
+    """
+    Grade a student's submission
+    """
+    if request.method != 'POST':
+         return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        submission_id = data.get('submission_id')
+        grade_value = data.get('grade')
+        comment = data.get('comment', '')
+        
+        if not submission_id or grade_value is None:
+             return JsonResponse({'error': 'Missing parameters'}, status=400)
+
+        submission = HomeworkSubmission.objects.select_related('homework__course').get(id=submission_id)
+        
+        # Update or Create Grade
+        # We need a Subject object for the Grade model. 
+        # Homework -> Course. Does Course map to Subject?
+        # In models.py: Test connects to Subject. Homework connects to Course. Grade connects to Subject.
+        # Issue: We need to map Course -> Subject.
+        # Assumption: Subject name matches Course title (common in this legacy-ish DB).
+        # Or we check if Course has a link to Subject? No, Course has department.
+        # Let's try to find Subject by name == Course.title
+        from ..models import Subject
+        subject, _ = Subject.objects.get_or_create(name=submission.homework.course.title)
+        
+        if submission.grade:
+            grade_obj = submission.grade
+            grade_obj.value = int(grade_value)
+            grade_obj.comment = comment
+            grade_obj.save()
+        else:
+            grade_obj = Grade.objects.create(
+                student=submission.student,
+                subject=subject,
+                value=int(grade_value),
+                grade_type='homework',
+                comment=comment
+            )
+            submission.grade = grade_obj
+            
+        submission.status = 'graded'
+        submission.save()
+        
+        return JsonResponse({'status': 'success', 'message': 'Оценка сохранена'})
+
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)

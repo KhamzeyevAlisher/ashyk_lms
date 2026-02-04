@@ -498,7 +498,9 @@ def get_homeworks_list(request):
                 'status': status,
                 'daysLeft': days_left,
                 'grade': grade_value,
-                'taskDescription': hw.description 
+                'taskDescription': hw.description,
+                'fileUrl': hw.file.url if hw.file else None,
+                'fileName': hw.file.name.split('/')[-1] if hw.file else None
             })
 
         return JsonResponse({'homeworks': data, 'status': 'success'})

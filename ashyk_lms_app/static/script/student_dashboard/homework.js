@@ -37,6 +37,19 @@ function openHomeworkModalOverley(buttonElement) {
 
         const modalOverlay = document.getElementById('homework-modal-overlay');
         modalOverlay.classList.add('active');
+
+        // Handle Teacher File
+        const fileContainer = document.getElementById('modal-teacher-file-container');
+        const fileLink = document.getElementById('modal-teacher-file-link');
+
+        if (taskDetails.fileUrl) {
+            fileContainer.style.display = 'block';
+            fileLink.href = taskDetails.fileUrl;
+            fileLink.textContent = taskDetails.fileName || "Файлды жүктеу";
+        } else {
+            fileContainer.style.display = 'none';
+        }
+
     } else {
         console.error("Не найдены данные для ID:", selectedHomeworkId);
     }

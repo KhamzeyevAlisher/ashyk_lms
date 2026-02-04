@@ -19,6 +19,7 @@
 
     <!-- Вкладка для курсов (используем стили студента для сетки) -->
     <link rel="stylesheet" href="{% static 'css/student_dashboard/course.css' %}">
+    <link rel="stylesheet" href="{% static 'css/student_dashboard/homework.css' %}">
 
 </head>
 
@@ -71,7 +72,7 @@
 
             <!-- TAB 7: ДОМАШНИЕ ЗАДАНИЯ -->
             <div id="tab-homework" class="tab-content hidden">
-                <p>Бұл мұғалімнің үй тапсырмалары беті.</p>
+                {% include 'parties/teacher_dashboard/teacher_homework.html' %}
             </div>
 
             <!-- TAB 8: ПРОФИЛЬ -->
@@ -169,9 +170,95 @@
         </div>
     </div>
 
+    <!-- MODAL: Создание ДЗ -->
+    <div id="createHomeworkModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 600px;">
+            <div class="modal-header">
+                <h3>Жаңа үй тапсырмасы</h3>
+                <span class="close-modal" onclick="closeModal('createHomeworkModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <form id="createHomeworkForm">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Курс</label>
+                        <select id="hw-course-select" required
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                            <option value="">Курсты таңдаңыз...</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Группа (міндетті
+                            емес)</label>
+                        <select id="hw-group-select"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                            <option value="">Барлық топтар</option>
+                        </select>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Тақырып</label>
+                        <input type="text" id="hw-title" required
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Сипаттама</label>
+                        <textarea id="hw-description" rows="3"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Дедлайн</label>
+                        <input type="date" id="hw-deadline" required
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Файл тіркеу</label>
+                        <input type="file" id="hw-file"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Жариялау</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL: Оценивание -->
+    <div id="gradeModal" class="modal hidden">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Жұмысты бағалау</h3>
+                <span class="close-modal" onclick="closeModal('gradeModal')">&times;</span>
+            </div>
+            <div class="modal-body">
+                <div id="submission-details"
+                    style="background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 15px;">
+                    <p><strong>Студент:</strong> <span id="grade-student-name"></span></p>
+                    <p><strong>Мәтін:</strong> <br><span id="grade-content" style="white-space: pre-wrap;"></span></p>
+                    <p id="grade-file-container" style="display:none; margin-top:10px;">
+                        <strong>Файл:</strong> <a id="grade-file-link" href="#" target="_blank"
+                            style="color: blue; text-decoration: underline;">Жүктеу</a>
+                    </p>
+                </div>
+                <form id="gradeForm">
+                    <input type="hidden" id="grade-submission-id">
+                    <div class="form-group" style="margin-bottom: 15px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Баға (0-100)</label>
+                        <input type="number" id="grade-value" min="0" max="100" required
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500;">Комментарий</label>
+                        <textarea id="grade-comment" rows="2"
+                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+                    </div>
+                    <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Сақтау</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
     <script src="{% static 'script/teacher_dashboard/teacher_dashboard_base.js' %}"></script>
     <script src="{% static 'script/teacher_dashboard/home.js' %}"></script>
     <script src="{% static 'script/teacher_dashboard/content.js' %}"></script>
+    <script src="{% static 'script/teacher_dashboard/teacher_homework.js' %}"></script>
 </body>
 
 </html>
