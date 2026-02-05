@@ -205,7 +205,9 @@ def get_teacher_homeworks(request):
             if hw.group:
                 total_students = hw.group.students.count()
             
-            submitted_count = HomeworkSubmission.objects.filter(homework=hw).exclude(status='draft').count()
+            submissions = HomeworkSubmission.objects.filter(homework=hw).exclude(status='draft')
+            submitted_count = submissions.count()
+            graded_count = submissions.filter(status='graded').count()
             
             data.append({
                 'id': hw.id,
@@ -215,7 +217,10 @@ def get_teacher_homeworks(request):
                 'group_id': hw.group.id if hw.group else None,
                 'title': hw.title,
                 'deadline': hw.deadline.strftime('%d.%m.%Y'),
-                'stats': f"{submitted_count} / {total_students}"
+                'stats': f"{submitted_count} / {total_students}",
+                'submitted_count': submitted_count,
+                'graded_count': graded_count,
+                'total_students': total_students
             })
 
         return JsonResponse({'homeworks': data, 'status': 'success'})

@@ -224,26 +224,38 @@ function applyFilters() {
         return true;
     });
 
-    // Post-processing stats
-    const countAll = results.length;
-    document.getElementById('count-all').textContent = countAll;
-
-    updateStatsUI({
-        all: countAll,
-        unchecked: '-',
-        checked: '-'
-    });
-
     // 4. Status Filter
     if (filterState.status === 'unchecked') {
-        results = results.filter(h => {
-            const [submitted, total] = h.stats.split('/').map(s => parseInt(s) || 0);
-            return submitted > 0;
-        });
+        results = results.filter(h => h.submitted_count > h.graded_count);
     } else if (filterState.status === 'checked') {
-        // Placeholder
+        results = results.filter(h => h.submitted_count > 0 && h.submitted_count === h.graded_count);
     }
 
+    // Update Tab Counts and Top Stats
+    const stats = {
+        all: 0,
+        unchecked: 0,
+        checked: 0
+    };
+
+    // We calculate stats based on the ALREADY filtered results by Course/Group/Search
+    // so that counts in tabs match what you see in the list.
+    // However, some prefer global counts. Usually, in SPA filters, counts update based on other filters.
+    // Let's calculate them based on search/course/group filtering but BEFORE status filtering
+
+    // Actually, let's re-filter for stats calculation to be precise
+    let baseResults = currentHomeworks.filter(hw => {
+        if (filterState.search && !hw.title.toLowerCase().includes(filterState.search)) return false;
+        if (filterState.courseId !== 'all' && hw.course_id != filterState.courseId) return false;
+        if (filterState.groupId !== 'all' && hw.group_id != filterState.groupId) return false;
+        return true;
+    });
+
+    stats.all = baseResults.length;
+    stats.unchecked = baseResults.filter(h => h.submitted_count > h.graded_count).length;
+    stats.checked = baseResults.filter(h => h.submitted_count > 0 && h.submitted_count === h.graded_count).length;
+
+    updateStatsUI(stats);
     renderDashboard(results);
 }
 
