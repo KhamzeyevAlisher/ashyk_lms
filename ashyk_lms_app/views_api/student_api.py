@@ -259,7 +259,15 @@ def submit_test_result(request):
 @login_required
 def get_courses_list(request):
     try:
-        courses = Course.objects.select_related('instructor__user', 'department').order_by('-created_at')
+        if not hasattr(request.user, 'student_profile'):
+            return JsonResponse({'error': 'Пользователь не является студентом'}, status=403)
+        
+        student = request.user.student_profile
+        
+        # Filter courses: strict match. If allowed_groups is empty, no student sees it.
+        courses = Course.objects.filter(
+            allowed_groups=student.group
+        ).select_related('instructor__user', 'department').distinct().order_by('-created_at')
         data = []
         for c in courses:
             instructor_name = c.instructor.user.get_full_name_str() if c.instructor else "-"
@@ -281,10 +289,20 @@ def get_course_detail(request, course_id):
     course_id может быть ID (int) или Title (str)
     """
     try:
+        if not hasattr(request.user, 'student_profile'):
+            return JsonResponse({'error': 'Доступ запрещен'}, status=403)
+            
+        student = request.user.student_profile
+        
+        # Base query with strict access check
+        qs = Course.objects.filter(
+            allowed_groups=student.group
+        ).select_related('instructor__user', 'department')
+
         if str(course_id).isdigit():
-            course = Course.objects.select_related('instructor__user', 'department').get(id=int(course_id))
+            course = qs.get(id=int(course_id))
         else:
-            course = Course.objects.select_related('instructor__user', 'department').get(title=course_id)
+            course = qs.get(title=course_id)
 
         lectures = course.lectures.all().order_by('order')
         
@@ -433,9 +451,19 @@ def get_homeworks_list(request):
         # 1. Get homeworks assigned to student's group
         #    Filtering by deadline descending is good for seeing upcoming tasks first, 
         #    but typically we want "active" tasks at the top. Let's sort by deadline (closest first)
+        
+        # 1. Get homeworks assigned to student's group
+        # Logic:
+        # A. Student MUST have access to the Course (course__allowed_groups=student.group)
+        # B. Homework must be either:
+        #    - Explicitly assigned to student's group (allowed_groups=student.group)
+        #    - Open to everyone in the course (allowed_groups is empty)
+        
         homeworks_qs = Homework.objects.filter(
-            group=student.group
-        ).select_related('course', 'teacher', 'teacher__user').order_by('deadline')
+            course__allowed_groups=student.group
+        ).filter(
+            Q(allowed_groups=student.group) | Q(allowed_groups__isnull=True)
+        ).select_related('course', 'teacher', 'teacher__user').distinct().order_by('deadline')
         
         # 2. Get existing submissions for these homeworks
         submissions_map = {

@@ -218,6 +218,7 @@ class CourseAdmin(admin.ModelAdmin):
     list_display = ('code', 'title', 'display_cover', 'get_department', 'get_instructor', 'created_at')
     search_fields = ('code', 'title', 'description', 'instructor__user__last_name')
     autocomplete_fields = ['instructor', 'department']
+    filter_horizontal = ('allowed_groups',)
 
     def get_department(self, obj):
         return obj.department.name if obj.department else "-"
@@ -338,10 +339,11 @@ class StudentAnswerAdmin(admin.ModelAdmin):
 
 @admin.register(Homework)
 class HomeworkAdmin(admin.ModelAdmin):
-    list_display = ('title', 'course', 'group', 'teacher', 'deadline', 'created_at')
-    list_filter = ('course', 'group', 'teacher', 'deadline')
-    search_fields = ('title', 'description', 'course__title', 'group__name', 'teacher__user__last_name')
-    autocomplete_fields = ['course', 'group', 'teacher']
+    list_display = ('title', 'course', 'teacher', 'deadline', 'created_at')
+    list_filter = ('course', 'teacher', 'deadline')
+    search_fields = ('title', 'description', 'course__title', 'teacher__user__last_name')
+    autocomplete_fields = ['course', 'teacher']
+    filter_horizontal = ('allowed_groups',)
 
 @admin.register(HomeworkSubmission)
 class HomeworkSubmissionAdmin(admin.ModelAdmin):

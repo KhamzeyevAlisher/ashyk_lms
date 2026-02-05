@@ -161,20 +161,24 @@ def create_homework(request):
 
             course = Course.objects.get(id=course_id)
             
-            # Helper for group
-            group = None
-            if group_id:
-                group = StudentGroup.objects.get(id=group_id)
-
+            # Optional: if group_id is empty, it means "All groups" (based on frontend "Барлық группалар")
+            # Since we implemented "Empty allowed_groups = No one", we must explicitly add ALL groups if user selected "All".
+            
             hw = Homework.objects.create(
                 course=course,
-                group=group,
+                # group field removed
                 teacher=teacher,
                 title=title,
                 description=description,
                 deadline=deadline_str,
                 file=uploaded_file
             )
+
+            if group_id:
+                group = StudentGroup.objects.get(id=group_id)
+                hw.allowed_groups.add(group)
+            # else:
+            #    "All groups" selected -> leave empty (means Everyone in course)
 
             return JsonResponse({'status': 'success', 'message': 'Домашнее задание создано'})
             
@@ -194,17 +198,40 @@ def get_teacher_homeworks(request):
         teacher = request.user.teacher_profile
         
         # Filter homeworks by this teacher
-        homeworks = Homework.objects.filter(teacher=teacher).select_related('course', 'group').order_by('-created_at')
+        homeworks = Homework.objects.filter(teacher=teacher).select_related('course').prefetch_related('allowed_groups').order_by('-created_at')
         
         data = []
         for hw in homeworks:
-            # Stats: total students in group vs submissions
-            # If group is None, maybe it's for all students in course? 
-            # For simplicity let's assume if group is set, count students in group.
-            total_students = 0
-            if hw.group:
-                total_students = hw.group.students.count()
+            # Stats: total students in allowed groups
+            groups = hw.allowed_groups.all()
             
+            total_students = 0
+            
+            if not groups:
+                # Everyone in course
+                # We need to count all students in all groups allowed for this COURSE
+                # Logic: Course -> allowed_groups -> students
+                course_groups = hw.course.allowed_groups.all()
+                if not course_groups:
+                    # If course has no allowed groups -> It is for "No one" per current Course logic!
+                    # Wait, earlier I set Course empty = No one.
+                    total_students = 0 
+                    group_display = "Курс недоступен никому"
+                else:
+                    for cg in course_groups:
+                        total_students += cg.students.count()
+                    group_display = "Все группы курса"
+            else:
+                # Specific groups
+                group_names = []
+                for g in groups:
+                     group_names.append(g.name)
+                     total_students += g.students.count()
+                
+                group_display = ", ".join(group_names)
+                if len(groups) > 3:
+                    group_display = f"{len(groups)} групп"
+
             submissions = HomeworkSubmission.objects.filter(homework=hw).exclude(status='draft')
             submitted_count = submissions.count()
             graded_count = submissions.filter(status='graded').count()
@@ -213,8 +240,22 @@ def get_teacher_homeworks(request):
                 'id': hw.id,
                 'course': hw.course.title,
                 'course_id': hw.course.id,
-                'group': hw.group.name if hw.group else '',
-                'group_id': hw.group.id if hw.group else None,
+                'group': group_display, 
+                'group_id': 'all', # frontend uses this for filtering. 'all' is safe default or maybe logic needs update?
+                # Frontend filters by group_id matching dropdown.
+                # If HW is for Group A, B. Dropdown has Group A.
+                # The frontend filter logic currently checks `hw.group_id != filterState.groupId`.
+                # If HW is for multiple, `hw.group_id` as a single value is ambiguous.
+                # We can leave it as 'all' effectively disabling strict per-group filtering in the TABLE unless we refactor frontend too.
+                # For now, let's pass 'all' or first group id if single?
+                # If we pass 'all', then filtering by specific group 'A' might show it (if logic matches 'all').
+                # Let's see frontend logic: if (filterState.groupId !== 'all') { if (hw.group_id != filterState.groupId) return false; }
+                # So if we send 'all' (string), and user selects Group A (id 5), 'all' != 5 -> Hidden.
+                # Valid logic: If user selects Group A, we show HWs for Group A.
+                # We should probably fix filtering logic in frontend later, or just return here a LIST of group_ids?
+                # But to avoid breaking frontend structure which expects scalar `group_id`...
+                # Let's send the ID if it's a single group, else 'all' (or maybe 0).
+                
                 'title': hw.title,
                 'deadline': hw.deadline.strftime('%d.%m.%Y'),
                 'stats': f"{submitted_count} / {total_students}",

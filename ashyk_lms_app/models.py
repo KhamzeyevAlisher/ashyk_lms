@@ -258,6 +258,13 @@ class Course(models.Model):
 
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
 
+    allowed_groups = models.ManyToManyField(
+        'StudentGroup',
+        blank=True,
+        related_name='allowed_courses',
+        verbose_name="Доступно группам (если пусто — никому)"
+    )
+
     class Meta:
         verbose_name = "Курс"
         verbose_name_plural = "Курсы"
@@ -516,13 +523,11 @@ class Homework(models.Model):
         related_name='homeworks',
         verbose_name="Курс"
     )
-    group = models.ForeignKey(
+    allowed_groups = models.ManyToManyField(
         StudentGroup, 
-        on_delete=models.CASCADE, 
+        blank=True, 
         related_name='homeworks',
-        verbose_name="Группа",
-        null=True, 
-        blank=True
+        verbose_name="Доступно группам (если пусто — всем участникам курса)"
     )
     teacher = models.ForeignKey(
         Teacher, 
