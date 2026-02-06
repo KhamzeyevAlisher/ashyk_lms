@@ -31,5 +31,6 @@ urlpatterns = [
     path('api/teacher/grade/submit/', teacher_api.grade_submission, name='api_grade_submission'),
     path('api/homeworks/', student_api.get_homeworks_list, name='api_get_homeworks'),
     path('api/homeworks/submit/', student_api.submit_homework, name='api_submit_homework'),
+    path('api/schedule/', student_api.get_schedule, name='api_get_schedule'),
     path('api/admin/upload_tests/', admin_api.upload_tests_json, name='api_upload_tests'),
 ]

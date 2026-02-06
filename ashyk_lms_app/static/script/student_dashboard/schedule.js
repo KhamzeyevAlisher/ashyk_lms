@@ -46,99 +46,31 @@ let lessonTypeMap = {
     lab: { cssClass: 'type-lab', badgeText: 'Зертханалық' }
 };
 
-let ScheduleData = {
-    "Алгоритмдер және деректер құрылымы": {
-        "lecture": {
-            duration: ["01.09.2026-20.12.2026"],
-            type: "lecture",
-            dayLesson: {
-                "Monday": ['09:00-10:30', '13:00-14:30'],
-                "Wednesday": ['11:00-12:30']
-            },
-            teacher: "Ахметова А.Н.",
-            room: "A-305"
-        },
-        "practice": {
-            duration: ["01.09.2026-20.11.2026", "01.12.2026-05.12.2026"],
-            type: "practice",
-            dayLesson: {
-                "Friday": ['09:00-10:30'] 
-            },
-            teacher: "Ахметова А.Н.",
-            room: "A-305"
-        },
-        "lab": {
-            duration: ["01.11.2026-20.12.2026"],
-            type: "lab",
-            dayLesson: {
-                "Thursday": ['11:00-12:30'],
-                "Tuesday": ['14:00-15:30']
-            },
-            teacher: "Ахметова А.Н.",
-            room: "A-305"
+let ScheduleData = {};
+
+/**
+ * Серверден кестені жүктейді
+ */
+async function fetchSchedule() {
+    try {
+        const response = await fetch('/api/schedule/');
+        const data = await response.json();
+
+        if (data.status === 'success') {
+            ScheduleData = data.schedule;
+            // Деректер келген соң қайта рендеринг жасаймыз
+            if (typeSchedule === 'day') {
+                renderScheduleForDate();
+            } else {
+                renderScheduleWeek();
+            }
+        } else {
+            console.error('Кестені алу мүмкін болмады:', data.message);
         }
-    },
-    "Web-бағдарламалау технологиялары": {
-        "lecture": {
-            duration: ["01.09.2026-20.12.2026"],
-            type: "lecture",
-            dayLesson: {
-                "Thursday": ['13:00-14:30'], 
-                "Wednesday": ['14:00-15:30']
-            },
-            teacher: "Омаров Б.К.",
-            room: "Б-201"
-        },
-        "practice": {
-            duration: ["01.09.2026-20.11.2026"],
-            type: "practice",
-            dayLesson: {
-                "Monday": ['11:00-12:30'] 
-            },
-            teacher: "Ахметова А.Н.",
-            room: "A-305"
-        },
-        "lab": {
-            duration: ["01.09.2026-20.10.2026"],
-            type: "lab",
-            dayLesson: {
-                "Tuesday": ['11:00-12:30']
-            },
-            teacher: "Омаров Б.К.",
-            room: "Б-205"
-        }
-    },
-    "Дерекқорларды басқару жүйелері": {
-        "lecture": {
-            duration: ["01.09.2026-08.09.2026", "10.11.2026-20.12.2026"],
-            type: "lecture",
-            dayLesson: {
-                "Tuesday": ['09:00-10:30'],
-                "Friday": ['11:00-12:30']
-            },
-            teacher: "Сәдуақасова Г.М.",
-            room: "Б-305"
-        },
-        "practice": {
-            duration: ["01.09.2026-20.11.2026"],
-            type: "practice",
-            dayLesson: {
-                "Wednesday": ['09:00-10:30']
-            },
-            teacher: "Сәдуақасова Г.М.",
-            room: "Б-305"
-        },
-        "lab": {
-            duration: ["10.11.2026-20.12.2026"],
-            type: "lab",
-            dayLesson: {
-                "Thursday": ['09:00-10:30']
-            },
-            teacher: "Сәдуақасова Г.М.",
-            room: "Б-205"
-        }
+    } catch (error) {
+        console.error('API қатесі:', error);
     }
-};
+}
 
 // 3. Негізгі Логика
 
@@ -165,7 +97,7 @@ function isDateInRanges(targetDate, durationArray) {
  */
 function updateHeaderDate() {
     const dateSpan = document.querySelector('.current-date span');
-    
+
     if (typeSchedule === 'day') {
         // Күн режимі: Тек нақты күнді көрсетеміз
         const dayNameKZ = currentDateObj.toLocaleDateString('kk-KZ', { weekday: 'long' });
@@ -175,7 +107,7 @@ function updateHeaderDate() {
         const monday = getMonday(currentDateObj);
         const friday = new Date(monday);
         friday.setDate(monday.getDate() + 4);
-        
+
         dateSpan.textContent = `Ағымдағы апта • ${formatDate(monday)} - ${formatDate(friday)}`;
     }
 }
@@ -186,7 +118,7 @@ function updateHeaderDate() {
 function toggleSchedule(type) {
     const dayBtn = document.querySelector('.toggle-btns .btn:first-child');
     const weekBtn = document.querySelector('.toggle-btns .btn:last-child');
-    
+
     const dayContainer = document.querySelector('.schedule-list');
     const weekContainer = document.querySelector('.week-schedule-container');
 
@@ -197,17 +129,17 @@ function toggleSchedule(type) {
         weekBtn.classList.remove('active');
         dayContainer.style.display = 'flex';
         weekContainer.style.display = 'none';
-        
+
         renderScheduleForDate();
     } else if (type === 'week') {
         weekBtn.classList.add('active');
         dayBtn.classList.remove('active');
         dayContainer.style.display = 'none';
-        weekContainer.style.display = 'grid'; 
+        weekContainer.style.display = 'grid';
 
         renderScheduleWeek();
     }
-    
+
     updateHeaderDate();
 }
 
@@ -217,7 +149,7 @@ function toggleSchedule(type) {
 function renderScheduleForDate() {
     const container = document.querySelector('.schedule-list');
     container.innerHTML = '';
-    
+
     // Header date update
     updateHeaderDate();
 
@@ -231,7 +163,7 @@ function renderScheduleForDate() {
     dateHeader.className = 'date-header';
     dateHeader.style.marginBottom = '10px';
     dateHeader.style.fontWeight = 'bold';
-    dateHeader.textContent = targetDate.toLocaleDateString('kk-KZ', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }); 
+    dateHeader.textContent = targetDate.toLocaleDateString('kk-KZ', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
     container.appendChild(dateHeader);
 
     let todaysLessons = [];
@@ -239,7 +171,7 @@ function renderScheduleForDate() {
     // Деректерді жинау
     for (const [subjectTitle, subjectData] of Object.entries(ScheduleData)) {
         for (const [typeKey, typeData] of Object.entries(subjectData)) {
-            
+
             if (!isDateInRanges(targetDate, typeData.duration)) continue;
 
             if (typeData.dayLesson && typeData.dayLesson[dayName]) {
@@ -312,7 +244,7 @@ function renderScheduleForDate() {
  */
 function renderScheduleWeek() {
     const container = document.querySelector('.week-schedule-container');
-    container.innerHTML = ''; 
+    container.innerHTML = '';
     updateHeaderDate();
 
     const dayNamesKZ = {
@@ -349,12 +281,12 @@ function renderScheduleWeek() {
         // Сабақтарды жинау
         for (const [subjectTitle, subjectData] of Object.entries(ScheduleData)) {
             for (const [typeKey, typeData] of Object.entries(subjectData)) {
-                
+
                 if (!isDateInRanges(dayInfo.date, typeData.duration)) continue;
 
                 if (typeData.dayLesson && typeData.dayLesson[dayInfo.dayName]) {
                     const times = typeData.dayLesson[dayInfo.dayName];
-                    
+
                     let styleClass = 'style-blue';
                     if (typeKey === 'practice') styleClass = 'style-green';
                     else if (typeKey === 'lab') styleClass = 'style-purple';
@@ -391,7 +323,7 @@ function renderScheduleWeek() {
 
         dayColumn.innerHTML = `
             <div class="day-header">
-                <h3 class="day-name">${dayInfo.dayNameKZ} <span style="font-size: 0.8em; font-weight: normal; color: #777;">(${formatDate(dayInfo.date).slice(0,5)})</span></h3>
+                <h3 class="day-name">${dayInfo.dayNameKZ} <span style="font-size: 0.8em; font-weight: normal; color: #777;">(${formatDate(dayInfo.date).slice(0, 5)})</span></h3>
                 <span class="class-count">${lessonCount} сабақ</span>
             </div>
             <div class="day-body">
@@ -403,16 +335,16 @@ function renderScheduleWeek() {
 }
 
 // 4. Оқиға тыңдаушылар (Event Listeners)
-document.addEventListener("DOMContentLoaded", function() {
-    
-    // Алғашқы рендеринг
-    renderScheduleForDate();
+document.addEventListener("DOMContentLoaded", function () {
+
+    // Кестені серверден алу
+    fetchSchedule();
 
     // Батырмаларды басқару
     const arrows = document.querySelectorAll('.date-card .arrow');
 
     arrows.forEach(arrow => {
-        arrow.addEventListener('click', function() {
+        arrow.addEventListener('click', function () {
             const direction = this.getAttribute('data-direction');
 
             if (typeSchedule === 'day') {
@@ -423,7 +355,7 @@ document.addEventListener("DOMContentLoaded", function() {
                     currentDateObj.setDate(currentDateObj.getDate() + 1);
                 }
                 renderScheduleForDate();
-                
+
             } else if (typeSchedule === 'week') {
                 // Апта режимі: +/- 7 күн
                 if (direction === 'left') {

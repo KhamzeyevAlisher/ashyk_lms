@@ -624,3 +624,24 @@ class HomeworkSubmission(models.Model):
         
         self.status = 'graded'
         self.save()
+
+
+class GroupSchedule(models.Model):
+    group = models.OneToOneField(
+        'StudentGroup', 
+        on_delete=models.CASCADE, 
+        related_name='schedule',
+        verbose_name="Группа"
+    )
+    data = models.JSONField(
+        verbose_name="Данные расписания",
+        default=dict
+    )
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Расписание группы"
+        verbose_name_plural = "Расписания групп"
+
+    def __str__(self):
+        return f"Расписание: {self.group.name}"

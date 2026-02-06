@@ -24,7 +24,8 @@ from .models import (
     Teacher,
     Department,
     Homework,
-    HomeworkSubmission
+    HomeworkSubmission,
+    GroupSchedule
 )
 
 # ========================================================
@@ -356,3 +357,35 @@ class HomeworkSubmissionAdmin(admin.ModelAdmin):
     def get_grade(self, obj):
         return obj.grade.value if obj.grade else "-"
     get_grade.short_description = 'Оценка'
+
+
+@admin.register(GroupSchedule)
+class GroupScheduleAdmin(admin.ModelAdmin):
+    list_display = ('group', 'updated_at')
+    search_fields = ('group__name',)
+    readonly_fields = ('json_pretty_print',)
+
+    formfield_overrides = {
+        models.JSONField: {'widget': widgets.Textarea(attrs={
+            'rows': 20, 
+            'cols': 100, 
+            'style': 'font-family: monospace; font-size: 13px;'
+        })},
+    }
+
+    fieldsets = (
+        (None, {
+            'fields': ('group', 'data')
+        }),
+        ('Предпросмотр JSON', {
+            'classes': ('collapse',),
+            'fields': ('json_pretty_print',)
+        }),
+    )
+
+    def json_pretty_print(self, obj):
+        if not obj.data:
+            return "-"
+        json_str = json.dumps(obj.data, indent=4, sort_keys=True, ensure_ascii=False)
+        return mark_safe(f'<pre>{json_str}</pre>')
+    json_pretty_print.short_description = "Визуализация JSON"

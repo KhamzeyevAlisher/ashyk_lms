@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture, Teacher, Homework, HomeworkSubmission
+from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture, Teacher, Homework, HomeworkSubmission, GroupSchedule
 import json
 import random
 from django.db.models import Q
@@ -588,6 +588,37 @@ def submit_homework(request):
         submission.save()
 
         return JsonResponse({'status': 'success', 'message': 'Тапсырма сәтті жіберілді'})
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def get_schedule(request):
+    """
+    Получение расписания для группы текущего студента.
+    """
+    try:
+        if not hasattr(request.user, 'student_profile'):
+            return JsonResponse({'error': 'Пользователь не является студентом'}, status=403)
+        
+        student = request.user.student_profile
+        if not student.group:
+            return JsonResponse({'error': 'Студент не привязан к группе'}, status=404)
+        
+        schedule = GroupSchedule.objects.filter(group=student.group).first()
+        
+        if not schedule:
+            return JsonResponse({
+                'schedule': {}, 
+                'status': 'empty',
+                'message': 'Расписание для вашей группы еще не заполнено'
+            })
+            
+        return JsonResponse({
+            'schedule': schedule.data, 
+            'status': 'success'
+        })
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
