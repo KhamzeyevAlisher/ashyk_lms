@@ -66,19 +66,17 @@ async function openCourseManagement(courseId) {
     if (!panel) return;
 
     // Show panel, hide grid/filters
-    grid.classList.add('hidden');
-    filters.classList.add('hidden');
+    if (grid) grid.classList.add('hidden');
+    if (filters) filters.classList.add('hidden');
     panel.classList.remove('hidden');
     if (header) header.classList.add('hidden');
 
     // Load data
     const titleEl = document.getElementById('manage-course-title');
     const lecturesEl = document.getElementById('manage-lectures-list');
-    const testsEl = document.getElementById('manage-tests-list');
 
     if (titleEl) titleEl.textContent = 'Жүктелуде...';
     if (lecturesEl) lecturesEl.innerHTML = '<p>Жүктелуде...</p>';
-    if (testsEl) testsEl.innerHTML = '<p>Жүктелуде...</p>';
 
     try {
         const response = await fetch(`/api/teacher/course/${courseId}/`);
@@ -86,26 +84,25 @@ async function openCourseManagement(courseId) {
 
         if (result.status === 'success') {
             const course = result.course;
-            document.getElementById('manage-course-title').textContent = course.title;
+            if (titleEl) titleEl.textContent = course.title;
 
             // Render Lectures
             renderManageLectures(course.lectures);
-            // Render Tests
-            renderManageTests(course.tests);
 
         } else {
-            alert(result.error);
+            console.error(result.error);
             closeCourseManagement();
         }
     } catch (e) {
         console.error(e);
-        alert("Деректерді алу мүмкін болмады");
         closeCourseManagement();
     }
 }
 
 function renderManageLectures(lectures) {
     const container = document.getElementById('manage-lectures-list');
+    if (!container) return;
+
     if (lectures.length === 0) {
         container.innerHTML = '<p style="color: #888;">Дәрістер тізімі бос</p>';
         return;
@@ -128,28 +125,6 @@ function renderManageLectures(lectures) {
     `).join('');
 }
 
-function renderManageTests(tests) {
-    const container = document.getElementById('manage-tests-list');
-    if (tests.length === 0) {
-        container.innerHTML = '<p style="color: #888;">Тесттер тізімі бос</p>';
-        return;
-    }
-
-    container.innerHTML = tests.map(t => `
-        <div class="test-row" style="padding: 10px; border: 1px solid #eee; margin-bottom: 5px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-            <div>
-                <h5 style="margin: 0;">${t.title}</h5>
-                <small style="color: #777;">Мерзімі: ${t.deadline}</small>
-            </div>
-            <div class="actions">
-                <i class="fa-solid fa-chart-simple" style="cursor: pointer; color: #28a745; margin-right: 10px;" title="Результаты"></i>
-                <i class="fa-solid fa-pen" style="cursor: pointer; color: #007bff; margin-right: 10px;"></i>
-                <i class="fa-solid fa-trash" style="cursor: pointer; color: #dc3545;"></i>
-            </div>
-        </div>
-    `).join('');
-}
-
 function closeCourseManagement() {
     activeCourseId = null;
     const grid = document.getElementById('my-courses-grid');
@@ -157,29 +132,21 @@ function closeCourseManagement() {
     const panel = document.getElementById('course-manage-panel');
     const header = document.querySelector('.section-header h3');
 
-    if (!panel) return;
-
-    panel.classList.add('hidden');
-    grid.classList.remove('hidden');
-    filters.classList.remove('hidden');
+    if (panel) panel.classList.add('hidden');
+    if (grid) grid.classList.remove('hidden');
+    if (filters) filters.classList.remove('hidden');
     if (header) header.classList.remove('hidden');
 }
 
-// 3. Модальды терезе (Лекция қосу)
+// 4. Модальды терезе (Лекция қосу)
 function openAddLectureModal() {
     if (!activeCourseId) return;
-    const courseIdInput = document.getElementById('modal-course-id');
     const form = document.getElementById('lectureForm');
-
-    if (courseIdInput) courseIdInput.value = activeCourseId;
     if (form) form.reset();
 
-    if (typeof openModal === 'function') {
-        openModal('lectureModal');
-    } else if (typeof window.openModal === 'function') {
+    if (typeof window.openModal === 'function') {
         window.openModal('lectureModal');
     } else {
-        console.error('Neither openModal nor window.openModal is defined');
         const modal = document.getElementById('lectureModal');
         if (modal) modal.classList.remove('hidden');
     }
@@ -188,18 +155,14 @@ function openAddLectureModal() {
 document.getElementById('lectureForm')?.addEventListener('submit', async (e) => {
     e.preventDefault();
 
-    const courseIdInput = document.getElementById('modal-course-id');
-    const titleInput = document.getElementById('lecture-title');
-    // ...
     const formData = {
-        course_id: courseIdInput?.value || activeCourseId,
-        title: titleInput?.value || '',
+        course_id: activeCourseId,
+        title: document.getElementById('lecture-title')?.value || '',
         description: document.getElementById('lecture-desc')?.value || '',
         category: document.getElementById('lecture-cat')?.value || '',
         duration: document.getElementById('lecture-dur')?.value || '',
         video_url: document.getElementById('lecture-video')?.value || '',
-        iframe_content: document.getElementById('lecture-iframe')?.value || '',
-        order: document.getElementById('lecture-order')?.value || 0
+        order: parseInt(document.getElementById('lecture-order')?.value) || 1
     };
 
     try {
@@ -219,7 +182,6 @@ document.getElementById('lectureForm')?.addEventListener('submit', async (e) => 
             } else {
                 document.getElementById('lectureModal')?.classList.add('hidden');
             }
-            // Обновляем список лекций в текущем курсе
             openCourseManagement(activeCourseId);
         } else {
             alert(result.error);
@@ -230,7 +192,6 @@ document.getElementById('lectureForm')?.addEventListener('submit', async (e) => 
     }
 });
 
-// CSRF Token helper
 function getCookie(name) {
     let cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -246,16 +207,15 @@ function getCookie(name) {
     return cookieValue;
 }
 
-// 4. Dropdown (Селект) логикасы
 function setupDropdowns() {
     const dropdowns = document.querySelectorAll('.custom-select');
 
     dropdowns.forEach(dropdown => {
         const trigger = dropdown.querySelector('.select-trigger');
         const options = dropdown.querySelectorAll('.option');
-        const span = trigger.querySelector('span');
+        const span = trigger?.querySelector('span');
 
-        trigger.addEventListener('click', () => {
+        trigger?.addEventListener('click', () => {
             dropdowns.forEach(d => {
                 if (d !== dropdown) d.classList.remove('active');
             });
@@ -264,8 +224,8 @@ function setupDropdowns() {
 
         options.forEach(option => {
             option.addEventListener('click', () => {
-                span.textContent = option.textContent;
-                dropdown.querySelector('.option.selected').classList.remove('selected');
+                if (span) span.textContent = option.textContent;
+                dropdown.querySelector('.option.selected')?.classList.remove('selected');
                 option.classList.add('selected');
                 dropdown.classList.remove('active');
                 filterCourses();
@@ -281,28 +241,18 @@ function setupDropdowns() {
 }
 
 function filterCourses() {
-    const categoryValue = document.querySelector('#myCategorySelect .option.selected')?.getAttribute('data-value') || 'all';
     const searchText = document.getElementById('myCourseSearch')?.value.toLowerCase() || '';
-
     const filtered = currentTeacherCourses.filter(course => {
-        const matchSearch = course.title.toLowerCase().includes(searchText);
-        return matchSearch;
+        return course.title.toLowerCase().includes(searchText);
     });
-
     renderMyCourses(filtered);
 }
 
-// Іздеу өрісіне тыңдаушы қосу
 const searchInput = document.getElementById('myCourseSearch');
 if (searchInput) {
     searchInput.addEventListener('input', filterCourses);
 }
 
-function openAddCourseModal() {
-    // Placeholder
-}
-
-// Жүктелгенде іске қосу
 document.addEventListener('DOMContentLoaded', () => {
     loadMyCourses();
     setupDropdowns();

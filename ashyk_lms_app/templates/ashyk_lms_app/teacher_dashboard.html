@@ -113,63 +113,104 @@
 
     <!-- MODAL: Создание лекции -->
     <div id="lectureModal" class="modal hidden">
-        <div class="modal-content" style="max-width: 600px;">
-            <div class="modal-header">
-                <h3>Жаңа дәріс қосу</h3>
-                <span class="close-modal" onclick="closeModal('lectureModal')">&times;</span>
+        <div class="modal-content" style="max-width: 650px; border-radius: 20px; overflow: hidden;">
+            <div class="modal-header" style="background: var(--sidebar-bg); color: white; padding: 20px 24px;">
+                <h3 style="margin: 0; font-size: 20px;">Жаңа дәріс қосу</h3>
+                <span class="close-modal" onclick="closeModal('lectureModal')"
+                    style="color: white; font-size: 28px;">&times;</span>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" style="padding: 24px;">
                 <form id="lectureForm">
                     <input type="hidden" id="modal-course-id">
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="lecture-title" style="display: block; margin-bottom: 5px; font-weight: 500;">Дәріс
+
+                    <div class="form-group" style="margin-bottom: 20px;">
+                        <label for="lecture-title"
+                            style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Дәріс
                             тақырыбы</label>
-                        <input type="text" id="lecture-title" required
-                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                        <input type="text" id="lecture-title" required placeholder="Мысалы: Кіріспе"
+                            style="width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 15px;">
                     </div>
-                    <div class="form-group" style="margin-bottom: 15px;">
+
+                    <div class="form-group" style="margin-bottom: 20px;">
                         <label for="lecture-desc"
-                            style="display: block; margin-bottom: 5px; font-weight: 500;">Сипаттамасы</label>
-                        <textarea id="lecture-desc" rows="3"
-                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+                            style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Сипаттамасы</label>
+                        <textarea id="lecture-desc" rows="3" placeholder="Дәріс туралы қысқаша мәлімет..."
+                            style="width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 15px; resize: none;"></textarea>
                     </div>
-                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 15px;">
+
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px;">
                         <div class="form-group">
                             <label for="lecture-cat"
-                                style="display: block; margin-bottom: 5px; font-weight: 500;">Санат</label>
-                            <input type="text" id="lecture-cat" placeholder="Мысалы: Менеджмент"
-                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                                style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Санат</label>
+                            <input type="text" id="lecture-cat" placeholder="Менеджмент"
+                                style="width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 15px;">
                         </div>
                         <div class="form-group">
                             <label for="lecture-dur"
-                                style="display: block; margin-bottom: 5px; font-weight: 500;">Ұзақтығы</label>
-                            <input type="text" id="lecture-dur" placeholder="Мысалы: 45 мин"
-                                style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+                                style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Ұзақтығы</label>
+                            <input type="text" id="lecture-dur" placeholder="45 мин"
+                                style="width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 15px;">
                         </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="lecture-video" style="display: block; margin-bottom: 5px; font-weight: 500;">Видео
-                            сілтемесі (YouTube)</label>
-                        <input type="url" id="lecture-video"
-                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
+
+                    <div class="video-source-box"
+                        style="background: #f8fafc; padding: 20px; border-radius: 16px; margin-bottom: 20px;">
+                        <label
+                            style="display: block; margin-bottom: 12px; font-weight: 700; color: #2d3748; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Видео
+                            көзі</label>
+
+                        <div class="video-tabs"
+                            style="display: flex; gap: 10px; margin-bottom: 15px; background: #edf2f7; padding: 4px; border-radius: 10px;">
+                            <button type="button" class="v-tab active" onclick="switchVideoTab('url', this)"
+                                style="flex: 1; padding: 8px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s;">YouTube</button>
+                            <button type="button" class="v-tab" onclick="switchVideoTab('iframe', this)"
+                                style="flex: 1; padding: 8px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.2s;">Iframe</button>
+                        </div>
+
+                        <div id="v-content-url" class="v-tab-content">
+                            <input type="url" id="lecture-video" placeholder="https://www.youtube.com/watch?v=..."
+                                style="width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px;">
+                        </div>
+                        <div id="v-content-iframe" class="v-tab-content hidden">
+                            <textarea id="lecture-iframe" rows="3"
+                                placeholder='<iframe width="560" height="315" ...></iframe>'
+                                style="width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 10px; font-size: 14px; font-family: monospace;"></textarea>
+                        </div>
                     </div>
-                    <div class="form-group" style="margin-bottom: 15px;">
-                        <label for="lecture-iframe" style="display: block; margin-bottom: 5px; font-weight: 500;">Iframe
-                            коды (міндетті емес)</label>
-                        <textarea id="lecture-iframe" rows="2"
-                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;"></textarea>
+
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label for="lecture-order"
+                            style="display: block; margin-bottom: 8px; font-weight: 600; color: #4a5568;">Реттік нөмірі
+                            (сабақ реті)</label>
+                        <input type="number" id="lecture-order" value="1" min="1"
+                            style="width: 100%; padding: 12px 16px; border: 1px solid #e2e8f0; border-radius: 12px; font-size: 15px;">
                     </div>
-                    <div class="form-group" style="margin-bottom: 20px;">
-                        <label for="lecture-order" style="display: block; margin-bottom: 5px; font-weight: 500;">Реттік
-                            нөмірі</label>
-                        <input type="number" id="lecture-order" value="0"
-                            style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 8px;">
-                    </div>
-                    <button type="submit" class="btn-primary" style="width: 100%; padding: 12px;">Сақтау</button>
+
+                    <button type="submit" class="btn-primary"
+                        style="width: 100%; padding: 14px; border-radius: 12px; font-weight: 700; font-size: 16px; background: #563eea; box-shadow: 0 4px 12px rgba(86, 62, 234, 0.25);">
+                        Дәрісті жариялау
+                    </button>
                 </form>
             </div>
         </div>
     </div>
+
+    <style>
+        .v-tab.active {
+            background: white;
+            color: #563eea;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .v-tab:not(.active) {
+            background: transparent;
+            color: #718096;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+    </style>
 
     <script src="{% static 'script/teacher_dashboard/teacher_dashboard_base.js' %}"></script>
     <script src="{% static 'script/teacher_dashboard/home.js' %}"></script>

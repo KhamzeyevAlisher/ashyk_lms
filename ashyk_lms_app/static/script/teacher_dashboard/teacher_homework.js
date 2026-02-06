@@ -216,7 +216,16 @@ function applyFilters() {
 
         // 3. Group
         if (filterState.groupId !== 'all') {
-            if (hw.group_id != filterState.groupId) {
+            const selectedGroupId = parseInt(filterState.groupId);
+            if (hw.group_id === 'all') {
+                // If it's assigned to multiple SPECIFIC groups, check inclusion
+                if (hw.group_ids && hw.group_ids.length > 0) {
+                    if (!hw.group_ids.includes(selectedGroupId)) {
+                        return false;
+                    }
+                }
+                // If group_ids is empty, it's for "All groups of course", matches any group select
+            } else if (hw.group_id != selectedGroupId) {
                 return false;
             }
         }
@@ -247,7 +256,17 @@ function applyFilters() {
     let baseResults = currentHomeworks.filter(hw => {
         if (filterState.search && !hw.title.toLowerCase().includes(filterState.search)) return false;
         if (filterState.courseId !== 'all' && hw.course_id != filterState.courseId) return false;
-        if (filterState.groupId !== 'all' && hw.group_id != filterState.groupId) return false;
+
+        if (filterState.groupId !== 'all') {
+            const selectedGroupId = parseInt(filterState.groupId);
+            if (hw.group_id === 'all') {
+                if (hw.group_ids && hw.group_ids.length > 0) {
+                    if (!hw.group_ids.includes(selectedGroupId)) return false;
+                }
+            } else if (hw.group_id != selectedGroupId) {
+                return false;
+            }
+        }
         return true;
     });
 

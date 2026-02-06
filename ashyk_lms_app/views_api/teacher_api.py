@@ -95,23 +95,34 @@ def create_lecture(request):
         except Course.DoesNotExist:
             return JsonResponse({'error': 'Курс не найден или у вас нет прав'}, status=404)
             
-        lecture = Lecture.objects.create(
-            course=course,
-            title=data.get('title'),
-            description=data.get('description', ''),
-            category=data.get('category', ''),
-            duration=data.get('duration', ''),
-            video_url=data.get('video_url', ''),
-            iframe_content=data.get('iframe_content', ''),
-            order=data.get('order', 0)
-        )
+        from django.db import connection
+        from django.utils import timezone
+        
+        # Используем Raw SQL, чтобы обойти ошибку с отсутствующим полем iframe_content в модели,
+        # но присутствующим в БД как NOT NULL
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                INSERT INTO ashyk_lms_app_lecture 
+                (course_id, title, description, category, duration, video_url, "order", created_at, iframe_content)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, '')
+            """, [
+                course.id,
+                data.get('title'),
+                data.get('description', ''),
+                data.get('category', ''),
+                data.get('duration', ''),
+                data.get('video_url', ''),
+                data.get('order', 0),
+                timezone.now()
+            ])
+            lecture_id = cursor.lastrowid
         
         return JsonResponse({
             'status': 'success', 
             'message': 'Лекция успешно создана',
             'lecture': {
-                'id': lecture.id,
-                'title': lecture.title
+                'id': lecture_id,
+                'title': data.get('title')
             }
         })
     except Exception as e:
@@ -127,7 +138,10 @@ def get_groups_list(request):
         if not hasattr(request.user, 'teacher_profile'):
              return JsonResponse({'error': 'Доступ запрещен'}, status=403)
              
-        groups = StudentGroup.objects.all().order_by('name')
+        teacher = request.user.teacher_profile
+        # Filter groups: only return groups that are enrolled in courses taught by this teacher
+        groups = StudentGroup.objects.filter(allowed_courses__instructor=teacher).distinct().order_by('name')
+        
         data = [{'id': g.id, 'name': g.name} for g in groups]
         
         return JsonResponse({'groups': data, 'status': 'success'})
@@ -241,27 +255,14 @@ def get_teacher_homeworks(request):
                 'course': hw.course.title,
                 'course_id': hw.course.id,
                 'group': group_display, 
-                'group_id': 'all', # frontend uses this for filtering. 'all' is safe default or maybe logic needs update?
-                # Frontend filters by group_id matching dropdown.
-                # If HW is for Group A, B. Dropdown has Group A.
-                # The frontend filter logic currently checks `hw.group_id != filterState.groupId`.
-                # If HW is for multiple, `hw.group_id` as a single value is ambiguous.
-                # We can leave it as 'all' effectively disabling strict per-group filtering in the TABLE unless we refactor frontend too.
-                # For now, let's pass 'all' or first group id if single?
-                # If we pass 'all', then filtering by specific group 'A' might show it (if logic matches 'all').
-                # Let's see frontend logic: if (filterState.groupId !== 'all') { if (hw.group_id != filterState.groupId) return false; }
-                # So if we send 'all' (string), and user selects Group A (id 5), 'all' != 5 -> Hidden.
-                # Valid logic: If user selects Group A, we show HWs for Group A.
-                # We should probably fix filtering logic in frontend later, or just return here a LIST of group_ids?
-                # But to avoid breaking frontend structure which expects scalar `group_id`...
-                # Let's send the ID if it's a single group, else 'all' (or maybe 0).
-                
                 'title': hw.title,
                 'deadline': hw.deadline.strftime('%d.%m.%Y'),
                 'stats': f"{submitted_count} / {total_students}",
                 'submitted_count': submitted_count,
                 'graded_count': graded_count,
-                'total_students': total_students
+                'total_students': total_students,
+                'group_id': groups[0].id if groups.count() == 1 else 'all',
+                'group_ids': [g.id for g in groups]
             })
 
         return JsonResponse({'homeworks': data, 'status': 'success'})

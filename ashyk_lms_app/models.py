@@ -287,7 +287,7 @@ class Lecture(models.Model):
     duration = models.CharField(max_length=50, blank=True, verbose_name="Длительность")
     scheduled_date = models.DateField(blank=True, null=True, verbose_name="Дата проведения")
     
-    # Видео
+    # Видео источники
     video_url = models.URLField(blank=True, verbose_name="Ссылка на видео (YouTube/MP4)")
     
     order = models.PositiveIntegerField(default=0, verbose_name="Порядковый номер")
