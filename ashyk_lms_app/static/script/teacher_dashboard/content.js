@@ -31,21 +31,22 @@ function renderMyCourses(data) {
     container.innerHTML = '';
 
     if (data.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #6b7280;">Сізде әзірге курстар жоқ.</p>';
+        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #6b7280; padding: 40px;">Сізде әзірге курстар жоқ.</p>';
         return;
     }
 
     const html = data.map(course => {
         return `
-            <div class="mini-course-card" onclick="openCourseManagement(${course.id})">
-                <div class="course-img-wrapper">
-                    <img src="${course.image}" alt="${course.title}" class="course-img">
+            <div class="course-card" onclick="openCourseManagement(${course.id})">
+                <div class="course-img-wrapper" style="height: 160px; overflow: hidden;">
+                    <img src="${course.image || '/static/img/default-course.png'}" alt="${course.title}" style="width: 100%; height: 100%; object-fit: cover;">
                 </div>
-                <div class="course-info">
-                    <h4>${course.title}</h4>
-                    <p style="color: #666; font-size: 13px;">${course.description}</p>
-                    <div style="margin-top: 10px; font-size: 11px; color: #999;">
-                        ${course.department} • ${course.created_at}
+                <div class="course-info" style="padding: 20px;">
+                    <h4 style="margin: 0 0 10px 0; font-size: 18px; color: #1a202c;">${course.title}</h4>
+                    <p style="color: #64748b; font-size: 14px; margin-bottom: 15px; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;">${course.description}</p>
+                    <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid #f1f5f9; padding-top: 15px; font-size: 12px; color: #94a3b8;">
+                        <span><i class="fa-solid fa-folder-open" style="margin-right: 5px;"></i>${course.department}</span>
+                        <span><i class="fa-solid fa-calendar-days" style="margin-right: 5px;"></i>${course.created_at}</span>
                     </div>
                 </div>
             </div>
@@ -58,25 +59,21 @@ function renderMyCourses(data) {
 // 2. Курсты басқару (Course Management)
 async function openCourseManagement(courseId) {
     activeCourseId = courseId;
-    const grid = document.getElementById('my-courses-grid');
-    const filters = document.querySelector('.filters-container');
+    const gridContainer = document.querySelector('.container_content:not(#course-manage-panel)');
     const panel = document.getElementById('course-manage-panel');
-    const header = document.querySelector('.section-header h3');
 
     if (!panel) return;
 
-    // Show panel, hide grid/filters
-    if (grid) grid.classList.add('hidden');
-    if (filters) filters.classList.add('hidden');
+    // Show panel, hide grid container with animation
+    if (gridContainer) gridContainer.classList.add('hidden');
     panel.classList.remove('hidden');
-    if (header) header.classList.add('hidden');
 
     // Load data
     const titleEl = document.getElementById('manage-course-title');
     const lecturesEl = document.getElementById('manage-lectures-list');
 
     if (titleEl) titleEl.textContent = 'Жүктелуде...';
-    if (lecturesEl) lecturesEl.innerHTML = '<p>Жүктелуде...</p>';
+    if (lecturesEl) lecturesEl.innerHTML = '<p style="text-align: center; color: #94a3b8; padding: 20px;">Жүктелуде...</p>';
 
     try {
         const response = await fetch(`/api/teacher/course/${courseId}/`);
@@ -104,22 +101,22 @@ function renderManageLectures(lectures) {
     if (!container) return;
 
     if (lectures.length === 0) {
-        container.innerHTML = '<p style="color: #888;">Дәрістер тізімі бос</p>';
+        container.innerHTML = '<p style="color: #94a3b8; text-align: center; padding: 20px;">Дәрістер тізімі бос</p>';
         return;
     }
 
     container.innerHTML = lectures.map(l => `
-        <div class="lecture-row" style="padding: 10px; border: 1px solid #eee; margin-bottom: 5px; border-radius: 6px; display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <div class="status-icon" style="width: 30px; height: 30px; font-size: 12px;">${l.order}</div>
+        <div class="lecture-item">
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <div class="lecture-number" style="width: 36px; height: 36px; background: #eef2ff; color: #563eea; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px;">${l.order}</div>
                 <div>
-                    <h5 style="margin: 0;">${l.title}</h5>
-                    <small style="color: #777;">${l.category || ''} • ${l.duration || ''}</small>
+                    <h5 style="margin: 0; font-size: 15px; color: #1a202c;">${l.title}</h5>
+                    <small style="color: #64748b;">${l.category || 'Дәріс'} • ${l.duration || ''}</small>
                 </div>
             </div>
-            <div class="actions">
-                <i class="fa-solid fa-pen" style="cursor: pointer; color: #007bff; margin-right: 10px;"></i>
-                <i class="fa-solid fa-trash" style="cursor: pointer; color: #dc3545;"></i>
+            <div class="actions" style="display: flex; gap: 12px;">
+                <button title="Өңдеу" style="background: none; border: none; color: #563eea; cursor: pointer; font-size: 16px; padding: 5px;"><i class="fa-solid fa-pen"></i></button>
+                <button title="Жөю" style="background: none; border: none; color: #ef4444; cursor: pointer; font-size: 16px; padding: 5px;"><i class="fa-solid fa-trash"></i></button>
             </div>
         </div>
     `).join('');
@@ -127,15 +124,11 @@ function renderManageLectures(lectures) {
 
 function closeCourseManagement() {
     activeCourseId = null;
-    const grid = document.getElementById('my-courses-grid');
-    const filters = document.querySelector('.filters-container');
+    const gridContainer = document.querySelector('.container_content:not(#course-manage-panel)');
     const panel = document.getElementById('course-manage-panel');
-    const header = document.querySelector('.section-header h3');
 
     if (panel) panel.classList.add('hidden');
-    if (grid) grid.classList.remove('hidden');
-    if (filters) filters.classList.remove('hidden');
-    if (header) header.classList.remove('hidden');
+    if (gridContainer) gridContainer.classList.remove('hidden');
 }
 
 // 4. Модальды терезе (Лекция қосу)
@@ -208,14 +201,15 @@ function getCookie(name) {
 }
 
 function setupDropdowns() {
-    const dropdowns = document.querySelectorAll('.custom-select');
+    const dropdowns = document.querySelectorAll('.custom-select-content');
 
     dropdowns.forEach(dropdown => {
-        const trigger = dropdown.querySelector('.select-trigger');
-        const options = dropdown.querySelectorAll('.option');
+        const trigger = dropdown.querySelector('.select-trigger-content');
+        const options = dropdown.querySelectorAll('.option-content');
         const span = trigger?.querySelector('span');
 
-        trigger?.addEventListener('click', () => {
+        trigger?.addEventListener('click', (e) => {
+            e.stopPropagation();
             dropdowns.forEach(d => {
                 if (d !== dropdown) d.classList.remove('active');
             });
@@ -223,9 +217,10 @@ function setupDropdowns() {
         });
 
         options.forEach(option => {
-            option.addEventListener('click', () => {
+            option.addEventListener('click', (e) => {
+                e.stopPropagation();
                 if (span) span.textContent = option.textContent;
-                dropdown.querySelector('.option.selected')?.classList.remove('selected');
+                dropdown.querySelector('.option-content.selected')?.classList.remove('selected');
                 option.classList.add('selected');
                 dropdown.classList.remove('active');
                 filterCourses();
@@ -234,7 +229,7 @@ function setupDropdowns() {
     });
 
     document.addEventListener('click', (e) => {
-        if (!e.target.closest('.custom-select')) {
+        if (!e.target.closest('.custom-select-content')) {
             dropdowns.forEach(d => d.classList.remove('active'));
         }
     });
