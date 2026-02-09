@@ -40,10 +40,12 @@
                     <label>Студент:</label>
                     <input type="text" id="grade-student-name" readonly class="form-input-readonly">
                 </div>
+
                 <div class="form-group">
                     <label>Күні:</label>
                     <input type="date" id="grade-date" required class="form-input">
                 </div>
+
                 <div class="form-group">
                     <label>Түрі:</label>
                     <select id="grade-type" class="form-select">
@@ -55,14 +57,18 @@
                         <option value="exam">Емтихан</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label>Баға (0-100):</label>
                     <input type="number" id="grade-value" min="0" max="100" required class="form-input">
                 </div>
+
                 <div class="form-group">
                     <label>Пікір:</label>
-                    <textarea id="grade-comment" rows="2" class="form-input"></textarea>
+                    <textarea id="grade-comment" rows="2" class="form-input"
+                        placeholder="Қосымша түсініктеме..."></textarea>
                 </div>
+
                 <button type="submit" class="btn-primary" style="width:100%">Сақтау</button>
             </form>
         </div>
