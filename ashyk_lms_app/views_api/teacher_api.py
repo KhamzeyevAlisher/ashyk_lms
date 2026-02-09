@@ -368,10 +368,12 @@ def get_journal_data(request):
         } for s in students]
         
         # 2. Оценки
-        # Фильтруем по курсу и группе
+        from django.db.models import Q
+        # Фильтруем по курсу и группе (поддержка старых данных через Subject)
         grades_qs = Grade.objects.filter(
-            student__group=group,
-            course=course
+            student__group=group
+        ).filter(
+            Q(course=course) | Q(subject__name=course.title)
         ).order_by('created_at')
         
         # Фильтрация по месяцу
