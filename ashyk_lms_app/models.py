@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from django.utils import timezone
 
 # ==========================================
 # 1. Кастомная модель пользователя
@@ -391,7 +392,7 @@ class Grade(models.Model):
         verbose_name="Комментарий преподавателя"
     )
     created_at = models.DateTimeField(
-        auto_now_add=True, 
+        default=timezone.now,
         verbose_name="Дата выставления"
     )
 

@@ -266,6 +266,8 @@ class GradeAdmin(admin.ModelAdmin):
     # Оптимизация выбора: вместо длинного выпадающего списка — поиск
     # Требует search_fields в StudentAdmin и SubjectAdmin
     autocomplete_fields = ['student', 'subject']
+
+    fields = ('student', 'course', 'subject', 'value', 'grade_type', 'comment', 'created_at')
     
     # Сортировка по умолчанию (сначала новые)
     ordering = ('-created_at',)
