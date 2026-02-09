@@ -21,6 +21,7 @@
     <link rel="stylesheet" href="{% static 'css/student_dashboard/course.css' %}">
     <link rel="stylesheet" href="{% static 'css/student_dashboard/homework.css' %}">
     <link rel="stylesheet" href="{% static 'css/teacher_dashboard/homework.css' %}">
+    <link rel="stylesheet" href="{% static 'css/teacher_dashboard/teacher_journal.css' %}">
 
 </head>
 
@@ -61,9 +62,78 @@
                 <p>Бұл мұғалімнің кесте беті.</p>
             </div>
 
-            <!-- TAB 5: ДНЕВНИК -->
+            <!-- TAB 5: ДНЕВНИК (ЖУРНАЛ) -->
             <div id="tab-diary" class="tab-content hidden">
-                <p>Бұл мұғалімнің журнал беті.</p>
+                <div class="card journal-section">
+                    <div class="journal-controls">
+                        <div class="control-group">
+                            <label>Топты таңдаңыз:</label>
+                            <select id="journal-group-select" class="form-select">
+                                <option value="">Топты жүктеу...</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Пәнді таңдаңыз:</label>
+                            <select id="journal-course-select" class="form-select">
+                                <option value="">Пәнді жүктеу...</option>
+                            </select>
+                        </div>
+                        <div class="control-group">
+                            <label>Ай:</label>
+                            <input type="month" id="journal-month-select" class="form-input">
+                        </div>
+                        <button class="btn-primary" onclick="loadJournal()">Көрсету</button>
+                    </div>
+
+                    <div id="journal-table-container" class="journal-table-wrapper">
+                        <p class="text-muted">Деректерді көру үшін топ пен пәнді таңдаңыз.</p>
+                    </div>
+                </div>
+
+                <!-- Модалка для выставления оценки -->
+                <div id="teacher-grade-modal" class="modal hidden">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Баға қою</h3>
+                            <span class="close-modal" onclick="closeGradeModal()">&times;</span>
+                        </div>
+                        <div class="modal-body">
+                            <form id="teacher-grade-form">
+                                <input type="hidden" id="grade-student-id">
+                                <input type="hidden" id="grade-id"> <!-- Если ред. -->
+
+                                <div class="form-group">
+                                    <label>Студент:</label>
+                                    <input type="text" id="grade-student-name" readonly class="form-input-readonly">
+                                </div>
+                                <div class="form-group">
+                                    <label>Күні:</label>
+                                    <input type="date" id="grade-date" required class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Түрі:</label>
+                                    <select id="grade-type" class="form-select">
+                                        <option value="practice">Тәжірибе (Практика)</option>
+                                        <option value="lecture">Лекция</option>
+                                        <option value="lab">Зертханалық</option>
+                                        <option value="homework">Үй жұмысы</option>
+                                        <option value="srsp">СРСП</option>
+                                        <option value="exam">Емтихан</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>Баға (0-100):</label>
+                                    <input type="number" id="grade-value" min="0" max="100" required class="form-input">
+                                </div>
+                                <div class="form-group">
+                                    <label>Пікір:</label>
+                                    <textarea id="grade-comment" rows="2" class="form-input"></textarea>
+                                </div>
+                                <button type="submit" class="btn-primary" style="width:100%">Сақтау</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <!-- TAB 6: УЧЕБНЫЙ ПЛАН -->
@@ -216,6 +286,7 @@
     <script src="{% static 'script/teacher_dashboard/home.js' %}"></script>
     <script src="{% static 'script/teacher_dashboard/content.js' %}"></script>
     <script src="{% static 'script/teacher_dashboard/teacher_homework.js' %}"></script>
+    <script src="{% static 'script/teacher_dashboard/teacher_journal.js' %}"></script>
 </body>
 
 </html>

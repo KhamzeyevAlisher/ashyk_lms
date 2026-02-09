@@ -362,6 +362,14 @@ class Grade(models.Model):
         related_name='grades',
         verbose_name="Студент"
     )
+    course = models.ForeignKey(
+        'Course', 
+        on_delete=models.CASCADE, 
+        null=True,
+        blank=True,
+        related_name='grades',
+        verbose_name="Курс"
+    )
     subject = models.ForeignKey(
         Subject, 
         on_delete=models.CASCADE, 

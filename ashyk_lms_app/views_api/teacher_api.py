@@ -337,3 +337,150 @@ def grade_submission(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+@login_required
+def get_journal_data(request):
+    """
+    API для получения данных журнала (Студенты + Оценки)
+    Query params: course_id, group_id, month (YYYY-MM)
+    """
+    try:
+        if not hasattr(request.user, 'teacher_profile'):
+            return JsonResponse({'error': 'Доступ запрещен'}, status=403)
+            
+        group_id = request.GET.get('group_id')
+        course_id = request.GET.get('course_id')
+        month_str = request.GET.get('month') # "2026-02"
+        
+        if not group_id or not course_id:
+             return JsonResponse({'error': 'Не указана группа или курс'}, status=400)
+
+        # Получаем объекты
+        group = StudentGroup.objects.get(id=group_id)
+        course = Course.objects.get(id=course_id)
+        
+        # 1. Студенты группы
+        students = group.students.select_related('user').order_by('user__last_name')
+        students_data = [{
+            'id': s.id, 
+            'name': s.user.get_full_name_str(),
+            # 'avatar': s.user.avatar.url if s.user.avatar else None # Removed by request
+        } for s in students]
+        
+        # 2. Оценки
+        # Фильтруем по курсу и группе
+        grades_qs = Grade.objects.filter(
+            student__group=group,
+            course=course
+        ).order_by('created_at')
+        
+        # Фильтрация по месяцу
+        if month_str:
+            try:
+                y, m = map(int, month_str.split('-'))
+                grades_qs = grades_qs.filter(created_at__year=y, created_at__month=m)
+            except ValueError:
+                pass 
+            
+        grades_data = []
+        unique_dates = set()
+        
+        for g in grades_qs:
+            date_val = g.created_at.strftime("%Y-%m-%d")
+            unique_dates.add(date_val)
+            grades_data.append({
+                'id': g.id,
+                'student_id': g.student.id,
+                'value': g.value,
+                'date': date_val,
+                'type': g.grade_type,
+                'comment': g.comment
+            })
+            
+        return JsonResponse({
+            'students': students_data,
+            'grades': grades_data,
+            'dates': sorted(list(unique_dates)),
+            'status': 'success'
+        })
+
+    except StudentGroup.DoesNotExist:
+        return JsonResponse({'error': 'Группа не найдена'}, status=404)
+    except Course.DoesNotExist:
+        return JsonResponse({'error': 'Курс не найден'}, status=404)
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
+
+
+@login_required
+def save_journal_grade(request):
+    """
+    Сохранение/Обновление оценки в журнале
+    Body: { student_id, course_id, date, value, type, comment, grade_id(opt) }
+    """
+    if request.method != 'POST':
+        return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+    try:
+        data = json.loads(request.body)
+        student_id = data.get('student_id')
+        course_id = data.get('course_id')
+        date_str = data.get('date') # YYYY-MM-DD
+        value = data.get('value')
+        grade_type = data.get('type', 'practice')
+        comment = data.get('comment', '')
+        grade_id = data.get('grade_id') 
+
+        if not student_id or not course_id or value is None:
+             return JsonResponse({'error': 'Missing required fields'}, status=400)
+             
+        student = Student.objects.get(id=student_id)
+        course = Course.objects.get(id=course_id)
+        
+        # Находим Subject для совместимости.
+        from ..models import Subject
+        subject, _ = Subject.objects.get_or_create(name=course.title)
+        
+        if grade_id:
+            grade = Grade.objects.get(id=grade_id)
+            grade.value = int(value)
+            grade.comment = comment
+            grade.save()
+        else:
+            grade = Grade.objects.create(
+                student=student,
+                course=course,
+                subject=subject,
+                value=int(value),
+                grade_type=grade_type,
+                comment=comment
+            )
+            
+            # Установка даты (если передана)
+            if date_str:
+                 from django.utils.dateparse import parse_date
+                 from django.utils import timezone
+                 import datetime
+                 
+                 parsed_date = parse_date(date_str)
+                 if parsed_date:
+                     current_time = datetime.datetime.now().time()
+                     dt = datetime.datetime.combine(parsed_date, current_time)
+                     aware_dt = timezone.make_aware(dt)
+                     # Direct update to bypass auto_now_add constraint if needed
+                     Grade.objects.filter(id=grade.id).update(created_at=aware_dt)
+                     grade.created_at = aware_dt
+
+        return JsonResponse({
+            'status': 'success', 
+            'grade': {
+                'id': grade.id,
+                'value': grade.value,
+                'date': grade.created_at.strftime("%Y-%m-%d"),
+                'comment': grade.comment
+            },
+            'message': 'Оценка сохранена'
+        })
+
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)
