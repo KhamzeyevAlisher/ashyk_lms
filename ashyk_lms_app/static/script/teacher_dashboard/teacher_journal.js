@@ -3,7 +3,10 @@
 let journalState = {
     groupId: null,
     courseId: null,
-    month: null
+    month: null,
+    data: null,
+    pageIndex: 0,
+    pageSize: 7 // Columns per page
 };
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -60,7 +63,8 @@ async function loadFilterOptions() {
     }
 }
 
-async function loadJournal() {
+
+async function loadJournal(keepPage = false) {
     const groupId = document.getElementById('journal-group-select').value;
     const courseId = document.getElementById('journal-course-select').value;
     const month = document.getElementById('journal-month-select').value;
@@ -70,7 +74,13 @@ async function loadJournal() {
         return;
     }
 
-    journalState = { groupId, courseId, month };
+    journalState.groupId = groupId;
+    journalState.courseId = courseId;
+    journalState.month = month;
+
+    if (!keepPage) {
+        journalState.pageIndex = 0; // Reset page only if requested
+    }
 
     const container = document.getElementById('journal-table-container');
     container.innerHTML = '<div class="loader" style="text-align:center; padding:20px;">Жүктелуде... <i class="fa-solid fa-spinner fa-spin"></i></div>';
@@ -81,7 +91,8 @@ async function loadJournal() {
         const data = await resp.json();
 
         if (data.status === 'success') {
-            renderJournalTable(data);
+            journalState.data = data;
+            renderJournalTable();
         } else {
             container.innerHTML = `<p class="error-msg">${data.error || 'Қате'}</p>`;
         }
@@ -90,30 +101,86 @@ async function loadJournal() {
     }
 }
 
-function renderJournalTable(data) {
+
+function changePage(offset) {
+    if (!journalState.data || !journalState.data.dates) return;
+
+    const totalDates = journalState.data.dates.length;
+    const maxPage = Math.ceil(totalDates / journalState.pageSize) - 1;
+
+    let newIndex = journalState.pageIndex + offset;
+    if (newIndex < 0) newIndex = 0;
+    if (newIndex > maxPage) newIndex = maxPage;
+
+    if (newIndex !== journalState.pageIndex) {
+        journalState.pageIndex = newIndex;
+        renderJournalTable();
+    }
+}
+
+function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    const day = d.getDate().toString().padStart(2, '0');
+    const month = (d.getMonth() + 1).toString().padStart(2, '0');
+    return `${day}.${month}`;
+}
+
+function renderJournalTable() {
     const container = document.getElementById('journal-table-container');
+    const data = journalState.data;
 
     if (!data.students || data.students.length === 0) {
         container.innerHTML = '<p class="text-muted" style="padding:20px; text-align:center;">Бұл топта студенттер жоқ.</p>';
         return;
     }
 
-    // Prepare dates
-    const dates = data.dates || []; // ["2026-02-01", ...]
+    // Pagination Logic
+    const allDates = data.dates || [];
+    const startIndex = journalState.pageIndex * journalState.pageSize;
+    const endIndex = Math.min(startIndex + journalState.pageSize, allDates.length);
+    const visibleDates = allDates.slice(startIndex, endIndex);
+
+    // Controls HTML
+    const totalPages = Math.ceil(allDates.length / journalState.pageSize) || 1;
+    const currentPage = journalState.pageIndex + 1;
+
+    let controlsHtml = `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: #f8fafc; border-bottom: 1px solid #e2e8f0; border-radius: 12px 12px 0 0;">
+                <button class="btn-sm" onclick="changePage(-1)" ${journalState.pageIndex === 0 ? 'disabled' : ''} style="cursor: pointer; padding: 6px 12px; border: 1px solid #cbd5e0; border-radius: 6px; background: white; ${journalState.pageIndex === 0 ? 'opacity: 0.5;' : ''}">
+                    <i class="fa-solid fa-chevron-left"></i> Артқа
+                </button>
+                <div style="font-size: 14px; font-weight: 600; color: #4a5568;">
+                    Кезең: ${visibleDates.length > 0 ? formatDate(visibleDates[0]) : ''} - ${visibleDates.length > 0 ? formatDate(visibleDates[visibleDates.length - 1]) : ''} 
+                    <span style="font-weight:400; color:#718096; margin-left: 8px;">(${currentPage} / ${totalPages})</span>
+                </div>
+                <button class="btn-sm" onclick="changePage(1)" ${journalState.pageIndex >= totalPages - 1 ? 'disabled' : ''} style="cursor: pointer; padding: 6px 12px; border: 1px solid #cbd5e0; border-radius: 6px; background: white; ${journalState.pageIndex >= totalPages - 1 ? 'opacity: 0.5;' : ''}">
+                    Алға <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            </div>
+        `;
 
     let html = `
-    <div class="table-responsive" style="overflow-x: auto;">
-        <table class="journal-table" style="width: 100%; border-collapse: collapse; min-width: 800px;">
-            <thead>
-                <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
-                    <th style="padding: 12px; text-align: left; position: sticky; left: 0; background: #f8fafc; z-index: 10; min-width: 200px;">Студент</th>
+    <div style="background:white; border-radius: 12px; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        ${controlsHtml}
+        <div class="table-responsive" style="overflow-x: auto;">
+            <table class="journal-table" style="width: 100%; border-collapse: collapse; min-width: 800px;">
+                <thead>
+                    <tr style="background: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                        <th style="padding: 12px; text-align: left; position: sticky; left: 0; background: #f8fafc; z-index: 10; min-width: 200px;">Студент</th>
     `;
 
-    dates.forEach(date => {
+    visibleDates.forEach(date => {
         const d = new Date(date);
         const day = d.getDate().toString().padStart(2, '0');
         const month = (d.getMonth() + 1).toString().padStart(2, '0');
-        html += `<th style="padding: 12px; text-align: center; min-width: 60px;">${day}.${month}</th>`;
+        // Weekday
+        const days = ['Жс', 'Дс', 'Сс', 'Ср', 'Бс', 'Жм', 'Сб'];
+        const wDay = days[d.getDay()];
+
+        html += `<th style="padding: 12px; text-align: center; min-width: 60px;">
+            <div style="font-size: 11px; color: #718096; font-weight: normal;">${wDay}</div>
+            ${day}.${month}
+        </th>`;
     });
 
     // Add button column
@@ -138,7 +205,7 @@ function renderJournalTable(data) {
         `;
 
         // Cells
-        dates.forEach(date => {
+        visibleDates.forEach(date => {
             const grade = data.grades.find(g => g.student_id === student.id && g.date === date);
             if (grade) {
                 // Determine badge color
@@ -168,7 +235,7 @@ function renderJournalTable(data) {
         html += `<td></td></tr>`;
     });
 
-    html += `</tbody></table></div>`;
+    html += `</tbody></table></div></div>`;
     container.innerHTML = html;
 }
 
@@ -246,8 +313,8 @@ async function handleGradeSubmit(e) {
 
         if (data.status === 'success') {
             closeGradeModal();
-            // Reload table
-            loadJournal();
+            // Reload table, keeping current page
+            loadJournal(true);
         } else {
             alert("Қате: " + (data.error || 'Белгісіз'));
         }
