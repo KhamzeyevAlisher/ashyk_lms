@@ -17,6 +17,7 @@ async function openLesson(courseName, lessonName) {
     const response = await fetch(`/api/lectures/get_by_name/?courseName=${encodeURIComponent(courseName)}&nameLesson=${encodeURIComponent(lessonName)}`);
     const result = await response.json();
 
+
     if (result.status !== 'success') {
       console.error("Сабақ табылмады / Урок не найден", result.error);
       container.innerHTML = `<h3>Сабақ табылмады</h3><p>${result.error || ''}</p>`;

@@ -290,6 +290,7 @@ class Lecture(models.Model):
     
     # Видео источники
     video_url = models.URLField(blank=True, verbose_name="Ссылка на видео (YouTube/MP4)")
+    iframe_content = models.TextField(verbose_name="Iframe контент", blank=True, default='')
     
     order = models.PositiveIntegerField(default=0, verbose_name="Порядковый номер")
     

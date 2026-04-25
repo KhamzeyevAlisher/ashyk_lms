@@ -5,7 +5,7 @@ async function renderCourses() {
     container.innerHTML = '<p>Жүктелуде...</p>';
 
     try {
-        const response = await fetch('/api/courses/');
+        const response = await fetch(`/api/courses/?t=${Date.now()}`);
         const data = await response.json();
 
         if (data.status !== 'success') {

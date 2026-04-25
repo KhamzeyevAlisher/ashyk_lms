@@ -9,8 +9,10 @@ async function renderCourseByTitle(courseTitle) {
 
     try {
         // We use courseTitle which matches the API expectation for get_course_detail (handled as str)
-        const response = await fetch(`/api/courses/${encodeURIComponent(courseTitle)}/`);
+        const response = await fetch(`/api/courses/${encodeURIComponent(courseTitle)}/?t=${Date.now()}`);
         const result = await response.json();
+
+        console.log(result);
 
         if (result.status !== 'success') {
             container.innerHTML = `<h3>Курс "${courseTitle}" табылмады</h3><p>${result.error || ''}</p>`;
