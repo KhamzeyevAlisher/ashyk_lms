@@ -25,7 +25,8 @@ from .models import (
     Department,
     Homework,
     HomeworkSubmission,
-    GroupSchedule
+    GroupSchedule,
+    StudentFinalScore
 )
 
 # ========================================================
@@ -391,3 +392,9 @@ class GroupScheduleAdmin(admin.ModelAdmin):
         json_str = json.dumps(obj.data, indent=4, sort_keys=True, ensure_ascii=False)
         return mark_safe(f'<pre>{json_str}</pre>')
     json_pretty_print.short_description = "Визуализация JSON"
+
+
+@admin.register(StudentFinalScore)
+class StudentFinalScoreAdmin(admin.ModelAdmin):
+    list_display = ('username', 'total_score')
+    search_fields = ('username',)

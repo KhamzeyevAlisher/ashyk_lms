@@ -655,3 +655,30 @@ class GroupSchedule(models.Model):
 
     def __str__(self):
         return f"Расписание: {self.group.name}"
+
+
+# ==========================================
+# 6. Итоговые показатели
+# ==========================================
+
+class StudentFinalScore(models.Model):
+    """
+    Модель для хранения итоговых баллов студентов.
+    """
+    username = models.CharField(
+        max_length=150, 
+        verbose_name="Имя пользователя (username)"
+    )
+    total_score = models.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        default=0.00, 
+        verbose_name="Общий балл"
+    )
+
+    class Meta:
+        verbose_name = "Итоговый балл"
+        verbose_name_plural = "Итоговые баллы"
+
+    def __str__(self):
+        return f"{self.username}: {self.total_score}"
