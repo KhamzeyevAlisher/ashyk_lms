@@ -622,3 +622,34 @@ def get_schedule(request):
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
+
+
+@require_POST
+@login_required
+def add_lecture_points(request):
+    """
+    Добавляет +20 баллов студенту за просмотр лекции (100%).
+    """
+    try:
+        from ..models import StudentFinalScore
+        from decimal import Decimal
+        
+        username = request.user.username
+        
+        # Получаем или создаем запись итогового балла для пользователя
+        score_obj, created = StudentFinalScore.objects.get_or_create(
+            username=username,
+            defaults={'total_score': Decimal('0.00')}
+        )
+        
+        # Добавляем 20 баллов
+        score_obj.total_score += Decimal('20.00')
+        score_obj.save()
+        
+        return JsonResponse({
+            'status': 'success', 
+            'message': '+20 баллов начислено',
+            'new_score': float(score_obj.total_score)
+        })
+    except Exception as e:
+        return JsonResponse({'error': str(e)}, status=500)

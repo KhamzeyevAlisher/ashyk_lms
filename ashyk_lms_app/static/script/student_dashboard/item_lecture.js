@@ -470,18 +470,21 @@ function stopTracking() {
 function saveWatchStats(lessonName) {
   if (!lessonName) return;
 
-  videoWatchStats[lessonName] = {
-    totalSeconds: totalSecondsWatched,
-    watchedAt: new Date().toISOString(),
-    lessonName: lessonName
-  };
+  // Обновляем существующий объект или создаем новый
+  if (!videoWatchStats[lessonName]) {
+    videoWatchStats[lessonName] = {};
+  }
+
+  videoWatchStats[lessonName].totalSeconds = totalSecondsWatched;
+  videoWatchStats[lessonName].watchedAt = new Date().toISOString();
+  videoWatchStats[lessonName].lessonName = lessonName;
 
   localStorage.setItem(
     `video_${lessonName}`,
     JSON.stringify(videoWatchStats[lessonName])
   );
 
-  console.log(`💾 Сохранено: "${lessonName}" - ${totalSecondsWatched}сек`);
+  console.log(`💾 Сохранено: "${lessonName}" - ${totalSecondsWatched}сек`, videoWatchStats[lessonName].isCompleted ? '(Завершено)' : '');
 }
 
 /**
@@ -528,23 +531,82 @@ function updateTrackingUI(lessonName) {
     durationDisplay.textContent = formatTime(totalSecs);
   }
 
-  // Обновляем прогресс-бар и процент если видео загружено
-  if (videoDuration > 0) {
-    // Вычисляем процент просмотра (не больше 100%)
-    const percentage = Math.min((totalSecondsWatched / videoDuration) * 100, 100);
+    // Обновляем прогресс-бар и процент если видео загружено
+    if (videoDuration > 0) {
+      // Вычисляем процент просмотра (не больше 100%)
+      const percentage = Math.min((totalSecondsWatched / videoDuration) * 100, 100);
+  
+      // Обновляем ширину прогресс-бара
+      const progressBar = document.getElementById('video-progress-bar');
+      if (progressBar) {
+        progressBar.style.width = percentage + '%';
+      }
+  
+      // Обновляем текст процента
+      const percentDisplay = document.getElementById('video-progress-percent');
+      if (percentDisplay) {
+        percentDisplay.textContent = Math.floor(percentage) + '%';
+      }
 
-    // Обновляем ширину прогресс-бара
-    const progressBar = document.getElementById('video-progress-bar');
-    if (progressBar) {
-      progressBar.style.width = percentage + '%';
+      // Если просмотр 100% — начисляем баллы
+      if (percentage >= 100) {
+        completeLecture(lessonName);
+      }
     }
+}
 
-    // Обновляем текст процента
-    const percentDisplay = document.getElementById('video-progress-percent');
-    if (percentDisplay) {
-      percentDisplay.textContent = Math.floor(percentage) + '%';
+/**
+ * ====================================
+ * ФУНКЦИЯ: ЗАВЕРШЕНИЕ ЛЕКЦИИ (НАЧИСЛЕНИЕ БАЛЛОВ)
+ * ====================================
+ */
+async function completeLecture(lessonName) {
+  // Проверяем, не начислены ли уже баллы в этой сессии или localStorage
+  if (!videoWatchStats[lessonName] || videoWatchStats[lessonName].isCompleted) return;
+
+  console.log(`🎉 Лекция "${lessonName}" просмотрена на 100%. Начисляем баллы...`);
+  
+  // Ставим флаг, чтобы не отправлять повторно
+  videoWatchStats[lessonName].isCompleted = true;
+  saveWatchStats(lessonName);
+
+  try {
+    const response = await fetch('/api/lectures/complete/', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-CSRFToken': getCookie('csrftoken')
+      },
+      body: JSON.stringify({ lessonName: lessonName })
+    });
+
+    const result = await response.json();
+    if (result.status === 'success') {
+      console.log(`✅ Баллы успешно начислены. Новый баланс: ${result.new_score}`);
+    } else {
+      console.error('Ошибка при начислении баллов:', result.error);
+    }
+  } catch (e) {
+    console.error('Ошибка сетевого запроса при завершении лекции:', e);
+  }
+}
+
+/**
+ * Утилита для получения CSRF токена
+ */
+function getCookie(name) {
+  let cookieValue = null;
+  if (document.cookie && document.cookie !== '') {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const cookie = cookies[i].trim();
+      if (cookie.substring(0, name.length + 1) === (name + '=')) {
+        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+        break;
+      }
     }
   }
+  return cookieValue;
 }
 
 /**
