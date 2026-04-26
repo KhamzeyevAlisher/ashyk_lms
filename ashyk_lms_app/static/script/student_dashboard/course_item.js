@@ -25,7 +25,7 @@ async function renderCourseByTitle(courseTitle) {
         const tagsHTML = data.tags.map(tag => `<span class="tag">${tag}</span>`).join('');
 
         // 2. Формируем HTML лекций
-        const lecturesHTML = data.program.map(lecture => {
+        const lecturesHTML = data.program.map((lecture, index) => {
             let icon = '';
             let btn = '';
             let rowClass = 'lecture-row';
@@ -47,7 +47,7 @@ async function renderCourseByTitle(courseTitle) {
                 <div class="${rowClass}">
                     ${icon}
                     <div class="lecture-content">
-                        <span class="lecture-number">${lecture.id}-дәріс</span>
+                        <span class="lecture-number">${index + 1}-дәріс</span>
                         <h4>${lecture.topic}</h4>
                     </div>
                     ${btn}

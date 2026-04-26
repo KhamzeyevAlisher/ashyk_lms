@@ -2,32 +2,22 @@
 // Каждый объект содержит информацию об одной лекции: категория, курс, название, описание, продолжительность, дата и файлы для скачивания
 let lecturesData = [
     {
-        category: "Бағдарламалау",
-        course: "JavaScript",
-        title: "JavaScript-тегі ООП: Кластар және мұрагерлік",
-        description: "Объектіге бағытталған бағдарламалауды, кластарды және прототиптерді үйрену",
-        duration: "1 сағ 15 мин",
-        date: "22.11.2025",
+        category: "Менеджмент",
+        course: "Мененджмент",
+        title: "Менеджмент пәнінің мақсаты",
+        description: "Менеджмент – ұйымдық мақсаттарға тиімді түрде қол жеткізу үшін, ұйымның ресурстарына (адам, қаржы, материалдық және ақпараттық) негізделген әрекеттер (жоспарлау және шешім қабылдау, ұйымдастыру, жетекшілік ету және бақылауды қоса алғанда) жиынтығы.",
+        duration: "1 сағ 3 мин",
+        date: "27.04.2026",
         files: [
             { name: "slides.pdf", url: "#" },
-            { name: "code-examples.zip", url: "#" }
         ]
     },
-    {
-        category: "Бағдарламалау",
-        course: "JavaScript",
-        title: "Асинхронды бағдарламалау және Promises",
-        description: "Асинхронды кодпен, промистермен, async/await-пен жұмыс",
-        duration: "1 сағ",
-        date: "26.11.2025",
-        files: [] 
-    }
 ];
 
 function renderLectures(data) {
     // Получаем контейнер, в который будут добавлены карточки лекций
     const container = document.getElementById('lecture-list');
-    
+
     // Очищаем контейнер перед добавлением новых элементов
     container.innerHTML = '';
 
@@ -35,7 +25,7 @@ function renderLectures(data) {
     data.forEach(lecture => {
         // Генерируем HTML-разметку для скачиваемых файлов лекции
         // Если файлы есть, создаём контейнер со ссылками на загрузку
-        const filesHtml = lecture.files && lecture.files.length > 0 
+        const filesHtml = lecture.files && lecture.files.length > 0
             ? `<div class="lecture-files">
                 ${lecture.files.map(file => `
                     <a href="${file.url}" class="file-badge">
@@ -43,7 +33,7 @@ function renderLectures(data) {
                         ${file.name}
                     </a>
                 `).join('')}
-               </div>` 
+               </div>`
             : '';
 
         // Создаём HTML-разметку для карточки лекции с иконкой, названием, описанием и кнопкой
