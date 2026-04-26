@@ -308,10 +308,13 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         if (response.ok) {
             // 1. Журналды саламыз
-            renderJournal(data, CONTAINER_ID);
+            renderJournal(data.subjects, CONTAINER_ID);
 
-            // 2. Тултиптерді іске қосамыз (тек бір рет)
-            // initJournalTooltips();
+            // 2. Итоговый балды толтырамыз
+            const finalScoreEl = document.getElementById('final-score-value');
+            if (finalScoreEl) {
+                finalScoreEl.innerText = data.final_score || 0;
+            }
         } else {
             console.warn("Журнал деректері алынбады:", data);
             const container = document.getElementById(CONTAINER_ID);

@@ -169,7 +169,16 @@ def get_student_grades(request):
                 "grades": formatted_grades
             }
 
-        return JsonResponse(response_data, status=200)
+        # 5. Fetch Final Score
+        from ..models import StudentFinalScore
+        final_score_obj = StudentFinalScore.objects.filter(username=request.user.username).first()
+        final_score = float(final_score_obj.total_score) if final_score_obj else 0.0
+
+        return JsonResponse({
+            'subjects': response_data,
+            'final_score': final_score,
+            'status': 'success'
+        }, status=200)
 
     except Exception as e:
         return JsonResponse({'error': str(e)}, status=500)
@@ -248,8 +257,25 @@ def submit_test_result(request):
         
         # 2. Cleanup Saved Answers from DB
         StudentAnswer.objects.filter(student=student, test=test).delete()
+
+        # 3. Add points to StudentFinalScore (max 30 points for 100%)
+        from ..models import StudentFinalScore
+        from decimal import Decimal
         
-        return JsonResponse({'status': 'success'})
+        points_to_add = (Decimal(str(percentage)) / Decimal('100')) * Decimal('30')
+        
+        score_obj, created_score = StudentFinalScore.objects.get_or_create(
+            username=request.user.username,
+            defaults={'total_score': Decimal('0.00')}
+        )
+        score_obj.total_score += points_to_add.quantize(Decimal('0.01'))
+        score_obj.save()
+        
+        return JsonResponse({
+            'status': 'success',
+            'points_added': float(points_to_add.quantize(Decimal('0.01'))),
+            'new_total_score': float(score_obj.total_score)
+        })
 
     except Test.DoesNotExist:
          return JsonResponse({'error': 'Тест не найден'}, status=404)

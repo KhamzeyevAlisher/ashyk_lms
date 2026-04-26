@@ -47,6 +47,11 @@
     /* Фиолетовый */
 }
 
+.orange-card-journal {
+    background-color: #f59e0b;
+    /* Оранжевый/Золотой */
+}
+
 /* Стили для заголовка (название показателя) */
 .card-header-journal {
     font-size: 16px;

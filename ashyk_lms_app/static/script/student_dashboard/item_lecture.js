@@ -548,8 +548,8 @@ function updateTrackingUI(lessonName) {
         percentDisplay.textContent = Math.floor(percentage) + '%';
       }
 
-      // Если просмотр 100% — начисляем баллы
-      if (percentage >= 100) {
+      // Если просмотр 95% и более — начисляем баллы
+      if (percentage >= 95) {
         completeLecture(lessonName);
       }
     }
@@ -564,7 +564,7 @@ async function completeLecture(lessonName) {
   // Проверяем, не начислены ли уже баллы в этой сессии или localStorage
   if (!videoWatchStats[lessonName] || videoWatchStats[lessonName].isCompleted) return;
 
-  console.log(`🎉 Лекция "${lessonName}" просмотрена на 100%. Начисляем баллы...`);
+  console.log(`🎉 Лекция "${lessonName}" просмотрена более чем на 95%. Начисляем баллы...`);
   
   // Ставим флаг, чтобы не отправлять повторно
   videoWatchStats[lessonName].isCompleted = true;
