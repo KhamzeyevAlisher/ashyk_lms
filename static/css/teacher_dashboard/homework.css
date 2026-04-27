@@ -1,0 +1,683 @@
+/* 
+=========================================================================
+=================== ТЕКШЕРУШІ: ҮЙ ТАПСЫРМАЛАРЫ (CSS) =================== 
+=========================================================================
+*/
+
+/* Основной контейнер (унаследовано от студента, но может иметь отличия) */
+.container_homework {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    width: 100%;
+    background-color: #fff;
+    padding: 24px;
+    border-radius: 16px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border: 1px solid #edf2f7;
+}
+
+/* Заголовок раздела */
+.title_homework {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    color: #1a202c;
+}
+
+/* Подзаголовок */
+.subtitle_homework {
+    font-size: 15px;
+    color: #718096;
+    margin-bottom: 28px;
+    margin-top: 0;
+}
+
+/* =========================================
+   ФИЛЬТРЛЕР (ЖАҢА)
+   ========================================= */
+
+.filters-container-homework {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fff;
+    padding: 15px 20px;
+    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    flex-wrap: wrap;
+    gap: 15px;
+    overflow: visible !important;
+    /* Ensure dropdowns aren't clipped */
+}
+
+.search-box-homework {
+    position: relative;
+    min-width: 250px;
+    flex: 1;
+}
+
+.search-box-homework i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    pointer-events: none;
+}
+
+.search-box-homework input {
+    width: 300px;
+    padding: 10px 15px 10px 38px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    outline: none;
+    font-size: 14px;
+    transition: 0.3s;
+    background: #f9fafb;
+    box-sizing: border-box;
+}
+
+.search-box-homework input:focus {
+    background: #fff;
+    border-color: #563eea;
+    box-shadow: 0 0 0 3px rgba(86, 62, 234, 0.1);
+}
+
+.filters-controls-homework {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+/* Custom Select */
+.custom-select-homework {
+    position: relative;
+    width: 200px;
+    user-select: none;
+    font-size: 14px;
+}
+
+.select-trigger-homework {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 16px;
+    background: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    /* Rounded corners */
+    cursor: pointer;
+    color: #4a5568;
+    transition: all 0.3s ease;
+    height: 44px;
+    box-sizing: border-box;
+}
+
+.select-trigger-homework:hover {
+    border-color: #cbd5e0;
+}
+
+.custom-select-homework.active .select-trigger-homework {
+    border-color: #563eea;
+    color: #563eea;
+    /* Active text color */
+    box-shadow: 0 0 0 3px rgba(86, 62, 234, 0.1);
+}
+
+.custom-select-homework.active {
+    z-index: 10001;
+    /* High z-index for the whole container when active */
+}
+
+.select-trigger-homework * {
+    pointer-events: none;
+    /* Let all clicks pass through to the trigger div */
+}
+
+.select-trigger-homework i {
+    font-size: 12px;
+    color: #a0aec0;
+    transition: transform 0.3s ease;
+}
+
+.custom-select-homework.active i {
+    transform: rotate(180deg);
+    color: #563eea;
+}
+
+.select-options-homework {
+    position: absolute;
+    top: calc(100% + 8px);
+    /* More spacing */
+    left: 0;
+    right: 0;
+    background: #fff;
+    border-radius: 12px;
+    /* Rounded options container */
+    border: 1px solid #f1f5f9;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.12);
+    z-index: 9999;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+    padding: 6px;
+    max-height: 280px;
+    overflow-y: auto;
+    pointer-events: none;
+}
+
+.custom-select-homework.active .select-options-homework {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+
+.option-homework {
+    padding: 12px 16px;
+    color: #4a5568;
+    cursor: pointer;
+    border-radius: 8px;
+    /* Inner rounded corners */
+    transition: 0.2s;
+    font-weight: 500;
+}
+
+.option-homework:hover {
+    background-color: #f7fafc;
+    color: #2d3748;
+}
+
+.option-homework.selected {
+    background-color: #f3f0ff;
+    /* Light purple bg */
+    color: #563eea;
+    /* Purple text */
+    font-weight: 600;
+}
+
+/* Мобильная адаптация */
+@media (max-width: 768px) {
+    .filters-container-homework {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .filters-controls-homework {
+        flex-direction: column;
+    }
+
+    .custom-select-homework,
+    .search-box-homework {
+        width: 100%;
+    }
+}
+
+/* Вкладки (табы) */
+.tabs_container_homework {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+}
+
+.tab_btn_homework {
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid #e2e8f0;
+    background-color: #fff;
+    color: #4a5568;
+    transition: all 0.3s ease;
+}
+
+.tab_btn_homework.active_homework {
+    background-color: #563eea;
+    color: white;
+    border-color: #563eea;
+    box-shadow: 0 4px 12px rgba(86, 62, 234, 0.25);
+}
+
+.tab_btn_homework:hover:not(.active_homework) {
+    background-color: #f7fafc;
+    border-color: #cbd5e0;
+}
+
+/* Сетка карточек статистики */
+.cards_grid_homework {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+}
+
+.status_card_homework {
+    border-radius: 12px;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid transparent;
+    transition: transform 0.2s ease;
+}
+
+.status_card_homework:hover {
+    transform: translateY(-2px);
+}
+
+.card_info_homework {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.card_label_homework {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.card_value_homework {
+    font-size: 28px;
+    font-weight: 800;
+    color: #1a202c;
+}
+
+.card_icon_homework {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 20px;
+}
+
+/* Цвета карточек */
+.card_warning_homework {
+    background-color: #fffaf0;
+    border-color: #feebc8;
+}
+
+.card_warning_homework .card_label_homework {
+    color: #c05621;
+}
+
+.card_warning_homework .card_icon_homework {
+    background-color: #feebc8;
+    color: #c05621;
+}
+
+.card_review_homework {
+    background-color: #ebf8ff;
+    border-color: #bee3f8;
+}
+
+.card_review_homework .card_label_homework {
+    color: #2c5282;
+}
+
+.card_review_homework .card_icon_homework {
+    background-color: #bee3f8;
+    color: #2c5282;
+}
+
+.card_success_homework {
+    background-color: #f0fff4;
+    border-color: #c6f6d5;
+}
+
+.card_success_homework .card_label_homework {
+    color: #276749;
+}
+
+.card_success_homework .card_icon_homework {
+    background-color: #c6f6d5;
+    color: #276749;
+}
+
+/* Список карточек заданий */
+.list_container_homework {
+    width: 100%;
+}
+
+.task_card_homework {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 16px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.03);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border: 1px solid #edf2f7;
+    transition: all 0.2s ease;
+}
+
+.task_card_homework:hover {
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    border-color: #e2e8f0;
+}
+
+.card_left_homework {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.subject_name_homework {
+    font-size: 13px;
+    color: #563eea;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.task_title_homework {
+    font-size: 18px;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0;
+}
+
+.teacher_name_homework {
+    font-size: 14px;
+    color: #718096;
+}
+
+.meta_row_homework {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    font-size: 14px;
+    color: #718096;
+    margin-top: 8px;
+}
+
+.meta_item_homework {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card_right_homework {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 16px;
+    min-width: 180px;
+}
+
+/* Статусы */
+.status_badge_homework {
+    padding: 6px 14px;
+    border-radius: 30px;
+    font-size: 13px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.status_review_homework {
+    background-color: #fff5f5;
+    color: #c53030;
+}
+
+.status_done_homework {
+    background-color: #f0fff4;
+    color: #2f855a;
+}
+
+/* Кнопка */
+.btn_details_homework {
+    background-color: #563eea;
+    color: white;
+    border: none;
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    width: 100%;
+    text-align: center;
+}
+
+.btn_details_homework:hover {
+    background-color: #452bd0;
+    box-shadow: 0 4px 12px rgba(69, 43, 208, 0.3);
+}
+
+/* Иконки */
+.icon_svg_homework {
+    width: 18px;
+    height: 18px;
+    stroke-width: 2.5;
+}
+
+/* Скрытые элементы */
+.hidden {
+    display: none !important;
+}
+
+/* Таблица ответов */
+.submissions-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+}
+
+.submissions-table th {
+    background-color: #f7fafc;
+    padding: 16px;
+    text-align: left;
+    font-weight: 600;
+    color: #4a5568;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.submissions-table td {
+    padding: 16px;
+    border-bottom: 1px solid #edf2f7;
+    vertical-align: middle;
+}
+
+.submissions-table tr:hover td {
+    background-color: #fcfcfd;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .task_card_homework {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 20px;
+    }
+
+    .card_right_homework {
+        width: 100%;
+        align-items: flex-start;
+    }
+}
+
+/* =========================================================================
+   =================== MODAL WINDOWS =================== 
+   =========================================================================
+*/
+
+/* Overlay & Modal Base */
+.modal_homework {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal_homework.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Modal Content */
+.modal_content_homework {
+    background-color: #fff;
+    width: 100%;
+    max-width: 600px;
+    padding: 32px;
+    border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    transform: translateY(20px);
+    transition: transform 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    max-height: 90vh;
+    overflow-y: auto;
+}
+
+.modal_homework.visible .modal_content_homework {
+    transform: translateY(0);
+}
+
+/* Header */
+.modal_header_homework {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.modal_header_homework h2 {
+    font-size: 24px;
+    font-weight: 700;
+    color: #1a202c;
+    margin: 0;
+}
+
+.close_modal_btn {
+    background: none;
+    border: none;
+    font-size: 28px;
+    color: #a0aec0;
+    cursor: pointer;
+    transition: color 0.2s;
+    line-height: 1;
+}
+
+.close_modal_btn:hover {
+    color: #e53e3e;
+}
+
+/* Form Groups */
+.form_group_homework {
+    margin-bottom: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form_group_homework label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #4a5568;
+}
+
+.form_group_homework input,
+.form_group_homework select,
+.form_group_homework textarea {
+    padding: 12px 16px;
+    border: 2px solid #edf2f7;
+    border-radius: 12px;
+    font-size: 15px;
+    color: #2d3748;
+    transition: all 0.2s;
+    outline: none;
+    font-family: inherit;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.form_group_homework input:focus,
+.form_group_homework select:focus,
+.form_group_homework textarea:focus {
+    border-color: #563eea;
+    box-shadow: 0 0 0 3px rgba(86, 62, 234, 0.1);
+}
+
+/* Buttons */
+.modal_footer_homework {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    margin-top: 32px;
+}
+
+.btn_cancel_homework {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background-color: #edf2f7;
+    color: #4a5568;
+    transition: background-color 0.2s;
+}
+
+.btn_cancel_homework:hover {
+    background-color: #e2e8f0;
+}
+
+.btn_submit_homework {
+    padding: 12px 24px;
+    border-radius: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+    background-color: #563eea;
+    color: white;
+    transition: background-color 0.2s;
+}
+
+.btn_submit_homework:hover {
+    background-color: #452bd0;
+    box-shadow: 0 4px 12px rgba(69, 43, 208, 0.3);
+}
+
+/* Styling for Content Display in Modals */
+.student_info_block_homework {
+    background: #f7fafc;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.file_link_homework {
+    color: #563eea;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.student_answer_homework {
+    font-size: 14px;
+    color: #4a5568;
+    background: #fff;
+    border: 1px solid #edf2f7;
+    padding: 12px;
+    border-radius: 8px;
+    margin-top: 10px;
+    max-height: 150px;
+    overflow-y: auto;
+}

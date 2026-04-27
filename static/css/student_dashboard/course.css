@@ -1,0 +1,530 @@
+/* 
+=========================================================================
+========================== КУРСЫ: СПИСОК КУРСОВ  ======================== 
+=========================================================================
+*/
+
+/* По умолчанию скрываем контейнер */
+.courses-grid {
+    display: grid;
+    /* auto-fill создает пустые колонки, предотвращая растягивание одной карточки */
+    grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
+    gap: 25px;
+    padding-top: 10px;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Ограничиваем количество колонок до 3 на средних и больших экранах */
+@media (min-width: 1024px) {
+    .courses-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* Класс, который мы добавим через JS, чтобы показать блок */
+.courses-grid-visible {
+    display: grid;
+}
+
+/* Анимация плавного появления */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Избегаем слишком широких карточек, если колонка стала большой */
+.mini-course-card {
+    max-width: 450px;
+    width: 100%;
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s;
+    border: 2px solid #cccfd5;
+    cursor: pointer;
+}
+
+.mini-course-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Картинка курса */
+.course-img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+}
+
+/* Текст внутри карточки */
+.course-info {
+    padding: 12px;
+}
+
+.course-info h4 {
+    margin: 0;
+    font-size: 16px;
+    color: #1f2937;
+    margin-bottom: 4px;
+}
+
+.course-info p {
+    margin: 0;
+    font-size: 13px;
+    color: #6b7280;
+}
+
+/* 
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+======================================================
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+*/
+
+/* 
+=========================================================================
+========================= КУРСЫ: СОДЕРЖАНИЕ  =========================== 
+=========================================================================
+*/
+
+/* --- Стили для шапки курса --- */
+.course-header {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 25px;
+    padding: 20px;
+    margin-bottom: 30px;
+}
+
+.course-cover {
+    flex: 0 0 300px;
+    border-radius: 10px;
+    overflow: hidden;
+    height: 200px;
+}
+
+.course-cover img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.course-details {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.course-tags {
+    margin-bottom: 10px;
+}
+
+.tag {
+    background: #eef2ff;
+    color: #6366f1;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    margin-right: 5px;
+}
+
+.course-details h2 {
+    margin: 5px 0 10px 0;
+    font-size: 24px;
+    color: #1f2937;
+}
+
+.description {
+    color: #6b7280;
+    font-size: 14px;
+    margin-bottom: 15px;
+    line-height: 1.5;
+}
+
+.instructor-info {
+    border-top: 1px solid #e5e7eb;
+    padding-top: 15px;
+}
+
+.info-row {
+    display: flex;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+
+.info-row .label {
+    width: 100px;
+    color: #9ca3af;
+    font-weight: 500;
+}
+
+.info-row .value {
+    color: #111827;
+    font-weight: 600;
+}
+
+/* --- Стили для списка лекций --- */
+.lectures-container {
+    margin-top: 20px;
+}
+
+.section-title {
+    font-size: 18px;
+    margin-bottom: 15px;
+    color: #1f2937;
+}
+
+.lecture-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.lecture-row {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    transition: all 0.2s;
+}
+
+/* СТИЛЬ ДЛЯ ПРОЙДЕННЫХ УРОКОВ (Зеленый бордер) */
+.lecture-row.completed {
+    border: 1px solid #10b981;
+    background-color: #f0fdf4;
+}
+
+/* Иконки статуса */
+.status-icon {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    color: #9ca3af;
+}
+
+/* Зеленая галочка для пройденных */
+.completed .status-icon {
+    background: #d1fae5;
+    color: #10b981;
+}
+
+/* Фиолетовый Play для текущего */
+.status-icon.play {
+    background: #e0e7ff;
+    color: #6366f1;
+}
+
+.lecture-content {
+    flex: 1;
+}
+
+.lecture-number {
+    display: block;
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 2px;
+}
+
+.lecture-row h4 {
+    margin: 0;
+    font-size: 15px;
+    color: #1f2937;
+}
+
+/* Кнопки справа */
+.btn-review,
+.btn-start {
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    cursor: pointer;
+    border: none;
+    font-weight: 500;
+}
+
+.btn-review {
+    background: transparent;
+    color: #6b7280;
+    border: 1px solid #e5e7eb;
+}
+
+.btn-review:hover {
+    background: #f3f4f6;
+}
+
+.btn-start {
+    background: #6366f1;
+    color: white;
+}
+
+.btn-start:hover {
+    background: #4f46e5;
+}
+
+
+/* 
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+======================================================
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+*/
+
+/* 
+=========================================================================
+============================= КУРСЫ: ВИДЕОУРОК ==========================
+=========================================================================
+*/
+
+/* Основные стили для карточки урока */
+.lesson-card_item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    font-family: sans-serif;
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+.lesson-category {
+    color: #6366f1;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.lesson-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.lesson-description {
+    color: #6b7280;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* Контейнер для видео */
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* === Отслеживание времени просмотра видео === */
+.video-tracking-container {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.tracking-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.tracking-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stat-icon {
+    font-size: 24px;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 2px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-color);
+    font-family: 'Courier New', monospace;
+}
+
+.progress-section {
+    margin-top: 16px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #475569;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), #059669);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.tracking-hint {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tracking-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #475569;
+}
+
+.status-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #94a3b8;
+}
+
+.status-indicator.active {
+    background: var(--accent-color);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}
+
+/* Мета данные (время, дата) */
+.lesson-meta {
+    display: flex;
+    gap: 20px;
+    color: #9ca3af;
+    font-size: 14px;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+/* Кнопки файлов */
+.files-container {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.file-btn {
+    background: #f3f4f6;
+    border: 1px solid #e5e7eb;
+    padding: 8px 16px;
+    border-radius: 6px;
+    text-decoration: none;
+    color: #374151;
+    font-size: 13px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+}
+
+.file-btn:hover {
+    background: #e5e7eb;
+}
+
+/* Кнопка назад (опционально) */
+.back-btn {
+    background: #6366f1;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    margin-top: 10px;
+}
+
+.back-btn:hover {
+    background: #4f46e5;
+}
+
+/* 
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+======================================================
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+*/

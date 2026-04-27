@@ -1,0 +1,32 @@
+
+/* 
+=========================================================================
+========================= SCROLL AREA FOR CARDS ========================= 
+=========================================================================
+*/
+
+.journal-cards-scroll-area {
+    max-height: 480px; /* Approx height for 3 cards */
+    overflow-y: auto;
+    padding-right: 5px; /* Avoid scrollbar covering content */
+    margin-right: -5px; /* Align with right edge despite padding */
+}
+
+/* Custom Scrollbar for Webkit */
+.journal-cards-scroll-area::-webkit-scrollbar {
+    width: 6px;
+}
+
+.journal-cards-scroll-area::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.journal-cards-scroll-area::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.journal-cards-scroll-area::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}

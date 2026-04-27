@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-z-(c)bkk57728$hn2o9lm4#l-$)7@sd&*qi_a0$x%*e!n)70y6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.0.120', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['ashyklms.pythonanywhere.com']
 
 
 # Application definition
@@ -119,7 +119,7 @@ LOGIN_REDIRECT_URL = 'profile'
 LOGOUT_REDIRECT_URL = 'login'
 
 AUTHENTICATION_BACKENDS = [
-    'ashyk_lms_app.backends.EmailOrUsernameModelBackend', 
+    'ashyk_lms_app.backends.EmailOrUsernameModelBackend',
     'django.contrib.auth.backends.ModelBackend',
 ]
 
@@ -136,3 +136,4 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
+STATIC_ROOT = BASE_DIR / 'static'

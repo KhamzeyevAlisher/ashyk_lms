@@ -1,0 +1,906 @@
+{
+    "credits": 240,
+    "lectures": 580,
+    "practicals": 1405,
+    "lab_work": 15,
+    "SROP": 420,
+    "SRS": 4780,
+    "semester": {
+        "1 академиялық кезең": {
+            "credits": 27,
+            "lectures": 45,
+            "practicals": 210,
+            "lab_work": 0,
+            "SROP": 50,
+            "SRS": 505,
+            "disciplines": [
+                {
+                    "Жалпы білім беру пәндері": {
+                        "type": "Міндетті",
+                        "credits": 17,
+                        "courses": [
+                            {
+                                "Қазақстан тарихы": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Шетел тілі": {
+                                    "credits": 5,
+                                    "lectures": 0,
+                                    "practicals": 45,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Қазақ (орыс) тілі": {
+                                    "credits": 5,
+                                    "lectures": 0,
+                                    "practicals": 45,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Дене шынықтыру": {
+                                    "credits": 2,
+                                    "lectures": 0,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 30
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Базалық пәндері": {
+                        "type": "ЖОО",
+                        "credits": 5,
+                        "courses": [
+                            {
+                                "Менеджмент": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Жалпы білім беру пәндері": {
+                        "type": "Таңдау",
+                        "credits": 5,
+                        "courses": [
+                            {
+                                "Экономикалық теория": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Қаржылық сауаттылық": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                },
+                                "Кәсіпкерлік": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                },
+                                "Құқық жүйесі": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "2 академиялық кезең": {
+            "credits": 33,
+            "lectures": 70,
+            "practicals": 205,
+            "lab_work": 15,
+            "SROP": 60,
+            "SRS": 640,
+            "disciplines": [
+                {
+                    "Жалпы білім беру пәндері": {
+                        "type": "Міндетті",
+                        "credits": 25,
+                        "courses": [
+                            {
+                                "Ақпараттық-коммуникациялық технологиялар": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 15,
+                                    "lab_work": 15,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Шетел тілі": {
+                                    "credits": 5,
+                                    "lectures": 0,
+                                    "practicals": 45,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Қазақ (орыс) тілі": {
+                                    "credits": 5,
+                                    "lectures": 0,
+                                    "practicals": 45,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Әлеуметтік-саясаттану білім модулі (Әлеуметтану, Саясаттану, Мәдениеттану, Психология)": {
+                                    "credits": 8,
+                                    "lectures": 40,
+                                    "practicals": 40,
+                                    "lab_work": 0,
+                                    "SROP": 20,
+                                    "SRS": 140
+                                },
+                                "Дене шынықтыру": {
+                                    "credits": 2,
+                                    "lectures": 0,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 30
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Базалық пәндері": {
+                        "type": "ЖОО",
+                        "credits": 8,
+                        "courses": [
+                            {
+                                "Микроэкономика": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Оқу-танысу практикасы": {
+                                    "credits": 3,
+                                    "lectures": 0,
+                                    "practicals": 90,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 90
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "3 академиялық кезең": {
+            "credits": 30,
+            "lectures": 90,
+            "practicals": 210,
+            "lab_work": 0,
+            "SROP": 60,
+            "SRS": 540,
+            "disciplines": [
+                {
+                    "Жалпы білім беру пәндері": {
+                        "type": "Міндетті",
+                        "credits": 7,
+                        "courses": [
+                            {
+                                "Философия": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Дене шынықтыру": {
+                                    "credits": 2,
+                                    "lectures": 0,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 30
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Базалық пәндері": {
+                        "type": "ЖОО",
+                        "credits": 18,
+                        "courses": [
+                            {
+                                "Экономикадағы математика": {
+                                    "credits": 4,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 65
+                                },
+                                "Макроэкономика": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Маркетинг": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "HR-менеджмент": {
+                                    "credits": 4,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 65
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Бейіндеуші пәндер": {
+                        "type": "ЖОО",
+                        "credits": 5,
+                        "courses": [
+                            {
+                                "Ұйымдастырушылық мінез-құлық": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "4 академиялық кезең": {
+            "credits": 30,
+            "lectures": 75,
+            "practicals": 180,
+            "lab_work": 0,
+            "SROP": 50,
+            "SRS": 595,
+            "disciplines": [
+                {
+                    "Жалпы білім беру пәндері": {
+                        "type": "Міндетті",
+                        "credits": 2,
+                        "courses": [
+                            {
+                                "Дене шынықтыру": {
+                                    "credits": 2,
+                                    "lectures": 0,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 30
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Базалық пәндері": {
+                        "type": "ЖОО",
+                        "credits": 20,
+                        "courses": [
+                            {
+                                "Инклюзивті білім беру": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Бизнестегі жасанды интеллект": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Бухгалтерлік есеп негіздері": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Кәсіпорын экономикасы": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Базалық пәндері": {
+                        "type": "Таңдау",
+                        "credits": 5,
+                        "courses": [
+                            {
+                                "Сыбайлас жемқорлыққа қарсы мәдениет негіздері": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Ғылыми зерттеулер әдістері": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                },
+                                "Экология және өміртіршілік қауіпсіздігі негіздері": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Бейіндеуші пәндер": {
+                        "type": "ЖОО",
+                        "credits": 3,
+                        "courses": [
+                            {
+                                "Өндірістік практика 1": {
+                                    "credits": 3,
+                                    "lectures": 0,
+                                    "practicals": 90,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "5 академиялық кезең": {
+            "credits": 30,
+            "lectures": 90,
+            "practicals": 180,
+            "lab_work": 0,
+            "SROP": 60,
+            "SRS": 570,
+            "disciplines": [
+                {
+                    "Базалық пәндері": {
+                        "type": "ЖОО",
+                        "credits": 15,
+                        "courses": [
+                            {
+                                "Қаржылық менеджмент": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Дағдарысқа қарсы менеджмент": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Коммуникациялар және келіссөздерді жүргізу": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Базалық пәндері": {
+                        "type": "Таңдау",
+                        "credits": 10,
+                        "courses": [
+                            {
+                                "Академиялық жазу және сөйлеу мәдениеті": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Іс жүргізуді ұйымдастыру": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            },
+                            {
+                                "Әлеуметтік сала экономикасы": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Аудит негіздері": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Бейіндеуші пәндер": {
+                        "type": "Таңдау",
+                        "credits": 5,
+                        "courses": [
+                            {
+                                "Бизнестің этикасы және әлеуметтік жауапкершілігі": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Корпоративтік мәдениет": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "6 академиялық кезең": {
+            "credits": 30,
+            "lectures": 75,
+            "practicals": 150,
+            "lab_work": 0,
+            "SROP": 50,
+            "SRS": 625,
+            "disciplines": [
+                {
+                    "Базалық пәндері": {
+                        "type": "Таңдау",
+                        "credits": 15,
+                        "courses": [
+                            {
+                                "Бизнес жоспарлау және коммерцияландыру": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Кәсіпкерлік құқық": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            },
+                            {
+                                "Стратегиялық менеджмент": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Инновациялық менеджмент": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            },
+                            {
+                                "Бизнес-аналитика": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Корпоративтік құқық": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Бейіндеуші пәндер": {
+                        "type": "Таңдау",
+                        "credits": 10,
+                        "courses": [
+                            {
+                                "Көшбасшылар мен топтарды дамытудағы коучинг": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Кадр саясаты және кадрлық аудит": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            },
+                            {
+                                "Кәсіпкерлік және стартап-жобалар": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Мемлекеттік және жеке серіктестік": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Бейіндеуші пәндер": {
+                        "type": "ЖОО",
+                        "credits": 5,
+                        "courses": [
+                            {
+                                "Өндірістік практика 2": {
+                                    "credits": 5,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 150
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "7 академиялық кезең": {
+            "credits": 30,
+            "lectures": 90,
+            "practicals": 180,
+            "lab_work": 0,
+            "SROP": 60,
+            "SRS": 570,
+            "disciplines": [
+                {
+                    "Бейіндеуші пәндер": {
+                        "type": "ЖОО",
+                        "credits": 10,
+                        "courses": [
+                            {
+                                "Бизнестегі цифрлық трансформация": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Бизнесті жоспарлау және болжау": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Базалық пәндері": {
+                        "type": "Таңдау",
+                        "credits": 5,
+                        "courses": [
+                            {
+                                "Деректерді визуализациялау және Excel практикумы": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Өзгерістерді басқару": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Бейіндеуші пәндер": {
+                        "type": "Таңдау",
+                        "credits": 15,
+                        "courses": [
+                            {
+                                "Бизнес-үдерістерді үлгілеу және оңтайландыру": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Басқарудағы IT инжиниринг": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            },
+                            {
+                                "Бизнесті бағалау": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Брендті басқару": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            },
+                            {
+                                "Стратегиялық маркетинг": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Логистика және жеткізу тізбегін басқару": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        },
+        "8 академиялық кезең": {
+            "credits": 30,
+            "lectures": 45,
+            "practicals": 90,
+            "lab_work": 0,
+            "SROP": 30,
+            "SRS": 735,
+            "disciplines": [
+                {
+                    "Бейіндеуші пәндер": {
+                        "type": "Таңдау",
+                        "credits": 14,
+                        "courses": [
+                            {
+                                "Жобаларды басқару": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Инвестициялық талдау": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            },
+                            {
+                                "Электрондық бизнес (E-business)": {
+                                    "credits": 4,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 65
+                                },
+                                "Мәліметтер базасы және ақпараттық жүйелер": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            },
+                            {
+                                "Тәуекел-менеджмент": {
+                                    "credits": 5,
+                                    "lectures": 15,
+                                    "practicals": 30,
+                                    "lab_work": 0,
+                                    "SROP": 10,
+                                    "SRS": 95
+                                },
+                                "Операциялық менеджмент": {
+                                    "credits": 0,
+                                    "lectures": 0,
+                                    "practicals": 0,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Бейіндеуші пәндер": {
+                        "type": "ЖОО",
+                        "credits": 8,
+                        "courses": [
+                            {
+                                "Өндірістік немесе дипломалды практика": {
+                                    "credits": 8,
+                                    "lectures": 0,
+                                    "practicals": 240,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                },
+                {
+                    "Қорытынды аттестаттау": {
+                        "type": "Міндетті",
+                        "credits": 8,
+                        "courses": [
+                            {
+                                "Дипломдық жұмысты (жобаны) жазу және қорғау немесе кешенді емтиханға дайындалуы мен тапсыру": {
+                                    "credits": 8,
+                                    "lectures": 0,
+                                    "practicals": 240,
+                                    "lab_work": 0,
+                                    "SROP": 0,
+                                    "SRS": 0
+                                }
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    }
+}
