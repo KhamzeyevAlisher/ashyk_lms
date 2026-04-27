@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture, Teacher, Homework, HomeworkSubmission, GroupSchedule
+from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture, Teacher, Homework, HomeworkSubmission, GroupSchedule, CoursePresentation
 import json
 import random
 from django.db.models import Q
@@ -358,7 +358,8 @@ def get_course_detail(request, course_id):
                 'instructorId': instructor_id, 
                 'duration': course.duration_text
             },
-            'program': program_data
+            'program': program_data,
+            'presentationUrl': course.presentation.file.url if hasattr(course, 'presentation') else None
         }
         return JsonResponse({'course': data, 'status': 'success'})
 

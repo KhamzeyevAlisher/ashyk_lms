@@ -8,6 +8,87 @@ async function renderCourseByTitle(courseTitle) {
     container.innerHTML = '<h3>Жүктелуде...</h3>';
 
     try {
+        // Добавляем стили динамически, чтобы избежать проблем с кэшированием CSS
+        if (!document.getElementById('course-detail-styles')) {
+            const style = document.createElement('style');
+            style.id = 'course-detail-styles';
+            style.innerHTML = `
+                .course-tabs-container {
+                    display: flex;
+                    gap: 12px;
+                    background: #f1f5f9;
+                    padding: 6px;
+                    border-radius: 14px;
+                    margin: 25px 0;
+                    width: fit-content;
+                    border: 1px solid #e2e8f0;
+                    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+                }
+                .tab-btn-item {
+                    background: transparent;
+                    border: none;
+                    padding: 10px 24px;
+                    font-size: 14px;
+                    font-weight: 600;
+                    color: #64748b;
+                    cursor: pointer;
+                    border-radius: 10px;
+                    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    white-space: nowrap;
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                }
+                .tab-btn-item:hover {
+                    color: #1e293b;
+                    background: rgba(255, 255, 255, 0.6);
+                }
+                .tab-btn-item.active {
+                    background: white;
+                    color: #6366f1;
+                    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+                }
+                .course-tab-content {
+                    display: none;
+                    animation: courseFadeIn 0.4s ease-out;
+                }
+                .course-tab-content.active {
+                    display: block;
+                }
+                @keyframes courseFadeIn {
+                    from { opacity: 0; transform: translateY(10px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                .presentation-container {
+                    background: white;
+                    border: 1px solid #e2e8f0;
+                    border-radius: 20px;
+                    overflow: hidden;
+                    height: 75vh;
+                    min-height: 650px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                }
+                .presentation-container iframe {
+                    width: 100%;
+                    height: 100%;
+                    border: none;
+                }
+                .no-presentation-empty {
+                    text-align: center;
+                    padding: 80px 40px;
+                    color: #94a3b8;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                    gap: 20px;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
         // We use courseTitle which matches the API expectation for get_course_detail (handled as str)
         const response = await fetch(`/api/courses/${encodeURIComponent(courseTitle)}/?t=${Date.now()}`);
         const result = await response.json();
@@ -94,16 +175,62 @@ async function renderCourseByTitle(courseTitle) {
                 </div>
             </div>
 
-            <!-- Список лекций -->
-            <div class="lectures-container">
-                <h3 class="section-title">Курс бағдарламасы</h3>
-                <div class="lecture-stack">
-                    ${lecturesHTML}
+            <!-- Вкладки (Tabs) -->
+            <div class="course-tabs-container">
+                <button class="tab-btn-item active" onclick="switchCourseTab(event, 'presentation')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+                    Презентация
+                </button>
+                <button class="tab-btn-item" onclick="switchCourseTab(event, 'program')">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
+                    Курс бағдарламасы
+                </button>
+            </div>
+
+            <!-- Контент вкладок -->
+            <div id="presentation-tab" class="course-tab-content active">
+                <div class="presentation-container">
+                    ${data.presentationUrl 
+                        ? `<iframe src="${data.presentationUrl}#toolbar=0" type="application/pdf"></iframe>`
+                        : `<div class="no-presentation-empty">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
+                            <p>Бұл курс үшін презентация жүктелмеген</p>
+                          </div>`
+                    }
+                </div>
+            </div>
+
+            <div id="program-tab" class="course-tab-content">
+                <div class="lectures-container">
+                    <h3 class="section-title">Курс бағдарламасы</h3>
+                    <div class="lecture-stack">
+                        ${lecturesHTML}
+                    </div>
                 </div>
             </div>
         `;
 
         container.innerHTML = fullHTML;
+
+        // Добавляем функцию переключения вкладок в глобальную область, если её там нет
+        window.switchCourseTab = function(event, tabName) {
+            // Находим родительский контейнер для поиска только его вкладок
+            const parent = event.currentTarget.closest('#tab-item-course');
+            
+            // Убираем активный класс у кнопок
+            const buttons = parent.querySelectorAll('.tab-btn-item');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            // Добавляем активный класс нажатой кнопке
+            event.currentTarget.classList.add('active');
+            
+            // Скрываем все вкладки курса
+            const contents = parent.querySelectorAll('.course-tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+            
+            // Показываем нужную вкладку
+            parent.querySelector(`#${tabName}-tab`).classList.add('active');
+        };
 
         // Update URL to match state
         openTab('item-course', `titleCourse=${courseTitle}`);

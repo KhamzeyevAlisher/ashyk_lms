@@ -1,32 +1,32 @@
-/* 
+﻿/* 
 =========================================================================
-========================== КУРСЫ: СПИСОК КУРСОВ  ======================== 
+========================== РљРЈР РЎР«: РЎРџРРЎРћРљ РљРЈР РЎРћР’  ======================== 
 =========================================================================
 */
 
-/* По умолчанию скрываем контейнер */
+/* РџРѕ СѓРјРѕР»С‡Р°РЅРёСЋ СЃРєСЂС‹РІР°РµРј РєРѕРЅС‚РµР№РЅРµСЂ */
 .courses-grid {
     display: grid;
-    /* auto-fill создает пустые колонки, предотвращая растягивание одной карточки */
+    /* auto-fill СЃРѕР·РґР°РµС‚ РїСѓСЃС‚С‹Рµ РєРѕР»РѕРЅРєРё, РїСЂРµРґРѕС‚РІСЂР°С‰Р°СЏ СЂР°СЃС‚СЏРіРёРІР°РЅРёРµ РѕРґРЅРѕР№ РєР°СЂС‚РѕС‡РєРё */
     grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
     gap: 25px;
     padding-top: 10px;
     animation: fadeIn 0.5s ease;
 }
 
-/* Ограничиваем количество колонок до 3 на средних и больших экранах */
+/* РћРіСЂР°РЅРёС‡РёРІР°РµРј РєРѕР»РёС‡РµСЃС‚РІРѕ РєРѕР»РѕРЅРѕРє РґРѕ 3 РЅР° СЃСЂРµРґРЅРёС… Рё Р±РѕР»СЊС€РёС… СЌРєСЂР°РЅР°С… */
 @media (min-width: 1024px) {
     .courses-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-/* Класс, который мы добавим через JS, чтобы показать блок */
+/* РљР»Р°СЃСЃ, РєРѕС‚РѕСЂС‹Р№ РјС‹ РґРѕР±Р°РІРёРј С‡РµСЂРµР· JS, С‡С‚РѕР±С‹ РїРѕРєР°Р·Р°С‚СЊ Р±Р»РѕРє */
 .courses-grid-visible {
     display: grid;
 }
 
-/* Анимация плавного появления */
+/* РђРЅРёРјР°С†РёСЏ РїР»Р°РІРЅРѕРіРѕ РїРѕСЏРІР»РµРЅРёСЏ */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -39,7 +39,7 @@
     }
 }
 
-/* Избегаем слишком широких карточек, если колонка стала большой */
+/* РР·Р±РµРіР°РµРј СЃР»РёС€РєРѕРј С€РёСЂРѕРєРёС… РєР°СЂС‚РѕС‡РµРє, РµСЃР»Рё РєРѕР»РѕРЅРєР° СЃС‚Р°Р»Р° Р±РѕР»СЊС€РѕР№ */
 .mini-course-card {
     max-width: 450px;
     width: 100%;
@@ -57,14 +57,14 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* Картинка курса */
+/* РљР°СЂС‚РёРЅРєР° РєСѓСЂСЃР° */
 .course-img {
     width: 100%;
     height: 120px;
     object-fit: cover;
 }
 
-/* Текст внутри карточки */
+/* РўРµРєСЃС‚ РІРЅСѓС‚СЂРё РєР°СЂС‚РѕС‡РєРё */
 .course-info {
     padding: 12px;
 }
@@ -90,11 +90,11 @@
 
 /* 
 =========================================================================
-========================= КУРСЫ: СОДЕРЖАНИЕ  =========================== 
+========================= РљРЈР РЎР«: РЎРћР”Р•Р Р–РђРќРР•  =========================== 
 =========================================================================
 */
 
-/* --- Стили для шапки курса --- */
+/* --- РЎС‚РёР»Рё РґР»СЏ С€Р°РїРєРё РєСѓСЂСЃР° --- */
 .course-header {
     display: flex;
     flex-wrap: wrap;
@@ -172,7 +172,7 @@
     font-weight: 600;
 }
 
-/* --- Стили для списка лекций --- */
+/* --- РЎС‚РёР»Рё РґР»СЏ СЃРїРёСЃРєР° Р»РµРєС†РёР№ --- */
 .lectures-container {
     margin-top: 20px;
 }
@@ -200,13 +200,13 @@
     transition: all 0.2s;
 }
 
-/* СТИЛЬ ДЛЯ ПРОЙДЕННЫХ УРОКОВ (Зеленый бордер) */
+/* РЎРўРР›Р¬ Р”Р›РЇ РџР РћР™Р”Р•РќРќР«РҐ РЈР РћРљРћР’ (Р—РµР»РµРЅС‹Р№ Р±РѕСЂРґРµСЂ) */
 .lecture-row.completed {
     border: 1px solid #10b981;
     background-color: #f0fdf4;
 }
 
-/* Иконки статуса */
+/* РРєРѕРЅРєРё СЃС‚Р°С‚СѓСЃР° */
 .status-icon {
     width: 32px;
     height: 32px;
@@ -217,13 +217,13 @@
     color: #9ca3af;
 }
 
-/* Зеленая галочка для пройденных */
+/* Р—РµР»РµРЅР°СЏ РіР°Р»РѕС‡РєР° РґР»СЏ РїСЂРѕР№РґРµРЅРЅС‹С… */
 .completed .status-icon {
     background: #d1fae5;
     color: #10b981;
 }
 
-/* Фиолетовый Play для текущего */
+/* Р¤РёРѕР»РµС‚РѕРІС‹Р№ Play РґР»СЏ С‚РµРєСѓС‰РµРіРѕ */
 .status-icon.play {
     background: #e0e7ff;
     color: #6366f1;
@@ -246,7 +246,7 @@
     color: #1f2937;
 }
 
-/* Кнопки справа */
+/* РљРЅРѕРїРєРё СЃРїСЂР°РІР° */
 .btn-review,
 .btn-start {
     padding: 6px 12px;
@@ -285,11 +285,11 @@
 
 /* 
 =========================================================================
-============================= КУРСЫ: ВИДЕОУРОК ==========================
+============================= РљРЈР РЎР«: Р’РР”Р•РћРЈР РћРљ ==========================
 =========================================================================
 */
 
-/* Основные стили для карточки урока */
+/* РћСЃРЅРѕРІРЅС‹Рµ СЃС‚РёР»Рё РґР»СЏ РєР°СЂС‚РѕС‡РєРё СѓСЂРѕРєР° */
 .lesson-card_item {
     background: #fff;
     border-radius: 12px;
@@ -321,7 +321,7 @@
     line-height: 1.5;
 }
 
-/* Контейнер для видео */
+/* РљРѕРЅС‚РµР№РЅРµСЂ РґР»СЏ РІРёРґРµРѕ */
 .video-wrapper {
     position: relative;
     padding-bottom: 56.25%;
@@ -341,7 +341,7 @@
     border: 0;
 }
 
-/* === Отслеживание времени просмотра видео === */
+/* === РћС‚СЃР»РµР¶РёРІР°РЅРёРµ РІСЂРµРјРµРЅРё РїСЂРѕСЃРјРѕС‚СЂР° РІРёРґРµРѕ === */
 .video-tracking-container {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -466,7 +466,7 @@
     }
 }
 
-/* Мета данные (время, дата) */
+/* РњРµС‚Р° РґР°РЅРЅС‹Рµ (РІСЂРµРјСЏ, РґР°С‚Р°) */
 .lesson-meta {
     display: flex;
     gap: 20px;
@@ -482,7 +482,7 @@
     gap: 5px;
 }
 
-/* Кнопки файлов */
+/* РљРЅРѕРїРєРё С„Р°Р№Р»РѕРІ */
 .files-container {
     display: flex;
     gap: 10px;
@@ -507,7 +507,7 @@
     background: #e5e7eb;
 }
 
-/* Кнопка назад (опционально) */
+/* РљРЅРѕРїРєР° РЅР°Р·Р°Рґ (РѕРїС†РёРѕРЅР°Р»СЊРЅРѕ) */
 .back-btn {
     background: #6366f1;
     color: white;
@@ -528,3 +528,177 @@
 ======================================================
 =\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
 */
+/* --- РЎС‚РёР»Рё РґР»СЏ РІРєР»Р°РґРѕРє (Tabs) --- */
+.course-tabs {
+    display: flex;
+    gap: 10px;
+    background: #f3f4f6;
+    padding: 6px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    width: fit-content;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 10px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #6b7280;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-btn:hover {
+    color: #111827;
+}
+
+.tab-btn.active {
+    background: white;
+    color: #6366f1;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+.tab-content {
+    display: none;
+    animation: tabFadeIn 0.4s ease;
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes tabFadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- РџСЂРµР·РµРЅС‚Р°С†РёСЏ --- */
+.presentation-container {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 75vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.presentation-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.no-presentation {
+    text-align: center;
+    padding: 60px;
+    color: #9ca3af;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.no-presentation svg {
+    opacity: 0.3;
+}
+
+.no-presentation p {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* --- Стили для вкладок (Course Tabs) --- */
+.course-tabs {
+    display: flex;
+    gap: 8px;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    width: fit-content;
+    border: 1px solid #e2e8f0;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+}
+
+.tab-btn:hover {
+    color: #1e293b;
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.tab-btn.active {
+    background: white;
+    color: #6366f1;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.course-tab-content {
+    display: none;
+    animation: courseTabFadeIn 0.3s ease-out;
+}
+
+.course-tab-content.active {
+    display: block;
+}
+
+@keyframes courseTabFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Презентация курса --- */
+.presentation-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 75vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.presentation-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.no-presentation {
+    text-align: center;
+    padding: 60px;
+    color: #94a3b8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.no-presentation svg {
+    opacity: 0.3;
+}
+
+.no-presentation p {
+    font-size: 16px;
+    font-weight: 500;
+}

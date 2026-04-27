@@ -26,7 +26,8 @@ from .models import (
     Homework,
     HomeworkSubmission,
     GroupSchedule,
-    StudentFinalScore
+    StudentFinalScore,
+    CoursePresentation
 )
 
 # ========================================================
@@ -242,6 +243,13 @@ class LectureAdmin(admin.ModelAdmin):
     list_filter = ('course', 'category')
     search_fields = ('title', 'description', 'course__title')
     inlines = [LectureFileInline]
+
+
+@admin.register(CoursePresentation)
+class CoursePresentationAdmin(admin.ModelAdmin):
+    list_display = ('course', 'file', 'created_at')
+    search_fields = ('course__title',)
+    autocomplete_fields = ['course']
 
 
 # ========================================================

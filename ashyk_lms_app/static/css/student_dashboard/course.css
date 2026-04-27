@@ -1,32 +1,32 @@
-/* 
+﻿/* 
 =========================================================================
-========================== КУРСЫ: СПИСОК КУРСОВ  ======================== 
+========================== Р С™Р Р€Р В Р РЋР В«: Р РЋР СџР ВР РЋР С›Р С™ Р С™Р Р€Р В Р РЋР С›Р вЂ™  ======================== 
 =========================================================================
 */
 
-/* По умолчанию скрываем контейнер */
+/* Р СџР С• РЎС“Р СР С•Р В»РЎвЂЎР В°Р Р…Р С‘РЎР‹ РЎРѓР С”РЎР‚РЎвЂ№Р Р†Р В°Р ВµР С Р С”Р С•Р Р…РЎвЂљР ВµР в„–Р Р…Р ВµРЎР‚ */
 .courses-grid {
     display: grid;
-    /* auto-fill создает пустые колонки, предотвращая растягивание одной карточки */
+    /* auto-fill РЎРѓР С•Р В·Р Т‘Р В°Р ВµРЎвЂљ Р С—РЎС“РЎРѓРЎвЂљРЎвЂ№Р Вµ Р С”Р С•Р В»Р С•Р Р…Р С”Р С‘, Р С—РЎР‚Р ВµР Т‘Р С•РЎвЂљР Р†РЎР‚Р В°РЎвЂ°Р В°РЎРЏ РЎР‚Р В°РЎРѓРЎвЂљРЎРЏР С–Р С‘Р Р†Р В°Р Р…Р С‘Р Вµ Р С•Р Т‘Р Р…Р С•Р в„– Р С”Р В°РЎР‚РЎвЂљР С•РЎвЂЎР С”Р С‘ */
     grid-template-columns: repeat(auto-fill, minmax(min(320px, 100%), 1fr));
     gap: 25px;
     padding-top: 10px;
     animation: fadeIn 0.5s ease;
 }
 
-/* Ограничиваем количество колонок до 3 на средних и больших экранах */
+/* Р С›Р С–РЎР‚Р В°Р Р…Р С‘РЎвЂЎР С‘Р Р†Р В°Р ВµР С Р С”Р С•Р В»Р С‘РЎвЂЎР ВµРЎРѓРЎвЂљР Р†Р С• Р С”Р С•Р В»Р С•Р Р…Р С•Р С” Р Т‘Р С• 3 Р Р…Р В° РЎРѓРЎР‚Р ВµР Т‘Р Р…Р С‘РЎвЂ¦ Р С‘ Р В±Р С•Р В»РЎРЉРЎв‚¬Р С‘РЎвЂ¦ РЎРЊР С”РЎР‚Р В°Р Р…Р В°РЎвЂ¦ */
 @media (min-width: 1024px) {
     .courses-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 }
 
-/* Класс, который мы добавим через JS, чтобы показать блок */
+/* Р С™Р В»Р В°РЎРѓРЎРѓ, Р С”Р С•РЎвЂљР С•РЎР‚РЎвЂ№Р в„– Р СРЎвЂ№ Р Т‘Р С•Р В±Р В°Р Р†Р С‘Р С РЎвЂЎР ВµРЎР‚Р ВµР В· JS, РЎвЂЎРЎвЂљР С•Р В±РЎвЂ№ Р С—Р С•Р С”Р В°Р В·Р В°РЎвЂљРЎРЉ Р В±Р В»Р С•Р С” */
 .courses-grid-visible {
     display: grid;
 }
 
-/* Анимация плавного появления */
+/* Р С’Р Р…Р С‘Р СР В°РЎвЂ Р С‘РЎРЏ Р С—Р В»Р В°Р Р†Р Р…Р С•Р С–Р С• Р С—Р С•РЎРЏР Р†Р В»Р ВµР Р…Р С‘РЎРЏ */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -39,7 +39,7 @@
     }
 }
 
-/* Избегаем слишком широких карточек, если колонка стала большой */
+/* Р ВР В·Р В±Р ВµР С–Р В°Р ВµР С РЎРѓР В»Р С‘РЎв‚¬Р С”Р С•Р С РЎв‚¬Р С‘РЎР‚Р С•Р С”Р С‘РЎвЂ¦ Р С”Р В°РЎР‚РЎвЂљР С•РЎвЂЎР ВµР С”, Р ВµРЎРѓР В»Р С‘ Р С”Р С•Р В»Р С•Р Р…Р С”Р В° РЎРѓРЎвЂљР В°Р В»Р В° Р В±Р С•Р В»РЎРЉРЎв‚¬Р С•Р в„– */
 .mini-course-card {
     max-width: 450px;
     width: 100%;
@@ -57,14 +57,14 @@
     box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* Картинка курса */
+/* Р С™Р В°РЎР‚РЎвЂљР С‘Р Р…Р С”Р В° Р С”РЎС“РЎР‚РЎРѓР В° */
 .course-img {
     width: 100%;
     height: 120px;
     object-fit: cover;
 }
 
-/* Текст внутри карточки */
+/* Р СћР ВµР С”РЎРѓРЎвЂљ Р Р†Р Р…РЎС“РЎвЂљРЎР‚Р С‘ Р С”Р В°РЎР‚РЎвЂљР С•РЎвЂЎР С”Р С‘ */
 .course-info {
     padding: 12px;
 }
@@ -90,11 +90,11 @@
 
 /* 
 =========================================================================
-========================= КУРСЫ: СОДЕРЖАНИЕ  =========================== 
+========================= Р С™Р Р€Р В Р РЋР В«: Р РЋР С›Р вЂќР вЂўР В Р вЂ“Р С’Р СњР ВР вЂў  =========================== 
 =========================================================================
 */
 
-/* --- Стили для шапки курса --- */
+/* --- Р РЋРЎвЂљР С‘Р В»Р С‘ Р Т‘Р В»РЎРЏ РЎв‚¬Р В°Р С—Р С”Р С‘ Р С”РЎС“РЎР‚РЎРѓР В° --- */
 .course-header {
     display: flex;
     flex-wrap: wrap;
@@ -172,7 +172,7 @@
     font-weight: 600;
 }
 
-/* --- Стили для списка лекций --- */
+/* --- Р РЋРЎвЂљР С‘Р В»Р С‘ Р Т‘Р В»РЎРЏ РЎРѓР С—Р С‘РЎРѓР С”Р В° Р В»Р ВµР С”РЎвЂ Р С‘Р в„– --- */
 .lectures-container {
     margin-top: 20px;
 }
@@ -200,13 +200,13 @@
     transition: all 0.2s;
 }
 
-/* СТИЛЬ ДЛЯ ПРОЙДЕННЫХ УРОКОВ (Зеленый бордер) */
+/* Р РЋР СћР ВР вЂєР В¬ Р вЂќР вЂєР Р‡ Р СџР В Р С›Р в„ўР вЂќР вЂўР СњР СњР В«Р Тђ Р Р€Р В Р С›Р С™Р С›Р вЂ™ (Р вЂ”Р ВµР В»Р ВµР Р…РЎвЂ№Р в„– Р В±Р С•РЎР‚Р Т‘Р ВµРЎР‚) */
 .lecture-row.completed {
     border: 1px solid #10b981;
     background-color: #f0fdf4;
 }
 
-/* Иконки статуса */
+/* Р ВР С”Р С•Р Р…Р С”Р С‘ РЎРѓРЎвЂљР В°РЎвЂљРЎС“РЎРѓР В° */
 .status-icon {
     width: 32px;
     height: 32px;
@@ -217,13 +217,13 @@
     color: #9ca3af;
 }
 
-/* Зеленая галочка для пройденных */
+/* Р вЂ”Р ВµР В»Р ВµР Р…Р В°РЎРЏ Р С–Р В°Р В»Р С•РЎвЂЎР С”Р В° Р Т‘Р В»РЎРЏ Р С—РЎР‚Р С•Р в„–Р Т‘Р ВµР Р…Р Р…РЎвЂ№РЎвЂ¦ */
 .completed .status-icon {
     background: #d1fae5;
     color: #10b981;
 }
 
-/* Фиолетовый Play для текущего */
+/* Р В¤Р С‘Р С•Р В»Р ВµРЎвЂљР С•Р Р†РЎвЂ№Р в„– Play Р Т‘Р В»РЎРЏ РЎвЂљР ВµР С”РЎС“РЎвЂ°Р ВµР С–Р С• */
 .status-icon.play {
     background: #e0e7ff;
     color: #6366f1;
@@ -246,7 +246,7 @@
     color: #1f2937;
 }
 
-/* Кнопки справа */
+/* Р С™Р Р…Р С•Р С—Р С”Р С‘ РЎРѓР С—РЎР‚Р В°Р Р†Р В° */
 .btn-review,
 .btn-start {
     padding: 6px 12px;
@@ -285,11 +285,11 @@
 
 /* 
 =========================================================================
-============================= КУРСЫ: ВИДЕОУРОК ==========================
+============================= Р С™Р Р€Р В Р РЋР В«: Р вЂ™Р ВР вЂќР вЂўР С›Р Р€Р В Р С›Р С™ ==========================
 =========================================================================
 */
 
-/* Основные стили для карточки урока */
+/* Р С›РЎРѓР Р…Р С•Р Р†Р Р…РЎвЂ№Р Вµ РЎРѓРЎвЂљР С‘Р В»Р С‘ Р Т‘Р В»РЎРЏ Р С”Р В°РЎР‚РЎвЂљР С•РЎвЂЎР С”Р С‘ РЎС“РЎР‚Р С•Р С”Р В° */
 .lesson-card_item {
     background: #fff;
     border-radius: 12px;
@@ -321,7 +321,7 @@
     line-height: 1.5;
 }
 
-/* Контейнер для видео */
+/* Р С™Р С•Р Р…РЎвЂљР ВµР в„–Р Р…Р ВµРЎР‚ Р Т‘Р В»РЎРЏ Р Р†Р С‘Р Т‘Р ВµР С• */
 .video-wrapper {
     position: relative;
     padding-bottom: 56.25%;
@@ -341,7 +341,201 @@
     border: 0;
 }
 
-/* === Отслеживание времени просмотра видео === */
+/* === Р С›РЎвЂљРЎРѓР В»Р ВµР В¶Р С‘Р Р†Р В°Р Р…Р С‘Р Вµ Р Р†РЎР‚Р ВµР СР ВµР Р…Р С‘ Р С—РЎР‚Р С•РЎРѓР СР С•РЎвЂљРЎР‚Р В° Р Р†Р С‘Р Т‘Р ВµР С• === */
+.video-tracking-container {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 20px;
+}
+
+.tracking-title {
+    font-size: 13px;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #64748b;
+    margin-bottom: 12px;
+    letter-spacing: 0.5px;
+}
+
+.tracking-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.stat-icon {
+    font-size: 24px;
+}
+
+.stat-content {
+    flex: 1;
+}
+
+.stat-label {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 2px;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--accent-color);
+    font-family: 'Courier New', monospace;
+}
+
+.progress-section {
+    margin-top: 16px;
+}
+
+.progress-label {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 12px;
+    color: #475569;
+}
+
+.progress-bar-container {
+    width: 100%;
+    height: 6px;
+    background: #e2e8f0;
+    border-radius: 3px;
+    overflow: hidden;
+}
+
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent-color), #059669);
+    border-radius: 3px;
+    transition: width 0.3s ease;
+}
+
+.tracking-hint {
+    font-size: 11px;
+    color: #94a3b8;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid #e2e8f0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.tracking-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 4px 8px;
+    background: #f1f5f9;
+    border-radius: 4px;
+    font-size: 11px;
+    color: #475569;
+}
+
+.status-indicator {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #94a3b8;
+}
+
+.status-indicator.active {
+    background: var(--accent-color);
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+.btn-start {
+    background: #6366f1;
+    color: white;
+}
+
+.btn-start:hover {
+    background: #4f46e5;
+}
+
+
+/* 
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+======================================================
+=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
+*/
+
+/* 
+=========================================================================
+============================= Р С™Р Р€Р В Р РЋР В«: Р вЂ™Р ЛњР вЂќР вЂўР С›Р Р€Р В Р С›Р С™ ==========================
+=========================================================================
+*/
+
+/* Р С›РЎРѓР Р…Р С•Р Р†Р Р…РЎвЂ№Р Вµ РЎРѓРЎвЂљР С‘Р В»Р С‘ Р Т‘Р В»РЎРЏ Р С”Р В°РЎР‚РЎвЂљР С•РЎвЂЎР С”Р С‘ РЎС“РЎР‚Р С•Р С”Р В° */
+.lesson-card_item {
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    font-family: sans-serif;
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+.lesson-category {
+    color: #6366f1;
+    font-weight: 600;
+    font-size: 14px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.lesson-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #1f2937;
+    margin-bottom: 12px;
+}
+
+.lesson-description {
+    color: #6b7280;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* Р С™Р С•Р Р…РЎвЂљР ВµР в„–Р Р…Р ВµРЎР‚ Р Т‘Р В»РЎРЏ Р Р†Р С‘Р Т‘Р ВµР С• */
+.video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%;
+    height: 0;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.video-wrapper iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* === Р С›РЎвЂљРЎРѓР В»Р ВµР В¶Р С‘Р Р†Р В°Р Р…Р С‘Р Вµ Р Р†РЎР‚Р ВµР СР ВµР Р…Р С‘ Р С—РЎР‚Р С•РЎРѓР СР С•РЎвЂљРЎР‚Р В° Р Р†Р С‘Р Т‘Р ВµР С• === */
 .video-tracking-container {
     background: #f8fafc;
     border: 1px solid #e2e8f0;
@@ -466,7 +660,7 @@
     }
 }
 
-/* Мета данные (время, дата) */
+/* Р СљР ВµРЎвЂљР В° Р Т‘Р В°Р Р…Р Р…РЎвЂ№Р Вµ (Р Р†РЎР‚Р ВµР СРЎРЏ, Р Т‘Р В°РЎвЂљР В°) */
 .lesson-meta {
     display: flex;
     gap: 20px;
@@ -482,7 +676,7 @@
     gap: 5px;
 }
 
-/* Кнопки файлов */
+/* Р С™Р Р…Р С•Р С—Р С”Р С‘ РЎвЂћР В°Р в„–Р В»Р С•Р Р† */
 .files-container {
     display: flex;
     gap: 10px;
@@ -491,40 +685,149 @@
 
 .file-btn {
     background: #f3f4f6;
-    border: 1px solid #e5e7eb;
-    padding: 8px 16px;
-    border-radius: 6px;
-    text-decoration: none;
-    color: #374151;
-    font-size: 13px;
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    transition: 0.2s;
-}
-
-.file-btn:hover {
-    background: #e5e7eb;
-}
-
-/* Кнопка назад (опционально) */
-.back-btn {
-    background: #6366f1;
-    color: white;
-    border: none;
-    padding: 10px 20px;
     border-radius: 8px;
-    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.tab-btn:hover {
+    color: #111827;
+}
+
+.tab-btn.active {
+    background: white;
+    color: #6366f1;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- Р СџРЎР‚Р ВµР В·Р ВµР Р…РЎвЂљР В°РЎвЂ Р С‘РЎРЏ --- */
+.presentation-container {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 75vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.presentation-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.no-presentation {
+    text-align: center;
+    padding: 60px;
+    color: #9ca3af;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.no-presentation svg {
+    opacity: 0.3;
+}
+
+.no-presentation p {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+/* --- РЎС‚РёР»Рё РґР»СЏ РІРєР»Р°РґРѕРє (Course Tabs) --- */
+.course-tabs {
+    display: flex;
+    gap: 8px;
+    background: #f1f5f9;
+    padding: 4px;
+    border-radius: 12px;
+    margin-bottom: 25px;
+    width: fit-content;
+    border: 1px solid #e2e8f0;
+}
+
+.tab-btn {
+    background: transparent;
+    border: none;
+    padding: 8px 20px;
+    font-size: 14px;
     font-weight: 600;
-    margin-top: 10px;
+    color: #64748b;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
 }
 
-.back-btn:hover {
-    background: #4f46e5;
+.tab-btn:hover {
+    color: #1e293b;
+    background: rgba(255, 255, 255, 0.5);
 }
 
-/* 
-=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
-======================================================
-=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\=\
-*/
+.tab-btn.active {
+    background: white;
+    color: #6366f1;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1), 0 1px 2px rgba(0,0,0,0.06);
+}
+
+.course-tab-content {
+    display: none;
+    animation: courseTabFadeIn 0.3s ease-out;
+}
+
+.course-tab-content.active {
+    display: block;
+}
+
+@keyframes courseTabFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* --- РџСЂРµР·РµРЅС‚Р°С†РёСЏ РєСѓСЂСЃР° --- */
+.presentation-container {
+    background: white;
+    border: 1px solid #e2e8f0;
+    border-radius: 16px;
+    overflow: hidden;
+    height: 75vh;
+    min-height: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+.presentation-container iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+.no-presentation {
+    text-align: center;
+    padding: 60px;
+    color: #94a3b8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.no-presentation svg {
+    opacity: 0.3;
+}
+
+.no-presentation p {
+    font-size: 16px;
+    font-weight: 500;
+}
+

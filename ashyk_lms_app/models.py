@@ -319,6 +319,30 @@ class LectureFile(models.Model):
 
     def __str__(self):
         return self.name or str(self.file)
+
+
+class CoursePresentation(models.Model):
+    """
+    Модель: Презентация курса (PDF файл)
+    """
+    course = models.OneToOneField(
+        Course, 
+        on_delete=models.CASCADE, 
+        related_name='presentation', 
+        verbose_name="Курс"
+    )
+    file = models.FileField(
+        upload_to='course_presentations/', 
+        verbose_name="Файл презентации (PDF)"
+    )
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата загрузки")
+
+    class Meta:
+        verbose_name = "Презентация курса"
+        verbose_name_plural = "Презентации курсов"
+
+    def __str__(self):
+        return f"Презентация: {self.course.title}"
     
 # ==========================================
 # 3. Журнал и Оценки
