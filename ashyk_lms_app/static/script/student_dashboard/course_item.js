@@ -59,22 +59,28 @@ async function renderCourseByTitle(courseTitle) {
                     from { opacity: 0; transform: translateY(10px); }
                     to { opacity: 1; transform: translateY(0); }
                 }
+                #presentation-tab {
+                    margin: -30px -30px 0 -30px; /* Прижимаем к краям дашборда */
+                    background: white;
+                    width: calc(100% + 60px);
+                }
                 .presentation-container {
                     background: white;
-                    border: 1px solid #e2e8f0;
-                    border-radius: 20px;
-                    overflow: hidden;
-                    height: 75vh;
-                    min-height: 650px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+                    border: none;
+                    border-radius: 0;
+                    overflow: visible;
+                    height: auto;
+                    width: 100%;
+                    display: block;
+                    box-shadow: none;
                 }
                 .presentation-container iframe {
                     width: 100%;
-                    height: 100%;
+                    height: 10000px; /* Очень длинный для естественного скролла сайта */
                     border: none;
+                    display: block;
+                    margin: 0;
+                    padding: 0;
                 }
                 .no-presentation-empty {
                     text-align: center;
@@ -84,6 +90,9 @@ async function renderCourseByTitle(courseTitle) {
                     flex-direction: column;
                     align-items: center;
                     gap: 20px;
+                    background: white;
+                    margin: 30px;
+                    border-radius: 20px;
                 }
             `;
             document.head.appendChild(style);
@@ -191,7 +200,7 @@ async function renderCourseByTitle(courseTitle) {
             <div id="presentation-tab" class="course-tab-content active">
                 <div class="presentation-container">
                     ${data.presentationUrl 
-                        ? `<iframe src="${data.presentationUrl}#toolbar=0" type="application/pdf"></iframe>`
+                        ? `<iframe src="${data.presentationUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH,0&zoom=100" type="application/pdf"></iframe>`
                         : `<div class="no-presentation-empty">
                             <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
                             <p>Бұл курс үшін презентация жүктелмеген</p>
