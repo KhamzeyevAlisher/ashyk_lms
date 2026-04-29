@@ -1,7 +1,7 @@
 from django.http import JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_POST
-from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture, Teacher, Homework, HomeworkSubmission, GroupSchedule, CoursePresentation
+from ..models import Curriculum, Grade, Test, Question, Variant, TestResult, StudentAnswer, Course, Lecture, Teacher, Homework, HomeworkSubmission, GroupSchedule, CourseImage
 import json
 import random
 from django.db.models import Q
@@ -323,7 +323,7 @@ def get_course_detail(request, course_id):
         # Base query with strict access check
         qs = Course.objects.filter(
             allowed_groups=student.group
-        ).select_related('instructor__user', 'department')
+        ).select_related('instructor__user', 'department').prefetch_related('images')
 
         if str(course_id).isdigit():
             course = qs.get(id=int(course_id))
@@ -359,7 +359,10 @@ def get_course_detail(request, course_id):
                 'duration': course.duration_text
             },
             'program': program_data,
-            'presentationUrl': course.presentation.file.url if hasattr(course, 'presentation') else None
+            'presentationImages': [
+                {'url': img.image.url, 'link': img.link} 
+                for img in course.images.all()
+            ]
         }
         return JsonResponse({'course': data, 'status': 'success'})
 

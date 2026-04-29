@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-z-(c)bkk57728$hn2o9lm4#l-$)7@sd&*qi_a0$x%*e!n)70y6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['ashyklms.pythonanywhere.com']
+ALLOWED_HOSTS = []
 
 
 # Application definition
@@ -136,7 +136,10 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
-STATIC_ROOT = BASE_DIR / 'static'
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 # Allow iframes for same origin (e.g., displaying PDF presentations)
 X_FRAME_OPTIONS = 'SAMEORIGIN'

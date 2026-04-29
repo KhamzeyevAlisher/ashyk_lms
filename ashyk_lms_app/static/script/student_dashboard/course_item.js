@@ -74,13 +74,33 @@ async function renderCourseByTitle(courseTitle) {
                     display: block;
                     box-shadow: none;
                 }
-                .presentation-container iframe {
-                    width: 100%;
-                    height: 10000px; /* Очень длинный для естественного скролла сайта */
-                    border: none;
-                    display: block;
-                    margin: 0;
-                    padding: 0;
+                .photos-row {
+                    display: flex;
+                    gap: 20px;
+                    overflow-x: auto;
+                    padding: 30px;
+                    background: #f8fafc;
+                    scrollbar-width: thin;
+                    scrollbar-color: #cbd5e1 transparent;
+                }
+                .photos-row::-webkit-scrollbar {
+                    height: 8px;
+                }
+                .photos-row::-webkit-scrollbar-thumb {
+                    background: #cbd5e1;
+                    border-radius: 10px;
+                }
+                .course-presentation-img {
+                    height: 500px;
+                    min-width: 350px;
+                    border-radius: 16px;
+                    object-fit: cover;
+                    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
+                    transition: transform 0.3s ease;
+                    background: #eee;
+                }
+                .course-presentation-img:hover {
+                    transform: scale(1.02);
                 }
                 .no-presentation-empty {
                     text-align: center;
@@ -187,8 +207,8 @@ async function renderCourseByTitle(courseTitle) {
             <!-- Вкладки (Tabs) -->
             <div class="course-tabs-container">
                 <button class="tab-btn-item active" onclick="switchCourseTab(event, 'presentation')">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-                    Презентация
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                    Фото
                 </button>
                 <button class="tab-btn-item" onclick="switchCourseTab(event, 'program')">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
@@ -198,12 +218,30 @@ async function renderCourseByTitle(courseTitle) {
 
             <!-- Контент вкладок -->
             <div id="presentation-tab" class="course-tab-content active">
-                <div class="presentation-container">
-                    ${data.presentationUrl 
-                        ? `<iframe src="${data.presentationUrl}#toolbar=0&navpanes=0&scrollbar=0&view=FitH,0&zoom=100" type="application/pdf"></iframe>`
+                <div class="presentation-container photos-row">
+                    ${data.presentationImages && data.presentationImages.length > 0 
+                        ? data.presentationImages.map(img => {
+                            let actionAttr = '';
+                            let wrapStart = '';
+                            let wrapEnd = '';
+                            let cursorStyle = '';
+
+                            if (img.link === 'click') {
+                                actionAttr = `onclick="switchCourseTab(event, 'program')"`;
+                                cursorStyle = 'cursor: pointer;';
+                                wrapStart = `<div ${actionAttr} style="${cursorStyle}">`;
+                                wrapEnd = `</div>`;
+                            } else if (img.link) {
+                                wrapStart = `<a href="${img.link}" target="_blank" title="Сілтеме бойынша өту">`;
+                                wrapEnd = `</a>`;
+                            }
+
+                            const imgHTML = `<img src="${img.url}" class="course-presentation-img" alt="Курс фотосы">`;
+                            return `${wrapStart}${imgHTML}${wrapEnd}`;
+                        }).join('')
                         : `<div class="no-presentation-empty">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="9" y1="15" x2="15" y2="15"></line></svg>
-                            <p>Бұл курс үшін презентация жүктелмеген</p>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                            <p>Бұл курс үшін фотосуреттер жүктелмеген</p>
                           </div>`
                     }
                 </div>

@@ -27,7 +27,7 @@ from .models import (
     HomeworkSubmission,
     GroupSchedule,
     StudentFinalScore,
-    CoursePresentation
+    CourseImage
 )
 
 # ========================================================
@@ -216,12 +216,17 @@ class LectureFileInline(admin.TabularInline):
     model = LectureFile
     extra = 1
 
+class CourseImageInline(admin.TabularInline):
+    model = CourseImage
+    extra = 3
+
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
     list_display = ('code', 'title', 'display_cover', 'get_department', 'get_instructor', 'created_at')
     search_fields = ('code', 'title', 'description', 'instructor__user__last_name')
     autocomplete_fields = ['instructor', 'department']
     filter_horizontal = ('allowed_groups',)
+    inlines = [CourseImageInline]
 
     def get_department(self, obj):
         return obj.department.name if obj.department else "-"
@@ -245,9 +250,9 @@ class LectureAdmin(admin.ModelAdmin):
     inlines = [LectureFileInline]
 
 
-@admin.register(CoursePresentation)
-class CoursePresentationAdmin(admin.ModelAdmin):
-    list_display = ('course', 'file', 'created_at')
+@admin.register(CourseImage)
+class CourseImageAdmin(admin.ModelAdmin):
+    list_display = ('course', 'image', 'link', 'created_at')
     search_fields = ('course__title',)
     autocomplete_fields = ['course']
 

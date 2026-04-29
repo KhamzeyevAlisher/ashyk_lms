@@ -321,28 +321,34 @@ class LectureFile(models.Model):
         return self.name or str(self.file)
 
 
-class CoursePresentation(models.Model):
+class CourseImage(models.Model):
     """
-    Модель: Презентация курса (PDF файл)
+    Модель: Фото курса (вместо презентации)
     """
-    course = models.OneToOneField(
+    course = models.ForeignKey(
         Course, 
         on_delete=models.CASCADE, 
-        related_name='presentation', 
+        related_name='images', 
         verbose_name="Курс"
     )
-    file = models.FileField(
-        upload_to='course_presentations/', 
-        verbose_name="Файл презентации (PDF)"
+    image = models.ImageField(
+        upload_to='course_images/', 
+        verbose_name="Фото"
+    )
+    link = models.CharField(
+        max_length=255,
+        blank=True, 
+        null=True, 
+        verbose_name="Действие (пусто или 'click')"
     )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата загрузки")
 
     class Meta:
-        verbose_name = "Презентация курса"
-        verbose_name_plural = "Презентации курсов"
+        verbose_name = "Фото курса"
+        verbose_name_plural = "Фото курса"
 
     def __str__(self):
-        return f"Презентация: {self.course.title}"
+        return f"Фото: {self.course.title}"
     
 # ==========================================
 # 3. Журнал и Оценки
