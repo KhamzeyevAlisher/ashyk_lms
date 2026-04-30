@@ -219,6 +219,7 @@ class LectureFileInline(admin.TabularInline):
 class CourseImageInline(admin.TabularInline):
     model = CourseImage
     extra = 3
+    fields = ('image', 'link', 'content_html', 'custom_lecture_list', 'is_lecture_list', 'order')
 
 @admin.register(Course)
 class CourseAdmin(admin.ModelAdmin):
@@ -252,7 +253,8 @@ class LectureAdmin(admin.ModelAdmin):
 
 @admin.register(CourseImage)
 class CourseImageAdmin(admin.ModelAdmin):
-    list_display = ('course', 'image', 'link', 'created_at')
+    list_display = ('course', 'order', 'image', 'link', 'is_lecture_list', 'created_at')
+    list_editable = ('order', 'is_lecture_list')
     search_fields = ('course__title',)
     autocomplete_fields = ['course']
 

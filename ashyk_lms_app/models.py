@@ -341,14 +341,33 @@ class CourseImage(models.Model):
         null=True, 
         verbose_name="Действие (пусто или 'click')"
     )
+    content_html = models.TextField(
+        blank=True, 
+        null=True, 
+        verbose_name="Контент поверх (HTML/текст)"
+    )
+    custom_lecture_list = models.TextField(
+        blank=True, 
+        null=True, 
+        verbose_name="Свой список лекций (каждая строка — новый пункт)"
+    )
+    is_lecture_list = models.BooleanField(
+        default=False, 
+        verbose_name="Авто-список лекций курса"
+    )
+    order = models.PositiveIntegerField(
+        default=0, 
+        verbose_name="Порядок"
+    )
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата загрузки")
 
     class Meta:
         verbose_name = "Фото курса"
         verbose_name_plural = "Фото курса"
+        ordering = ['order', 'created_at']
 
     def __str__(self):
-        return f"Фото: {self.course.title}"
+        return f"Фото: {self.course.title} (№{self.order})"
     
 # ==========================================
 # 3. Журнал и Оценки

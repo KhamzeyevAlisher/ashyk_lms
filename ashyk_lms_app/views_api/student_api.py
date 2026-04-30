@@ -360,8 +360,14 @@ def get_course_detail(request, course_id):
             },
             'program': program_data,
             'presentationImages': [
-                {'url': img.image.url, 'link': img.link} 
-                for img in course.images.all()
+                {
+                    'url': img.image.url, 
+                    'link': img.link,
+                    'content_html': img.content_html,
+                    'custom_lecture_list': img.custom_lecture_list,
+                    'is_lecture_list': img.is_lecture_list
+                } 
+                for img in course.images.all() # ordered by Meta
             ]
         }
         return JsonResponse({'course': data, 'status': 'success'})

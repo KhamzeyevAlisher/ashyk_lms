@@ -90,17 +90,54 @@ async function renderCourseByTitle(courseTitle) {
                     background: #cbd5e1;
                     border-radius: 10px;
                 }
-                .course-presentation-img {
+                .course-presentation-card {
                     height: 500px;
-                    min-width: 350px;
+                    min-width: 380px;
                     border-radius: 16px;
-                    object-fit: cover;
+                    background-size: cover;
+                    background-position: center;
                     box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.1);
-                    transition: transform 0.3s ease;
-                    background: #eee;
+                    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+                    position: relative;
+                    overflow: hidden;
+                    background-color: #f1f5f9;
+                    display: flex;
+                    flex-direction: column;
                 }
-                .course-presentation-img:hover {
-                    transform: scale(1.02);
+                .course-presentation-card:hover {
+                    transform: translateY(-5px) scale(1.01);
+                }
+                .card-overlay {
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    right: 0;
+                    bottom: 0;
+                    padding: 30px;
+                    overflow-y: auto;
+                    z-index: 2;
+                }
+                /* Специальный стиль для списка лекций */
+                .lecture-list-overlay {
+                    background: transparent; /* Без фона */
+                    color: #1e293b;
+                    padding: 20px;
+                }
+                .overlay-list {
+                    position: relative;
+                    top: 20%;
+                }
+                .overlay-lecture-item {
+                    display: flex;
+                    gap: 12px;
+                    margin-bottom: 8px;
+                    font-size: 13px; /* Меньше шрифт */
+                    line-height: 1.3;
+                }
+                .overlay-lecture-num {
+                    font-weight: 600;
+                    color: #6366f1;
+                    min-width: 22px;
                 }
                 .no-presentation-empty {
                     text-align: center;
@@ -236,8 +273,58 @@ async function renderCourseByTitle(courseTitle) {
                                 wrapEnd = `</a>`;
                             }
 
-                            const imgHTML = `<img src="${img.url}" class="course-presentation-img" alt="Курс фотосы">`;
-                            return `${wrapStart}${imgHTML}${wrapEnd}`;
+                            const bgStyle = img.url ? `background-image: url('${img.url}');` : '';
+                            
+                            // Содержимое поверх
+                            let overlayHTML = '';
+                            let overlayClass = 'card-overlay';
+                            
+                            // 1. Приоритет: Свой список лекций из админки (через textarea)
+                            if (img.custom_lecture_list) {
+                                overlayClass += ' lecture-list-overlay';
+                                const customItems = img.custom_lecture_list.split('\n')
+                                    .map(item => item.trim())
+                                    .filter(item => item.length > 0)
+                                    .map((text, idx) => `
+                                        <div class="overlay-lecture-item">
+                                            <span class="overlay-lecture-num">${String(idx + 1).padStart(2, '0')}.</span>
+                                            <span class="overlay-lecture-text">${text}</span>
+                                        </div>
+                                    `).join('');
+                                
+                                overlayHTML = `
+                                    <div class="${overlayClass}">
+                                        <div class="overlay-list">${customItems}</div>
+                                    </div>
+                                `;
+                            } 
+                            // 2. Авто-список лекций курса
+                            else if (img.is_lecture_list) {
+                                overlayClass += ' lecture-list-overlay';
+                                const listItems = data.program.map((lec, idx) => `
+                                    <div class="overlay-lecture-item">
+                                        <span class="overlay-lecture-num">${String(idx + 1).padStart(2, '0')}.</span>
+                                        <span class="overlay-lecture-text">${lec.topic}</span>
+                                    </div>
+                                `).join('');
+                                
+                                overlayHTML = `
+                                    <div class="${overlayClass}">
+                                        <div class="overlay-list">${listItems}</div>
+                                    </div>
+                                `;
+                            } 
+                            // 3. Произвольный HTML
+                            else if (img.content_html) {
+                                overlayHTML = `<div class="${overlayClass}">${img.content_html}</div>`;
+                            }
+
+                            const cardHTML = `
+                                <div class="course-presentation-card" style="${bgStyle} ${cursorStyle}">
+                                    ${overlayHTML}
+                                </div>
+                            `;
+                            return `${wrapStart}${cardHTML}${wrapEnd}`;
                         }).join('')
                         : `<div class="no-presentation-empty">
                             <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
