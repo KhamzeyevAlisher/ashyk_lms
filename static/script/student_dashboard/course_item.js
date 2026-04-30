@@ -285,12 +285,27 @@ async function renderCourseByTitle(courseTitle) {
                                 const customItems = img.custom_lecture_list.split('\n')
                                     .map(item => item.trim())
                                     .filter(item => item.length > 0)
-                                    .map((text, idx) => `
-                                        <div class="overlay-lecture-item">
-                                            <span class="overlay-lecture-num">${String(idx + 1).padStart(2, '0')}.</span>
-                                            <span class="overlay-lecture-text">${text}</span>
-                                        </div>
-                                    `).join('');
+                                    .map((line, idx) => {
+                                        // Извлекаем ссылку из квадратных скобок: Текст [http://...]
+                                        let title = line;
+                                        let url = null;
+                                        const match = line.match(/(.*)\[(.*)\]/);
+                                        if (match) {
+                                            title = match[1].trim();
+                                            url = match[2].trim();
+                                        }
+
+                                        const textHTML = url 
+                                            ? `<a href="${url}" target="_blank" style="color: inherit; text-decoration: underline;">${title}</a>`
+                                            : title;
+
+                                        return `
+                                            <div class="overlay-lecture-item">
+                                                <span class="overlay-lecture-num">${String(idx + 1).padStart(2, '0')}.</span>
+                                                <span class="overlay-lecture-text">${textHTML}</span>
+                                            </div>
+                                        `;
+                                    }).join('');
                                 
                                 overlayHTML = `
                                     <div class="${overlayClass}">
